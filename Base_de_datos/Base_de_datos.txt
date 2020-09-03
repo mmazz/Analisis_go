@@ -1,0 +1,9 @@
+Con crawler_KGS.py descargamos los diferentes .tar.gz
+Descomprimos los archivos por terminal
+Utilizamos bucketsSGF para transformar
+parser.py crea un archivo CSV con la informacion mas importante de
+todos los archivos result.txt
+Esto nos da un KGS.csv
+
+Para poder quedarnos con casos relevantes a la tesis hacemos un filtro con
+summary_filtered.py
