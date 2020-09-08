@@ -1,4 +1,4 @@
-include("./src/TrueSkill.jl")
+include("../../paquetes/trueskill.jl/src/TrueSkill.jl")
 using .TrueSkill
 global const ttt = TrueSkill
 using Test
@@ -13,25 +13,26 @@ data = CSV.read("./simulacion.csv")
 results = [row.player2_win == 1 ? [1, 0] : [0, 1] for row in eachrow(data) ]
 composition = [[[string(r.jugador1)],[string(r.jugador2)]]  for r in eachrow(data) ]
 beta = 25/6
-gammas = [0.25,30.0]
+gammas = [0,0.25,0.5,1,2,30.0]
 
 
 matrix_ev = zeros(Float64, length(gammas)) # filas columnas
-
-ttt.setbeta(beta)
-
 for j in 1:length(gammas)
     h = 0
     evidence=0
     times = Vector{Int64}()
     ttt.setgamma(gammas[j])
-
+    ttt.setN0g(gammas[j])
     h = ttt.History(composition, results, times )
     ttt.convergence(h)
 
     evidence = [ h.batches[r].evidences[1] for r in 1:size(data)[1]]
-    logevidence = -1*log.(evidence)
-    prom_log_ev = sum(logevidence)/length(evidence)
+    logevidence = log.(evidence)
+    #logevidence = -1*log.(evidence)
+
+    prom_log_ev = sum(logevidence)
+    #prom_log_ev = sum(logevidence)/length(evidence)
+
     println(prom_log_ev)
     matrix_ev[j] = prom_log_ev
 end

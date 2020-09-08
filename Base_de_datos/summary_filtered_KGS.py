@@ -16,7 +16,6 @@ df = df[(df.order == 1) | (df.order == 0)]
 print("Resultado estandar: ", df.shape)
 
 df['black_win'] = df.order
-
 def outcomeOutput(x):
     if 'Resign' in x:
         x = 'Resign'

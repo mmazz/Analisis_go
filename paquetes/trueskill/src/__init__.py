@@ -16,7 +16,7 @@ TODO:
 
 MU = 25.0; SIGMA = (MU/3)
 PI = SIGMA**-2; TAU = PI * MU
-BETA = (SIGMA / 2); GAMMA = (SIGMA / 100)
+BETA = (SIGMA / 2); GAMMA = 0.5#(SIGMA / 100)
 DRAW_PROBABILITY = 0.0
 EPSILON = 1e-6
 sqrt2 = math.sqrt(2)
@@ -31,7 +31,7 @@ def erfc(x):
     c = -1.13520398 + t * b; d =  0.27886807 + t * c; e = -0.18628806 + t * d
     f =  0.09678418 + t * e; g =  0.37409196 + t * f; h =  1.00002368 + t * g
     r = t * math.exp(-z * z - 1.26551223 + t * h)
-    return r if not(x<0) else 2.0 - r 
+    return r if not(x<0) else 2.0 - r
 
 def erfcinv(y):
     if y >= 2: return -inf
@@ -57,7 +57,7 @@ class Gaussian(object):
             self.tau, self.pi = self.tau_pi(mu, sigma)
         else:
             self.tau, self.pi = mu, sigma
-            
+
     def tau_pi(self,mu,sigma):
         if sigma < 0.: raise ValueError('sigma**2 should be greater than 0')
         if sigma > 0.:
@@ -67,7 +67,7 @@ class Gaussian(object):
             _pi = inf
             _tau = inf
         return _tau, _pi
-    
+
     @property
     def mu(self):
         return 0. if (self.pi ==inf or self.pi==0.) else self.tau / self.pi
@@ -79,7 +79,7 @@ class Gaussian(object):
         return (0.5 * erfc(z))
     def pdf(self, x):
         normalizer = (sqrt2pi * self.sigma)**-1
-        functional = math.exp( -((x - self.mu)**2) / (2*self.sigma**2) ) 
+        functional = math.exp( -((x - self.mu)**2) / (2*self.sigma**2) )
         return normalizer * functional
     def ppf(self, p):
         return self.mu - self.sigma * sqrt2  * erfcinv(2 * p)
@@ -94,7 +94,7 @@ class Gaussian(object):
         else:
             v = (N01.pdf(_alpha)-N01.pdf(_beta))/(N01.cdf(_beta)-N01.cdf(_alpha))
             u = (_alpha*N01.pdf(_alpha)-_beta*N01.pdf(_beta))/(N01.cdf(_beta)-N01.cdf(_alpha))
-            w =  - ( u - v**2 ) 
+            w =  - ( u - v**2 )
         mu = self.mu + self.sigma * v
         sigma = self.sigma* math.sqrt(1-w)
         return Gaussian(mu, sigma)
@@ -108,17 +108,17 @@ class Gaussian(object):
         return Gaussian(self.mu - M.mu, math.sqrt(self.sigma**2 + M.sigma**2))
     def __mul__(self, M):
         _tau, _pi = self.tau + M.tau, self.pi + M.pi
-        return Gaussian(_tau, _pi, inverse=True)        
+        return Gaussian(_tau, _pi, inverse=True)
     def __truediv__(self, M):
         _tau = self.tau - M.tau; _pi = self.pi - M.pi
-        return Gaussian(_tau, _pi, inverse=True)        
+        return Gaussian(_tau, _pi, inverse=True)
     def delta(self, M):
-        return abs(self.mu - M.mu) , abs(self.sigma - self.sigma) 
+        return abs(self.mu - M.mu) , abs(self.sigma - self.sigma)
     def exclude(self, M):
         return Gaussian(self.mu - M.mu, math.sqrt(self.sigma**2 - M.sigma**2) )
     def isapprox(self, M, tol=1e-4):
         return (abs(self.mu - M.mu) < tol) and (abs(self.sigma - M.sigma) < tol)
-        
+
 N01 = Gaussian(0,1)
 N00 = Gaussian(0,0)
 Nms = Gaussian(MU,SIGMA)
@@ -130,14 +130,14 @@ class Rating(object):
         self.beta = beta
         self.gamma = gamma
         self.name = name
-    
+
     def forget(self, t, max_sigma=SIGMA):
         _sigma = min(math.sqrt(self.N.sigma**2 + (self.gamma*t)**2), max_sigma)
         return Rating(Gaussian(self.N.mu, _sigma),self.beta,self.gamma,self.name)
 
     def performance(self):
         return Gaussian(self.N.mu, math.sqrt(self.N.sigma**2 + self.beta**2))
-    
+
     def copy(self):
         return Rating(self.N, self.beta, self.gamma, self.name)
 
@@ -183,7 +183,7 @@ class Game(object):
         self.likelihoods = []
         self.evidence = 0.0
         self.compute_likelihoods()
-        
+
     def __len__(self):
         return len(self.result)
     def size(self):
@@ -195,14 +195,14 @@ class Game(object):
         return res
     def likelihood_teams(self):
         r = self.result
-        o = sortperm(r) 
+        o = sortperm(r)
         t = [team_messages(self.performance(o[e]),Ninf, Ninf) for e in range(len(self))]
         d = [diff_messages(t[e].prior - t[e+1].prior, Ninf) for e in range(len(self)-1)]
         tie = [r[o[e]]==r[o[e+1]] for e in range(len(d))]
         self.evidence = 1.0
         for e in range(len(d)):
             self.evidence *= d[e].prior.cdf(self.margin)-d[e].prior.cdf(-self.margin) if tie[e] else 1-d[e].prior.cdf(self.margin)
-        step = (inf, inf); i = 0 
+        step = (inf, inf); i = 0
         while gr_tuple(step,1e-6) and (i < 10):
             step = (0., 0.)
             for e in range(len(d)-1):
@@ -223,7 +223,7 @@ class Game(object):
             d[0].likelihood = d[0].prior.trunc(self.margin,tie[0])/d[0].prior
         t[0].likelihood_win = t[1].posterior_lose + d[0].likelihood
         t[-1].likelihood_lose = t[-2].posterior_win - d[-1].likelihood
-        return [ t[o[e]].likelihood for e in range(len(t))] 
+        return [ t[o[e]].likelihood for e in range(len(t))]
     def compute_likelihoods(self):
         m_t_ft = self.likelihood_teams()
         self.likelihoods = [[ m_t_ft[e] - self.performance(e).exclude(self.teams[e][i].N) for i in range(len(self.teams[e])) ] for e in range(len(self))]
@@ -235,11 +235,11 @@ class Game(object):
 class Batch(object):
     def __init__(self, events, results, time, last_time=dict() ,priors=dict()):
         if len(events)!= len(results): raise ValueError("len(events)!= len(results)")
-        
+
         self.events = events
         self.results = results
         self.time = time
-        self.elapsed = dict() 
+        self.elapsed = dict()
         self.prior_forward = dict()
         self.prior_backward = dict()
         self.likelihoods = dict()
@@ -250,17 +250,17 @@ class Batch(object):
         for a in self.agents:
             self.partake[a] = [e for e in range(len(events)) for team in events[e] if a in team ]
             self.elapsed[a] = time - last_time[a] if a in last_time else 0
-            self.prior_forward[a] = priors[a].forget(self.elapsed[a]) if a in priors else Rating(Nms,BETA,GAMMA,a) 
+            self.prior_forward[a] = priors[a].forget(self.elapsed[a]) if a in priors else Rating(Nms,BETA,GAMMA,a)
             self.prior_backward[a] = Ninf
             self.likelihoods[a] = dict()
             self.old_within_prior[a] = dict()
             for e in self.partake[a]:
                 self.likelihoods[a][e] = Ninf
                 self.old_within_prior[a][e] = self.prior_forward[a].N
-            
+
         self.iteration()
         self.max_step = self.step_within_prior()
-    
+
     def __repr__(self):
         return "Batch(time={}, events={}, results={})".format(self.time,self.events,self.results)
     def __len__(self):
@@ -271,7 +271,7 @@ class Batch(object):
             res *= self.likelihoods[agent][k]
         return res
     def posterior(self, agent):
-        return self.likelihood(agent)*self.prior_backward[agent]*self.prior_forward[agent].N   
+        return self.likelihood(agent)*self.prior_backward[agent]*self.prior_forward[agent].N
     def posteriors(self):
         res = dict()
         for a in self.agents:
@@ -287,17 +287,17 @@ class Batch(object):
         for e in range(len(self)):
             _priors = self.within_priors(e)
             teams = self.events[e]
-                    
+
             for t in range(len(teams)):
                 for j in range(len(teams[t])):
                     self.old_within_prior[teams[t][j]][e] = _priors[t][j].N
-            
+
             g = Game(_priors, self.results[e])
-            
+
             for t in range(len(teams)):
                 for j in range(len(teams[t])):
-                    self.likelihoods[teams[t][j]][e] = g.likelihoods[t][j] 
-            
+                    self.likelihoods[teams[t][j]][e] = g.likelihoods[t][j]
+
             self.evidences[e] = g.evidence
     def forward_prior_out(self, agent):
         res = self.prior_forward[agent].copy()
@@ -307,18 +307,18 @@ class Batch(object):
         gamma = self.prior_forward[agent].gamma
         N = self.likelihood(agent)*self.prior_backward[agent]
         # IMPORTANTE: No usar el tope de forget ac\'a
-        return N+Gaussian(0., gamma*self.elapsed[agent] ) 
+        return N+Gaussian(0., gamma*self.elapsed[agent] )
     def step_within_prior(self):
         step = (0.,0.)
         for a in self.partake:
             if len(self.partake[a]) > 0:
                 for e in self.partake[a]:
-                    
+
                     step = max_tuple(step,self.old_within_prior[a][e].delta(self.within_prior(a, e).N) )
-                    
+
         return step
     def convergence(self, epsilon=EPSILON):
-        i = 0    
+        i = 0
         while gr_tuple(self.max_step, epsilon) and (i < 10):
             self.iteration()
             self.max_step = self.step_within_prior()
@@ -329,7 +329,7 @@ class Batch(object):
             self.prior_backward[a] = backward_message[a] if a in backward_message else Ninf
         self.max_step = (inf, inf)
         return self.convergence()
-    
+
     def new_forward_info(self, forward_message):
         for a in self.agents:
             self.prior_forward[a] = forward_message[a].forget(self.elapsed[a]) if a in forward_message else Rating(Nms)
@@ -350,7 +350,7 @@ class History(object):
         self.partake = dict()
         for a in self.agents: self.partake[a] = dict()
         self.trueskill(events,results)
-        
+
     def __repr__(self):
         return "History(Size={}, Batches={}, Agents={})".format(self.size,len(self.batches),len(self.agents))
     def __len__(self):
@@ -361,21 +361,21 @@ class History(object):
         while i < len(self):
             j, t = i+1, 1 if len(self.times) == 0 else self.times[o[i]]
             while (len(self.times)>0) and (j < len(self)) and (self.times[o[j]] == t): j += 1
-            b = Batch([events[k] for k in o[i:j]],[results[k] for k in o[i:j]], t, self.last_time, 
-            self.forward_message)        
+            b = Batch([events[k] for k in o[i:j]],[results[k] for k in o[i:j]], t, self.last_time,
+            self.forward_message)
             self.batches.append(b)
             for a in b.agents:
                 self.last_time[a] = t
                 self.partake[a][t] = b
                 self.forward_message[a] = b.forward_prior_out(a)
             i = j
-            
+
     def convergence(self,epsilon=EPSILON,iterations=10):
 
         step = (inf, inf); i = 0
         while gr_tuple(step, epsilon) and (i < iterations):
             step = (0., 0.)
-            
+
             self.backward_message=dict()
             for j in reversed(range(len(self.batches)-1)):# j=2
                 for a in self.batches[j+1].agents:# a = "c"
@@ -383,7 +383,7 @@ class History(object):
                 old = self.batches[j].posteriors().copy()
                 self.batches[j].new_backward_info(self.backward_message)
                 step = max_tuple(step, dict_diff(old, self.batches[j].posteriors()))
-            
+
             self.forward_message= self.priors.copy()
             for j in range(1,len(self.batches)):#j=2
                 for a in self.batches[j-1].agents:#a = "b"
@@ -391,7 +391,7 @@ class History(object):
                 old = self.batches[j].posteriors().copy()
                 self.batches[j].new_forward_info(self.forward_message)
                 step = max_tuple(step, dict_diff(old, self.batches[j].posteriors()))
-        
+
             i += 1
         if len(self.batches)==1: self.batches[0].convergence()
         return step, i
@@ -400,7 +400,7 @@ class History(object):
         for a in self.agents:
             res[a] = sorted([ (t, self.partake[a][t].posterior(a)) for t in self.partake[a]])
         return res
-    
+
 def max_tuple(t1, t2):
     return max(t1[0],t2[0]), max(t1[1],t2[1])
 
@@ -408,13 +408,10 @@ def gr_tuple(tup, threshold):
     return (tup[0] > threshold) or (tup[1] > threshold)
 
 def sortperm(xs):
-    return [i for (v, i) in sorted((v, i) for (i, v) in enumerate(xs))] 
+    return [i for (v, i) in sorted((v, i) for (i, v) in enumerate(xs))]
 
 def dict_diff(old, new):
     step = (0., 0.)
     for a in old:
         step = max_tuple(step, old[a].delta(new[a]))
     return step
-
-
-                
