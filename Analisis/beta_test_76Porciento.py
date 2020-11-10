@@ -7,8 +7,8 @@ def gaus(x, mu, sigma):
 
 
 mu = 25
-sigma = 25/3
-beta = 25/6
+beta = 3.178
+sigma = 3*beta
 leng = 100000
 
 x = np.linspace(beta-6*sigma, beta+6*sigma, leng)
@@ -16,8 +16,10 @@ y = np.zeros(leng)
 z = np.zeros(leng)
 delta = x[1]-x[0]
 
+# El beta de aca es la diferencia
+diff_skill = 0.7*2
 for i in range(len(x)):
-    y[i] = gaus(x[i], beta, np.sqrt(2*beta**2))
+    y[i] = gaus(x[i], diff_skill, np.sqrt(2*beta**2))
 
 for i in range(len(x)):
     if i == 0:
