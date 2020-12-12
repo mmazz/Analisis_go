@@ -1,0 +1,18 @@
+#!/usr/bin/zsh
+a=0
+b=0
+for dire in */
+do
+  echo $dire
+  for file in $dire*.sgf
+  do
+    let a+=1
+    cat "$file" >> ./result$b.txt
+    if (($a > 10000))
+         then;
+         let b+=1
+         let a=0
+      echo Vuelta numero $b/200
+      fi
+  done
+done

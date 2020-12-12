@@ -1,0 +1,8 @@
+Con crawler_KGS.py descargamos los diferentes .tar.gz
+Descomprimos los archivos por terminal
+Utilizamos bucketsSGF para transformar en menor cantidad de archivos
+parser.py crea un archivo CSV con la informacion mas importante de
+todos los archivos result.txt
+Esto nos da el archivo KGS.csv que descargamos en Img.
+
+Basicamente tenemos los casos de tamaño comun.
