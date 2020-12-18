@@ -1,11 +1,11 @@
-\documentclass[11pt,twoside, spanish]{report} % Documento two sided
+\documentclass[11pt,twoside,spanish]{report} % Documento two sided
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{setspace}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-
+\usepackage{cite} % para que las citas en vez de [1,2,3] sea [1-3]
 \usepackage[binary-units]{siunitx}
 \usepackage{cancel}
 \usepackage{amsfonts} % simbolos como el I de matriz identidad
@@ -33,6 +33,7 @@
 \usepackage{csquotes} % lo pide para las citas
 \usepackage{comment}
 \usepackage{enumerate}
+\usepackage{microtype} % hace que las palabras entren mejor en el texto. por algun motivo algunas palabras qeudaban mas largas que el parrafo y no se arreglaba.
 
 %%%%%%%%%%% Intentando imitar a los checos
 \usepackage{titlesec}
@@ -77,7 +78,7 @@ linktocpage]{hyperref}
 %  Para que no aparezca el titulo de tyablecontent y reemplazarlo por el chapter
 \addto\captionsspanish{\def\contentsname{\sffamily\bfseries\textcolor{frenchblue}{}}}
 
-\title{Estimaci\'on y an\'alisis de datos en partidas de juegos en comunidades \emph{online}}
+\title{Estimaci\'on de habilidad y la asignaci\'on de \emph{handicap}. Aplicaci\'on al juego de go}
 \author{Matias Mazzanti}
 \date{\today}
 
@@ -108,10 +109,10 @@ linktocpage]{hyperref}
 	\vfill
 	\vspace{-2.5cm}
 	\Huge
-	\noindent\color{frenchblue}Estimaci\'on y an\'alisis de datos en partidas de juegos en comunidades \emph{online}.
+	\noindent\color{frenchblue}Estimaci\'on de habilidad y la asignaci\'on de \emph{handicap}. Aplicaci\'on al juego de go
 	\vfill
 
-	\vspace{0.8cm}
+	\vspace{-0.8cm}
 
 	\Large
 	\color{black}
@@ -126,8 +127,11 @@ linktocpage]{hyperref}
 
 	\normalsize
 	\noindent Septiembre 2020
-
+    \vspace{0.5cm}
+    
 	\noindent Director: Esteban Mocskos
+	
+	\noindent Co-director: Pablo Balenzuela
 	%\end{center}
 
 \end{titlepage}
@@ -158,7 +162,7 @@ linktocpage]{hyperref}
 
 	\bigskip
 
-	\textsc{CODIRECTOR o COLABORADOR:} Pablo Balenzuela
+	\textsc{CODIRECTOR o COLABORADOR:} Dr. Pablo Balenzuela
 
 	\bigskip
 
@@ -180,21 +184,20 @@ linktocpage]{hyperref}
 	\begin{center}
 		\begin{tabular}{lll}
 			\cline{1-1}\cline{1-1}\cline{3-3}\cline{3-3}%
-			Autor: Matias Mazzanti  & \hspace{2cm} & Jurado\ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-			\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \\
+			Autor: Matias Mazzanti  & \hspace{2cm} & Jurado: Santiago Laplagne \\ 
 			&& \\
 			&& \\
 			&& \\
 			\cline{1-1}\cline{1-1}\cline{3-3}\cline{3-3}%
-			Director: Esteban Mocskos \ \ \ \ \ \ \ \ \ \ \ \ \  & \hspace{2cm} & Jurado\\
+			Director: Esteban Mocskos & \hspace{2cm}  & Jurado: Diego Shalom \\
 			&& \\
 			&& \\
 			&& \\
 			\cline{1-1}\cline{1-1}\cline{3-3}\cline{3-3}%
-			Profesora: Silvina Ponce Dawson  & \hspace{2cm} & Jurado\\
+			Profesora: Silvina Ponce Dawson  & \hspace{2cm} & Jurado: Juan Kamienkowski \\
 			&& \\
 			&& \\
-			&& \\
+			&& 
 		\end{tabular}
 	\end{center}
 
@@ -209,35 +212,45 @@ linktocpage]{hyperref}
 \pagestyle{empty}
 \thispagestyle{empty}
 
-%Gracias a la facilidad de los humanos en imitar y acumular conocimiento en una sociedad, logramos desarrollar habilidades complejas a trav\'es del tiempo.
-Los humanos desarrollan habilidades complejas a trav\'es del tiempo.
-\'Esto se debe e nuestra facilidad como especie en adquirir nuevos comportamientos mediante la imitaci\'on, permitiendo a una persona a adquirir distintas capacidades. % es auto explicativo imitar, o mas?
-% Debido a la facilidad que tenemos como especie en imitar, modificar y transmitir conocimientos es lo que permite a una persona a adquirir distintas capacidades.
-%Esta caracter\'istica le permite a una persona adquirir distintas capacidades.
-%\todo[inline]{esta frase anterior deber\'ia describir el proceso de imitaci\'on}
-Esto no significa que todas las personas aprenden una misma tarea del mismo modo, ni que todas tengan la misma efectividad al realizarla.
 
+Los humanos desarrollan habilidades complejas a trav\'es del tiempo gracias a la capacidad para adquirir nuevos comportamientos mediante la imitaci\'on, permitiendo a una persona adquirir nuevas capacidades durante el transcurso de su vida. 
+Sin embargo, esto no significa que todas las personas aprenden una misma tarea del mismo modo, ni que todas tengan la misma efectividad al realizarla.
+%
 Saber c\'omo evolucionan las capacidades de una persona resulta crucial en diversas \'areas, tales como los sistemas educativos, los deportes y la industria de los videojuegos.
-Es frecuente que sea necesario comparar las habilidades entre distintos individuos tanto para poder comprobar si alguien es capaz de realizar una actividad as\'i como para poder saber qu\'e tan bien la hace, incluyendo el establecimiento de \emph{rankings} en los que se incluyen a \emph{mejores} en determinada actividad.
-\todo[inline]{a mejores?, a los mejores?}
+Es frecuente que sea necesario comparar las habilidades entre distintos individuos tanto como para comprobar si alguien es capaz de realizar una actividad as\'i como para saber qu\'e tan bien la hace, incluyendo el establecimiento de \emph{rankings} en los que se clasifican a quienes practican determinada actividad.
+
+% \vspace{-1.75cm}
+% Gracias a la facilidad de los humanos en aprender e imitar es que logramos desarrollar habilidades complejas a trav\'es del tiempo.
+% Desde imitar a nuestro jugador favorito de futbol de como pegarle a la pelota, hasta las enseñanzas de un profesor a su alumno en el colegio.
+% Debido a \'esta facilidad como especie es lo que permite a una persona a adquirir distintas capacidades a lo largo de su vida.
+% Esto no significa que todas las personas aprenden una misma tarea del mismo modo, ni que todas tengan la misma efectividad al realizarla.
+% 
+% 
+% Saber c\'omo evolucionan las capacidades de una persona resulta crucial en diversas \'areas, tales como los sistemas educativos, los deportes y la industria de los videojuegos.
+% Es frecuente que sea necesario comparar las habilidades entre distintos individuos tanto para poder comprobar si alguien es capaz de realizar una actividad as\'i como para poder saber qu\'e tan bien la hace, incluyendo el establecimiento de \emph{rankings} en los que se incluyen a los \emph{mejores} en una determinada actividad.
+
 Sin embargo la habilidad es una variable oculta, por lo que solo se la puede estimar a partir de sus consecuencias observables directas: el producto de resoluci\'on de problemas y competencias.
-Dentro de diversas pr\'acticas deportivas y de entretenimiento, es habitual la asignaci\'on de ventajas (i.e. \emph{handicap}) para que un juego sea desafiante y, a la vez, accesible para los jugadores.
-Un ejemplo cl\'asico es el juego de mesa go: cuando los participantes tienen una diferencia de habilidad considerable, se asigna una cantidad de fichas extras al principio de la partida, con el fin de lograr un encuentro interesante para ambos.
-
+Dentro de las diversas pr\'acticas deportivas y de entretenimiento, es habitual la asignaci\'on de ventaja (i.e. \emph{handicap}) para que un juego sea desafiante y, a la vez, accesible para los jugadores.
+Un ejemplo cl\'asico es el juego de mesa go, en el cual a los participantes tienen una diferencia de habilidad considerable, se les asigna una cantidad de fichas extra al principio de la partida, con el fin de lograr un encuentro interesante.
+%
 Los modelos para estimar habilidad se basan en que la probabilidad de un resultado observado depende de la diferencia de rendimiento entre los agentes que compiten.
-El desempe\~no depende de una cantidad indeterminada de factores desconocidos que pueden afectar a cada competidor en un momento dado (por ejemplo, tener un mal d\'ia).
-\texttt{TrueSkill} es un m\'etodo que utiliza la inferencia bayesiana para poder realizar una estimaci\'on de las habilidades relativas de los agentes en un sistema basado en las observaci\'on de los resultados entre todos ellos.
+El rendimiento depende de una cantidad indeterminada de factores desconocidos que pueden afectar a cada competidor en un momento dado.
+\texttt{TrueSkill} es un m\'etodo que utiliza la inferencia bayesiana para poder realizar una estimaci\'on de las habilidades relativas de los agentes en un sistema basado en la observaci\'on de los resultados entre todos ellos.
+% %
+En la presente tesis, se propone un m\'etodo basado en \texttt{TrueSkill} para poder analizar la forma de asignaci\'on de \emph{handicap} en el juego de go en base a informaci\'on de partidas recolectadas del servicio en l\'inea KGS.
 
-\todo[inline]{sin mencionar que se basa en TTT?}
-En la presente tesis, se propone un m\'etodo basado en \texttt{TrueSkill} para poder analizar la forma de asignaci\'on de \emph{handicap} en el juego de go en base a informaci\'on de partidas recolectadas de un servicio en l\'inea.
+% El desempe\~no depende de una cantidad indeterminada de factores desconocidos que pueden afectar a cada competidor en un momento dado (por ejemplo, tener un mal d\'ia).
+% \texttt{TrueSkill} es un m\'etodo que utiliza la inferencia bayesiana para poder realizar una estimaci\'on de las habilidades relativas de los agentes en un sistema basado en las observaci\'on de los resultados entre todos ellos.
+% 
+% 
+% En la presente tesis, se propone un m\'etodo basado en el predecesor de \texttt{TrueSkill} (\texttt{TrueSkill Through Time}) para poder analizar la forma de asignaci\'on de \emph{handicap} en el juego de go en base a informaci\'on de partidas recolectadas de un servicio en l\'inea.
 La propuesta se basa en tratar el \emph{handicap} como un jugador adicional que hace equipo con el jugador m\'as d\'ebil. 
-Gracias a esto, se logra estimar no solo las habilidades de los jugadores involucrados si no, a su vez, el valor que aportan las fichas de ventaja.
+Gracias a esto, se logra estimar no solo las habilidades de los jugadores involucrados sino, a su vez, el valor que aportan las fichas de ventaja.
 \'Esto permite definir una nueva forma de asignaci\'on de \emph{handicap} en las partidas de go.
 En este trabajo se compara nuestra propuesta de asignaci\'on de \emph{handicap} con la tradicional y se muestra que con nuestra propuesta se lograr\'ian partidas m\'as parejas.
-Adicionalmente, se analizaron las partidas en las cuales fue asignado \emph{handicap} y se vio que en un \SI{5}{\percent} no era requerido  y en un \SI{91}{\percent} el valor dado estuvo mal asignado.
-A su vez, se analizaron las partidas en las cuales no fue asignada ninguna ventaja y se vio que en un \SI{57}{\percent} era requerido. 
-%\todo[inline]{Completar la oraci\'on anterior describiendo un poco los resultado}
-Se concluye que el m\'etodo desarrollado permitir\'ia una mejor asignaci\'on de \emph{handicap} en el juego de go, pero tambi\'en se abre la posibilidad de aplicarlo en otras actividades.
+Se analizaron las partidas en las cuales fue asignado \emph{handicap} y se vio que en un \SI{5}{\percent} no era requerido y en un \SI{91}{\percent} el valor dado estuvo mal asignado.
+A su vez, se analizaron las partidas en las cuales no fue asignada ninguna ventaja y se vio que en un \SI{57}{\percent} hubiera sido requerido. 
+Se concluye que el m\'etodo desarrollado permitir\'ia una mejor asignaci\'on de \emph{handicap} en el juego de go, pero tambi\'en abre la posibilidad para su aplicaci\'on en otras actividades.
 
 \textbf{Keywords}: Habilidad, Go, handicap, inferencia bayesiana
 
@@ -302,9 +315,9 @@ Esta facilidad permite a una persona, poder adquirir la capacidad de realizar ta
 Esto no necesariamente significa que toda persona que aprende una determinada tarea, la realice con la misma efectividad que el resto.
 A su vez, tampoco significa que para adquirir dicho conocimiento y obtener una determinada eficiencia en su realizaci\'on, todos necesiten la misma cantidad de tiempo y pr\'actica.
 Cada persona tendr\'a diferencias a la hora del aprendizaje y a que resultado final consigue.
-El aprendizaje de un individuo es un problema abierto en la actualidad~\cite{beheim2014-strategicSocialLearning, derex2015-foundationsOfTheHumanCulturalNiche, gariepy2014-neuroSocialLearning, glowacki2017-subsistenceStyleShapeSocialLearningStrategies}.
+El aprendizaje de un individuo es un problema abierto en la actualidad~\cite{Beheim2014, derex2015-foundationsOfTheHumanCulturalNiche, gariepy2014-neuroSocialLearning, glowacki2017-subsistenceStyleShapeSocialLearningStrategies}.
 
-
+\todo[inline]{chequear las citas de aprendizaje de un individuo como problema abierto}
 Un ejemplo claro de la extraordinaria manera de aprendizaje y a su vez el grado de complejidad es la adaptabilidad del ser humano.
 Durante mucho tiempo se crey\'o que el \'exito adaptativo, aprendizaje a la supervivencia en un entorno de nuestra especie se deb\'ia, \'unicamente, a nuestras capacidades cognitivas individuales.
 Sin embargo, nuestra biolog\'ia es la misma que la de nuestros ancestros cazadores-recolectores.
@@ -323,9 +336,9 @@ En donde se pretende que un agente aprenda a realizar unas tareas con ciertas re
 
 
 Sin importar en que \'epoca temporal se vea, el humano siempre busc\'o la forma de categorizar cuantitativamente las diferentes actividades para diferenciar a los individuos de su sociedad.
-Esta categorizaci\'on se utiliza, de manera explicita o impl\'icita, tanto en la toma de empleado, para contratar gente con los requisitos necesarios para el puesto, como en la predicci\'on del ganador de un torneo deportivo.
+Esta categorizaci\'on se utiliza de manera explicita o impl\'icita, tanto en la toma de empleado, para contratar gente con los requisitos necesarios para el puesto, como en la predicci\'on del ganador de un torneo deportivo.
 El seguimiento de esta cuantificaci\'on en el tiempo resulta \'util  y de suma importancia, debido a que se puede extrapolar informaci\'on de diversas \'indoles tanto del agente como su entorno.
-Por ejemplo en esta la categor\'ia de deportes, las sociedades deportivas tienen como objetivo que sus eventos competitivos est\'en centrados por la habilidad de sus participantes y no por factores externos prohibidos.
+Por ejemplo, las sociedades deportivas tienen como objetivo que sus eventos competitivos est\'en centrados por la habilidad de sus participantes y no por factores externos prohibidos.
 Esto puede ser desde el caso del dopaje como tambi\'en en la utilizaci\'on de equipamiento prohibido por las reglas de dicho deporte.
 Un ejemplo claro es en el automovilismo, en donde cada veh\'iculo tiene que cumplir unas caracter\'isticas y condiciones estipuladas para que de esta forma, la diferencia en cierta medida la haga el piloto y no el autom\'ovil.
 Teniendo bien caracterizado el seguimiento, se puede buscar anomal\'ias para la utilizaci\'on del ejemplo dado.
@@ -339,52 +352,42 @@ Est\'a presente en todos los deportes, en todos los trabajos, incluso en nuestra
 
 
 Una de las dificultades radica en c\'omo hacer esta cuantificaci\'on.
-Esta dificultad viene, a que la habilidad no se puede observar directamente, uno observa un resultado de un determinado evento en un dado tiempo.
-Un jugador de tenis, puede un d\'ia jugar un partido muy bueno y ganar, pero al otro d\'ia tener una mala ejecuci\'on y perder contra el mismo contrincante sin que ninguno de los dos jugadores hayan cambiado su habilidad.
-Esto se lo conoce como \textbf{rendimiento}.
-Es decir, dado una habilidad de una acci\'on, que tan bien se ejecut\'o en un determinado evento.
-Esto es de importancia ya que el resultado que obtiene un agente con una dada habilidad en un evento particular, esta condicionado a diversos factores.
-Como ya se comento el rendimiento depende de la habilidad, esto se puede ver de manera f\'acil en el caso de un tenista, donde podemos entender que el rendimiento de un jugador profesional siempre sera mayor al de alguien que desconoce el deporte debido a que este a su vez posee una menor habilidad que el profesional.
-A su vez, el rendimiento puede depender de diversos factores, como puede ser el clima ambiental en el d\'ia del partido, la salud de este, la indumentaria o accesorios utilizados, como tipo de zapatillas, raqueta, encordado, entre otros.
-Podemos ver que el rendimiento esta relacionado a la habilidad de forma multicausal.
-Es importante entender que la habilidad se encuentra de manera oculta, sin poder verla o medirla.
-Lo que se busca es poder estimarla mediante observaciones directas de los resultados finales en eventos dados donde podemos observar de manera cualitativa los rendimientos entre agentes.
-Es decir, quien gano o predio, quien le fue mejor o peor, quien tuvo mayor o menor rendimiento en un evento.
-Nosotros podemos luego de probar una misma comida de dos cocineros diferentes, cual nos parece m\'as rica, es decir quien realizo de mejor forma una determinada actividad, y as\'i asignar quien de ellos tuvo m\'as rendimiento a la hora de cocinar.
-Pero dado un \'unico evento, no podemos decir quien es mejor cocinero, es decir mayor habilidad en cocina.
-O podemos comprobar los conocimientos en matem\'atica de los alumnos de una escuela, mediante un examen y viendo quien sac\'o mayor puntuaci\'on, lo cual representa solamente el rendimiento en ese examen particular, en ese evento.
-En estos dos ejemplos, solo se estar\'ia viendo el rendimiento en un evento particular.
-Podr\'iamos generalizar diciendo que lo que nos interesa es tener un conocimiento global y no puntual.
-Es decir, en el ultimo ejemplo, nos interesa obtener el conocimiento global de matem\'atica del alumno y no de los ejercicios puntuales que se e tomaron en el examen.
-El problema radica en que a pesar de que el concepto de habilidad nos es familiar e intuitivo, no existe una forma universal de cuantificar de manera eficiente atributo oculto.
-De los dos ejemplos reci\'en dados, vemos que uno de los inconvenientes es la forma de evaluar para poder estimar la habilidad global.
-Puede suceder, que un cocinero sea mucho mejor para cocinar el plato que probamos, pero no as\'i en el resto de las recetas, obteniendo posiblemente menor habilidad global que el segundo cocinero.
-Puede suceder que el examen de matem\'atica tomado haya beneficiado por alg\'un motivo al alumno que mayor puntuaci\'on obtuvo, no recreando la realidad de cu\'anta matem\'atica sab\'ia.
-Hablamos de que tan bueno o malo, quien es mejor o peor, pero no obtuvimos un valor num\'erico, que pueda describir la habilidad.
-La de manera ideal de representar la habilidad matem\'aticamente todav\'ia no es conocida, siendo todav\'ia un problema abierto ~\cite{elo1961-uscf},~\cite{glikman_gliko_2,Herbrich2007}.
+Esta dificultad se basa en que la habilidad no se puede observar directamente, sino que se observa el resultado de un determinado evento en un momento.
+Por ejemplo, un jugador de tenis puede jugar un partido muy bueno un d\'ia y ganar, pero al siguiente tener una mala tarde y perder contra el mismo contrincante sin que ninguno de los dos jugadores hayan cambiado, esencialmente, su habilidad.
+Esto introduce el concepto de \textbf{rendimiento}: dada una habilidad, el rendimiento representa qu\'e tan bien se ejecut\'o en un determinado evento.
+Esto es de importancia ya que el resultado que obtiene un agente con una dada habilidad en un evento particular, est\'a condicionado a m\'ultiples factores.
+Como ya se coment\'o, el rendimiento depende de la habilidad, esto se puede ver de manera directa en el ejemplo del tenista, en el cual podemos entender que el rendimiento de un jugador profesional siempre ser\'a mayor al de alguien que desconoce o es inexperto en ese deporte debido a la diferencia extrema de habilidad.
+A su vez, el rendimiento puede depender de diversos factores, como puede ser el clima ambiental en el d\'ia del partido, tipo de cancha a jugar(polvo de ladrillo, cemento, etc), la salud del jugador, la indumentaria o accesorios utilizados, entre otros.
+Podemos concluir que el rendimiento est\'a relacionado a la habilidad de forma \textbf{multi-causal}.
+Como ya mencionamos, la habilidad es una variable oculta que no puede ser medida directamente, lo que se busca es poder estimarla mediante observaciones directas de los resultados finales en eventos puntuales en los cuales podemos observar de manera cuantitativa los rendimientos de los agentes involucrados.
+Es decir, qui\'en gan\'o o perdi\'o, qui\'en le fue mejor o peor, qui\'en tuvo mayor o menor rendimiento en un evento.
 
+Fuera del \'area deportivo, nosotros podr\'iamos probar una misma receta preparada por dos cocineros diferentes e indicar cu\'al nos pareci\'o m\'as rica, es decir qui\'en realiz\'o de mejor forma una determinada actividad, y de ese modo asignar cu\'al de ellos tuvo mejor rendimiento al momento de realizar la receta pedida.
+Pero, considerando un \'unico evento, no podemos decir cu\'al de los dos es ``mejor'' cocinero, es decir cu\'al tiene mayor habilidad en la cocina.
+Otro ejemplo resulta en comprobar los conocimientos en matem\'atica de los alumnos de una escuela. 
+Usualmente, esto se logra mediante un examen y se analiza qui\'en sac\'o mayor puntuaci\'on, pero nuevamente, esto solo representa el rendimiento en ese examen particular, en ese evento determinado.
+En estos dos ejemplos, solo se estar\'ia registrando el rendimiento en un evento particular, resulta en una pista para saber cu\'al es la habilidad pero no es la habilidad directamente.
+Podr\'iamos generalizar diciendo que lo que nos interesa es utilizar eventos puntuales para obtener un conocimiento global acerca de la habilidad del agente.
+Es decir, nos interesa saber qu\'e tanto sabe de matem\'atica un alumno y no si puede resolver un ejercicio puntual.
+El problema radica en que a pesar de que el concepto de habilidad nos es familiar e intuitivo, no existe una forma universal de cuantificar de manera eficiente este atributo oculto.
+El mayor inconveniente reviste en la forma de evaluar para poder estimar la habilidad.
+Puede suceder que un cocinero sea mucho mejor para cocinar justo el plato que probamos (por ejemplo, accidentalmente derram\'o un condimento durante la preparaci\'on de la receta y esto le otorg\'o un sabor exquisito), pero no as\'i para el resto de las recetas, obteniendo posiblemente menor habilidad global que el otro cocinero.
 
-% en general estmaos hablando de poblaciones no de individuos
-% no hago el seguimiento de un individuo, lo hago poblacional
-% necesitas un monton de partidas y observaciones
-% si tengo a un tipo con 100 partidas y una base de datos de un millon si
-% el indiviudoo es un efecto secundario, no es el objetivo
-% ele ejemplo del encordado del tenista me sirve para ver para atras, no en el momento
-% si manana juego en polvo de ladrillo y ya tengo 20 partidas, que zapas me conviene, de que material. ahi quizas si puede
-Resulta de suma importancia poder obtener una magnitud de habilidad, en la cual podamos comparar con esta dentro de una poblaci\'on, diferentes personas/agentes en una determinada actividad, como a su vez obtener la evoluci\'on de esta.
+Hemos mencionado qu\'e tan bueno o malo, qui\'en es mejor o peor, pero no obtuvimos un valor num\'erico que pueda describir la habilidad de un agente en una actividad.
+La de manera ideal de representar la habilidad matem\'aticamente todav\'ia no es conocida, siendo todav\'ia un problema abierto, aunque se han realizado diferente avances en este sentido~\cite{elo1961-uscf,glikman_gliko_2,Herbrich2007}.
+
+Resulta de suma importancia poder obtener una magnitud de habilidad que podamos utilizar para comparar en una determinada actividad diferentes personas/agentes dentro de una poblaci\'on, tambi\'en resulta de mucho inter\'es poder evaluar su evoluci\'on en el tiempo.
 Es importante entender que nos interesa lograr estimar la habilidad en escala relativa, ya que el valor absoluto individual no aporta informaci\'on relevante.
-Con esto se puede clasificar a una poblaci\'on de agentes en una cierta actividad la cual resulta de suma importancia en nuestra sociedad moderna.
-Con esta, por ejemplo, se podr\'ia contratar de manera eficiente empleados en un determinado puesto que cumplan los requisitos buscados, como tambi\'en poder contratar entre estos al m\'as capacitado.
-El conocer la habilidad, no solo es de inter\'es como fuente comparativa.
-Otra aplicaci\'on de importancia ya mencionada, es poder hacer un seguimiento de la evoluci\'on de esta.
-Con esto, se logra estudiar el aprendizaje de los diferentes agentes de la poblaci\'on en dicha \'area.
-Un ejemplo de inter\'es social, es en el \'area de educaci\'on, donde estudiando la evoluci\'on de habilidad de los alumnos en las diferentes materias, se podr\'ian comparar diferentes m\'etodos de aprendizaje en las escuelas, observando cual de estos logro aumentar m\'as la habilidad media de los alumnos.
-Otro caso podr\'ia ser el estudio de efectividad de distintos planes de entrenamiento en los deportes, y poder estimar con cual se obtiene los mejores resultados.
-Es decir, podemos ver observar como influyen ciertos factores externos en el rendimiento de un dado individuo en una determinada actividad.
-Esto se logra al observar la evoluci\'on de la habilidad y ver si existe alguna correlaci\'on entre un factor externo y un aumento en habilidad.
-Esto podr\'ia ser desde c\'omo influye cierto encordado de la raqueta de tenis en un tenista, hasta c\'omo impacta en el rendimiento de un empleado al tener mejor confort en el espacio laboral.
-En el caso del tenista, esto se realizar\'ia al tener informaci\'on del resultado de sus partidas y cu\'al fue su encordado.
-Si con un dado encordado su habilidad computada aumenta, significa que ese elemento lo beneficia.
+De esta manera, se podr\'ia clasificar a una poblaci\'on de agentes en una cierta actividad obteniendo un \emph{ranking} basado en la habilidad de los agentes.
+Con esta informaci\'on, por ejemplo, se podr\'ia contratar de manera eficiente a empleados en un determinado puesto que cumplan los requisitos buscados, como tambi\'en poder elegir aquellos agentes que sean m\'as eficientes en la tarea buscada.
+
+Otra aplicaci\'on de importancia es poder hacer un seguimiento de la evoluci\'on de la habilidad en el tiempo.
+Esto abre la puerta a estudiar el aprendizaje de los diferentes agentes de una poblaci\'on.
+Un ejemplo de inter\'es social, es en el \'area de educaci\'on, en la cual estudiando la evoluci\'on de la habilidad de los alumnos en las diferentes materias, se podr\'ian comparar diferentes m\'etodos de aprendizaje en las escuelas, observando cu\'al de \'estos logr\'o aumentar m\'as la habilidad media de los alumnos.
+Otro caso podr\'ia ser el estudio de efectividad de distintos planes de entrenamiento en los deportes, pudiendo saber con cu\'al se obtienen los mejores resultados.
+Es decir, podemos observar c\'omo influyen ciertos factores externos en el rendimiento de un dado individuo en una determinada actividad.
+Por ejemplo, se podr\'ia analizar el desempe\~no de tenistas respecto a la utilizaci\'on de una nueva tecnolog\'ia de encordado de la raqueta.
+Al tener informaci\'on del resultado de las partidas a partir de la adopci\'on del nuevo encordado, se podr\'ia determinar su impacto.
 Es decir, este tipo de an\'alisis requiere una cantidad de informaci\'on previo del agente y su entorno para lograr extraer nueva informaci\'on.
 Mientras m\'as partidas tengamos de una persona y su entorno, m\'as certera ser\'a nuestra predicci\'on en su habilidad.
 
@@ -392,7 +395,7 @@ Como podemos notar, el poder estimar la habilidad de algo no es una pregunta tri
 Existen muchos factores diferentes en cada tipo de acci\'on, dificultando el modelado.
 A lo largo de los a\~nos se crearon diferentes m\'etodos, para diferentes tipos de actividades.
 En general los modelos toman en cuenta el rendimiento.
-Uno de los primeros m\'etodos que se popularizo a partir del ajedrez es el de \textbf{Elo}, presentado en 1960 \cite{elo1961-uscf}.
+Uno de los primeros m\'etodos que se popularizo a partir del ajedrez es el de \textbf{Elo}, presentado en 1960~\cite{elo1961-uscf}.
 %%%% reankear
 Surgi\'o ante la necesidad de mejorar el sistema de ranking del ajedrez, aunque su uso se amplio a diversos juegos. 
 El modelo supone a la habilidad como un escalar.
@@ -422,8 +425,6 @@ Este juego dispone de diversos portales en l\'inea, contando con m\'ultiples ser
 Una de las cuestiones interesantes de este juego se basa en la simplicidad de sus reglas, mucho m\'as sencillas que las del ajedrez.
 Sin embargo, su complejidad es a\'un mayor que este.
 En la actualidad, la soluci\'on por fuerza bruta sigue fuera del alcance computacional.
-
-
 Adem\'as, el juego de go tiene algunos problemas propios que todav\'ia no han sido resueltos.
 Por ejemplo, se suele compensar a los jugadores de menos habilidad por medio de una ventaja (\emph{handicap}) de manera de emparejar la partida cuando se enfrenta a un rival mejor.
 No est\'a resuelto c\'omo estimar el cambio de habilidad de los jugadores a partir de una partida que utiliz\'o \emph{handicap} debido a los jugadores presentan una diferencia de habilidad grande.
@@ -440,22 +441,20 @@ Lo que gana un jugador de habilidad, es lo que pierde el otro.
 Esto, genera que las estimaciones en las cuales involucra un nuevo jugador pueden generar grandes cambios ante un jugador al cual su habilidad contaba con un buen grado de certeza.
 A pesar de que se realizaron modificaciones para superar estas limitaciones, estas son por medio de soluciones ad-hoc, que no se pueden generalizar.
 \texttt{TrueSkill}, soluciona esto usando un marco probabil\'istico, como se vera m\'as adelante.
-Adem\'as este permite estimar eventos en los cuales involucre a m\'as de 2 jugadores, e incluso m\'ultiples equipos.
-Otro de las grandes mejores, es la posibilidad de modelar eventos con posibilidad de empate, es decir ni una victoria ni una derrota.
+Adem\'as este permite estimar eventos en los cuales involucre a m\'as de dos jugadores, e incluso m\'ultiples equipos.
+Otra de las grandes mejoras, es la posibilidad de modelar eventos con posibilidad de empate, es decir ni una victoria ni una derrota.
 
 
- Una de las mejoras realizadas al m\'etodo, fue propuesto en 2007 \cite{Dangauthier2007}, denominado \textbf{TrueSkill Through Time} (\texttt{TTT}), el cual se considera como uno de los m\'etodos del estado del arte, en el caso de los deportes y juegos.
- Este m\'etodo es una extensi\'on del m\'etodo \texttt{TrueSkill} presentado recientemente.
- Una de las principales diferencias, es que la informaci\'on de la habilidad no se propaga en un \'unico sentido temporal (del pasado al futuro), si no que este busca la convergencia, propagando esta informaci\'on tambi\'en en sentido contrario. 
-
+Una de las mejoras realizadas al m\'etodo, fue propuesto en 2007~\cite{Dangauthier2007}, denominado \textbf{TrueSkill Through Time} (\texttt{TTT}), el cual se considera como uno de los m\'etodos del estado del arte, en el caso de los deportes y juegos.
+Este m\'etodo es una extensi\'on del m\'etodo \texttt{TrueSkill} presentado recientemente.
+Una de las principales diferencias, es que la informaci\'on de la habilidad no se propaga en un \'unico sentido temporal (del pasado al futuro), si no que este busca la convergencia, propagando esta informaci\'on tambi\'en en sentido contrario. 
 
 \vspace{0.3cm}
-
 \begin{mdframed}[backgroundcolor=frenchblue!20]
-	En esta tesis se plantea estudiar la estimaci\'on de habilidad utilizando al juego go como objeto de estudio.
-	Al no existir una implementaci\'on computacional accesible, que se encuentre bien documentada, parte de la propuesta es generar un paquete del m\'etodo \texttt{TTT} y probarlo.
+	Esta tesis se basa en aplicar t\'ecnicas de estimaci\'on de habilidad para proponer una alternativa a la asignaci\'on de \emph{handicap}. 
+	En particular, se hace foco en el juego de mesa go y se utiliza un m\'etodo basado en \texttt{TrueSkill} para el an\'alisis de la habilidad de los jugadores.
+	Se busca obtener una propuesta metodol\'ogica para la asignaci\'on de \emph{handicap} que genere partidos m\'as parejos y, a la vez, desafiantes.
 \end{mdframed}
-
 
 
 \subsection{Go}
@@ -465,11 +464,11 @@ Sus or\'igenes giran en torno a la historia de la antigua china, pues se estima 
 Es el juego m\'as antiguo que a\'un se juega en su forma original.
 Consiste en la colocaci\'on de fichas en las intersecciones de un tablero cuadriculado. %\cite{go,go2}.
 La sencillez de este, presentaba  en la antig\"uedad, la posibilidad de poder marcar una grilla en la tierra y con unas simples piedras, poder jugar.
-En la actualidad, existen diferentes tableros del juego dependiendo a su tama\~no, entre los m\'as comunes 9x9, 13x13 y 19x19, siendo este ultimo el m\'as usual. En la figura \ref{fig:tablero} se muestra el primer caso.
+En la actualidad, existen diferentes tableros del juego dependiendo a su tama\~no, entre los m\'as comunes 9x9, 13x13 y 19x19, siendo este \'ultimo el m\'as usual. En la figura \ref{fig:tablero} se muestra el primer caso.
 
 \begin{wrapfigure}{R}{0.35\textwidth} % r de right
 	\includegraphics[width=0.38\textwidth]{../tablero.jpg}
-	\caption{Tablero de go de dimensiones 9x9. Se muestra un juego, luego de cinco movimientos por jugador.}
+	\caption{Tablero de go de dimensiones $9\times9$. Se muestra un juego, luego de cinco movimientos por jugador.}
 	\label{fig:tablero}
 \end{wrapfigure}
 
@@ -496,7 +495,8 @@ Estos puntos no tienen ninguna influencia en el juego hasta que esta haya termin
 Los puntos por \emph{komi} no tiene un valor aceptado a nivel mundial, teniendo cada zona un diferente valor.
 A su vez, como se suele jugar sin la posibilidad de empate, para evitarla, se usa un valor de \emph{komi} no entero.
 El valor de mayor uso es el de $6.5$.
-En muchos otros casos, se utiliza el komi de $0.5$, el cual simplemente evita el empate, pero no asigna una ventaja al blanco por el hecho de jugar segundo.
+En muchos otros casos, se utiliza el \emph{komi} de $0.5$, el cual simplemente evita el empate, pero no asigna una ventaja al blanco por el hecho de jugar segundo.
+
 
 Este juego posee un sistema de clasificaci\'on de los jugadores muy caracterizado, teniendo un sistema de rangos(jerarqu\'ia) de \textit{Kyu} (la inferior) y \textit{Dan} (la superior), similar al sistema caracter\'istico de las artes marciales. Estos niveles van del \textit{Kyu} 30 al \textit{Kyu} 1 y luego del \textit{Dan} 1 al \textit{Dan} 9, ordenados de principiante a maestro.
 
@@ -505,7 +505,7 @@ Este es el concepto de \textbf{handicap}, el de dar ventaja a un jugador sobre o
 En general, se asigna con las fichas negras al jugador de menor rango (habilidad), y dependiendo la diferencia de rango, este jugador inicia el juego con una determinada de fichas m\'as en el tablero.
 Es decir, si un jugador en una determinada partida, tiene un \texttt{handicap} de 2, esto representa, que adem\'as de iniciar la partida con una ficha, este tiene una ficha adicional en el primer movimiento.
 Si tiene \texttt{handicap} 5, adem\'as  de su primer ficha en su primer movimiento, este tiene un adicional de 4 fichas, en esta primera instancia.
-En general, estas fichas de \texttt{handicap} tienen una posici\'on asignada fija.
+En general, estos casos se suele utilizar el valor de \emph{komi} de $0.5$ y ademas estas fichas de \texttt{handicap} tienen una posici\'on asignada fija.
 
 Tanto el \texttt{komi} como el \texttt{handicap}, son conceptos independientes.
 Uno representa la ventaja al jugador blanco por iniciar segundo la partida, como tambi\'en imposibilitar el empate.
@@ -527,15 +527,15 @@ En contexto de juegos en l\'inea, la habilidad representa que tan bien juega a u
 
 Uno de los beneficios de poder conocer la habilidad es que nos permite poder hacer un seguimiento respecto a c\'omo fue evolucionando temporalmente.
 Esto se consigue mediante el an\'alisis de la informaci\'on de cada agente a lo largo del tiempo.
-Si, adem\'as, se cuenta con informaci\'on de factores externos, podr\'iamos deducir e inferir diversas variables ocultas.
+Si adem\'as se cuenta con informaci\'on de factores externos, podr\'iamos deducir e inferir diversas variables ocultas.
 A su vez, permite evitar exponer a los agentes (jugadores miembros de la comunidad en l\'inea) a desaf\'ios desproporcionados, proponiendo partidos o encuentros dentro de un nivel que le resulte desafiante al agente, pero ni demasiado f\'acil ni dif\'icil.
 
-Una de las dificultades radica en que la habilidad es una variable compleja, generalmente imposible de medir directamente (i.e. variable oculta).
+Una de las dificultades radica en que la habilidad es una variable en la cual generalmente es imposible de medir directamente (i.e. variable oculta).
 En la pr\'actica, lo mejor que podemos hacer es estimarla a partir de sus consecuencias observables m\'as directas.
 Para ello se requiere realizar una serie de suposiciones y generar un modelo, en el cual se pueda representar la realidad deseada.
 Una soluci\'on ingenua como observar la frecuencia de resultados positivos (victorias de un jugador), no es un buen indicador, debido a que fundamentalmente depende tambi\'en de la dificultad de los desaf\'ios (habilidad del contrincante).
 Por esa raz\'on, todos los modelos convencionales se basan en \emph{pairwise comparisons}.
-Ya los primeros modelos generativos, propuestos hace casi un siglo por~\cite{thurstone1927-comparativeJugement} y~\cite{zermelo1929-translation}, suponen que la probabilidad de un resultado observado, $r_{ij}$, entre un jugador $i$ en contra de un jugador $j$ depende de la diferencia, $d_{ij}$, entre el agente $i$ y su contrincante $j$ es $p(\,r_{ij} \,|\, d_{ij}\,)$.
+Ya los primeros modelos generativos, propuestos hace casi un siglo por~\cite{thurstone1927-comparativeJugement} y~\cite{Zermelo1929}, suponen que la probabilidad de un resultado observado, $r_{ij}$, entre un jugador $i$ en contra de un jugador $j$ es $p(\,r_{ij} \,|\, d_{ij}\,)$ la cual depende de la diferencia, $d_{ij}$, entre el agente $i$ y su contrincante $j$.
 %decir algo de item responce Theory
 El campo se revitaliz\'o 20 a\~nos despu\'es gracias a las publicaciones de \cite{bradley1952} y~\cite{mosteller1951a}.
 Actualmente, los estimadores de habilidades m\'as utilizados son los propuestos por~\cite{elo1961-uscf,glikman_gliko_2,Herbrich2007} y algunas de las variantes de la \emph{Item-Response Theory} recopiladas por~\cite{vanDerLinden2016,fox2010}.
@@ -574,7 +574,6 @@ Un gran avance produjo la metodolog\'ia desarrollada por~\cite{elo1961-uscf} par
 	}
 	\caption{Modelo generativo: las habilidades ocultas causan resultados observables a trav\'es de los rendimientos aleatorios.}
 	\label{fig:generative_model}
-	\label{modelo}
 \end{wrapfigure}
 
 La figura~\ref{fig:generative_model} ofrece una representaci\'on gr\'afica en la que las habilidades ocultas generan los resultados observables.
@@ -595,11 +594,11 @@ La Teor\'ia de la Probabilidad nos proporciona un marco consistente para cuantif
 Al proceso de computar distribuciones de probabilidad luego de observar el valor de alguna variable aleatoria se llama \textbf{inferencia}.
 El uso de la teor\'ia de la probabilidad para manejar la incertidumbre, conocida como inferencia bayesiana, est\'a hoy adoptada de manera generalizada en el \'ambito de la inteligencia artificial y el aprendizaje autom\'atico fundamentalmente porque ha mostrado ser un instrumento sumamente \'util en la pr\'actica.
 
-Cualquier sistema que represente grados de creencia mediante un valor num\'erico, consistente con la l\'ogica deductiva cl\'asica y un conjunto de axiomas que codifican el razonamiento de sentido com\'un, ser\'a necesariamente isom\'orfico a la teor\'ia de la probabilidad~\cite{Cox1946,vanHorn2003-guideCoxTheorem}.
+Cualquier sistema que represente grados de creencia mediante un valor num\'erico, consistente con la l\'ogica deductiva cl\'asica y un conjunto de axiomas que codifican el razonamiento de sentido com\'un, ser\'a necesariamente isom\'orfico a la teor\'ia de la probabilidad~\cite{Cox1946,vanHorn2003}.
 
 % introduccion a trueskill
 En el 2006, Herbrich~\cite{Herbrich2007} propuso un m\'etodo probabil\'istico, denominado \texttt{TrueSkill}, en el cual solucionaba varias de las limitaciones de \texttt{Elo}.
-A diferencia de \texttt{Elo}, que considera a la habilidad como un \'unico escalar, este la modela con una distribuci\'on Gaussiana, teniendo as\'i la media de la distribuci\'on como la habilidad m\'as probable, y a la desviaci\'on est\'andar como la incerteza que se tiene.
+A diferencia de \texttt{Elo}, que considera a la habilidad como un \'unico escalar, \'este la modela con una distribuci\'on gaussiana, teniendo as\'i la media de la distribuci\'on como la habilidad m\'as probable, y a la desviaci\'on est\'andar como la incerteza que se tiene.
 A su vez, al igual que \texttt{Elo}, supone un rendimiento $p$, el cual el jugador con mayor valor es el ganador.
 De esta forma, observando el resultado en un juego dado, el m\'etodo de \texttt{TrueSkill}, actualiza la distribuci\'on de habilidad.
 Mientras m\'as informaci\'on tengamos de un jugador (mayor n\'umero de partidas), mayor certeza tendremos de su habilidad.
@@ -614,98 +613,20 @@ Por un lado, la inferencia que se realiza en un determinado rango temporal t, de
 Dado que no se asume ning\'un conocimiento sobre los resultados del evento dentro de un rango temporal dado, los resultados de la inferencia debe ser independiente del orden de los juegos dentro de ese rango temporal.
 Adem\'as, una limitaci\'on se debe a que la informaci\'on solo se propaga temporalmente en un sentido.
 Esto es una desventaja, debido a que en muchos casos, no se aprovecha toda la informaci\'on de un evento.
-En concreto, si un dado jugador A le gana a un dado jugador B y luego resulta se este segundo jugador resulta ser muy bueno (una habilidad muy grande), \texttt{TrueSkill} no es capaz de propagar esta informaci\'on al pasado y corregir la habilidad del jugador A.
+En concreto, si un dado jugador A le gana a un dado jugador B y luego resulta ser que este segundo jugador resulta ser muy bueno (una habilidad muy grande), \texttt{TrueSkill} no es capaz de propagar esta informaci\'on al pasado y corregir la habilidad del jugador A.
 
-Ambos problemas son resueltos al extender el filtro de densidad Gaussiana, para correr de manera completa \texttt{expectation propagation}~\cite{herbrich2005}, hasta converger.
+Ambos problemas son resueltos al extender el filtro de densidad gaussiana, para correr de manera completa \texttt{expectation propagation}~\cite{herbrich2005}, hasta converger, denominado \texttt{TrueSkill Through Time}.
 La idea b\'asica es actualizar repetidamente el mismo evento asegurando que el efecto de la actualizaci\'on previa de ese resultado sea removida antes de que el nuevo efecto se agregue.
 De esta manera el modelo se mantiene igual pero la inferencia est\'an menos aproximadas.
 
 Un ejemplo sencillo y conceptualmente importante, es el caso de tres jugadores donde cada uno gana y pierde una partida entre ellos.
-Imag\'inese 3 jugadores, \texttt{a},\texttt{b} y \texttt{c}, en donde en un mismo d\'ia el jugador \texttt{a} le gana una partida al jugador \texttt{b}, luego \texttt{b} le gana una partida al jugador \texttt{c} y por ultimo \texttt{c} gana una partida a \texttt{c}.
+Imag\'inese 3 jugadores, \texttt{a},\texttt{b} y \texttt{c}, en donde en un mismo d\'ia el jugador \texttt{a} le gana una partida al jugador \texttt{b}, luego \texttt{b} le gana una partida al jugador \texttt{c} y por ultimo \texttt{c} gana una partida al jugador \texttt{a}.
 Podemos intuir que la respuesta que buscamos, es que si no ten\'iamos informaci\'on previa de ning\'un jugador, cada jugador gano y perdi\'o un juego, y por ende deber\'ian finalizar con una misma estimaci\'on de habilidad.
 \texttt{TrueSkill} al importar el orden en como estima, luego de la primer partida, supondr\'ia que el jugador \texttt{a} es superior a \texttt{b}, asignando a este ultimo menor habilidad.
 Luego este jugar\'ia contra \texttt{c}, que al perder supondr\'ia que este ultimo es aun peor.
 Por ultimo, en la ultima partida, se tendr\'ia un caso de que un jugador que se supone muy malo (\texttt{c}), le gana a un jugador que se supone muy bueno (\texttt{a}).
 Esto conlleva a que los tres jugadores finalicen con habilidades diferentes.
-Esto permite, que en el ejemplo reci\'en contado los tres jugadores finalicen con la misma habilidad estimada.
-
-
-
-
-
-\section{Organizaci\'on de la tesis}
-
-
-En este trabajo de tesis se aporto al desarroll\'o e implementaci\'on del software del m\'etodo \textbf{Trueskill True Time} para la estimaci\'on de habilidad.
-En particular se utilizo en el juego de estrategia go.
-En esta tesis se propone una variante al m\'etodo para lograr caracterizar el valor que tiene las piedras de ventaja del juego.
-A partir de los resultados de dicho m\'etodo se analizo el efecto que tiene en las diferentes partidas, mostrando la validez del modelo.
-La tesis est\'a organizada de la siguiente manera.
-
-En el cap\'itulo 2 se definen los conocimientos necesarios te\'oricos como as\'i la teori\'a detr\'as de los m\'etodos m\'as usados en este entorno como as\'i el m\'etodo a utilizar.
-En el Cap\'itulo 3, se muestra diferentes simulaciones y pruebas con el fin de probar y validar el m\'etodo como la propia implementaci\'on de \'esta.
-
-En el cap\'itulo 4 se describe la bases de datos utilizada junto a la caracterizaci\'on de \'esta.
-Se cuenta los diferentes filtros aplicados.
-Finalmente, se describe el dise\~no y los diversos tipos de an\'alisis realizados con el fin de caracterizar al \textit{handicap}.
-En el Cap\'itulo 5 se describen las conclusiones y las perspectivas de trabajo a futuro.
-
-La tesis presentada propuso un modelo de estimaci\'on en base al m\'etodo \textbf{TrueSkil Throught Time} con el fin de caracterizar el sistema de ventajas del juego go.
-Con ello se pretende generar un sistema que permita generar partidas lo mas desafiante posible mediante la asignaci\'on correcta de ventaja.
-Para ello contribuy\'o al desarrollo de la implementaci\'on en \texttt{Python} y \texttt{Julia} de dicho m\'etodo propio del Laboratorio Interdisciplinario de Computaci\'on de Alto Rendimiento (LICAR).
-Se utiliz\'o la base de datos del servidor en l\'inea \texttt{KGS}.
-La modificaci\'on propuesta consta en agrega al modelo la informaci\'on del  \textit{handicap} utilizado en cada evento.
-Con estas estimaciones se logro estudiar el comportamiento de las piedras de ventajas del juego.
-
-En el cap\'itulo 2 se desarroll\'o la teor\'ia involucrada al modelo.
-Con el se pretende dejar una documentaci\'on te\'orica del m\'etodo en cuesti\'on la cual sirva como fuente de informaci\'on de la implementaci\'on creada por el Laboratorio.
-Para ello se vieron los fundamentos necesarios para entender el m\'etodo grafico  probabil\'istico del m\'etodo.
-En particular, se mostraron las propiedades de las distribuciones usadas, como las cuentas detr\'as del algoritmo de \textit{sum-product}.
-Se mostr\'o un ejemplo detallado del predecesor \texttt{TrueSkill}, necesario para entender  \texttt{TTT}, con todos los mensajes y cuentas de interes.
-A su vez, se explica el m\'etodo de una forma mas intuitiva para lograr captar el funcionamiento del mismo.
-Se finaliza con una visualizaci\'on de las estimaciones \textit{priors} y \textit{posteriors} en un ejemplo general. 
-
-El cap\'itulo 3 se realizaron diversas pruebas y simulaciones con el fin de validar tanto el modelo a como la implementaci\'on.
-Se mostr\'o minimizando la evidencia del modelo se obtienen las estimaciones que mayor representan la realidad.
-Mediante simulaciones, se observ\'o el efecto que tienen los diferentes par\'amtros en las distribuciones de habilidad actualizadas.
-Entre ellos se encuentra el efecto del par\'ametro $\gamma$ y la evidencia.
-Con esto se encontraron diferentes relaciones de importancia, las cuales se utilizaron en los an\'alisis posteriores.
-
-En el cap\'itulo 4, se caracteriz\'o la base de dato usada,   estudiando brevemente el sistema de ranking utilizado por el servidor y la comunidad de go.
-En particular, se observo que los jugadores involucrados en esta tesis, son expertos en el juego, mostrando el efecto que tiene de forma te\'orica en las curvas de aprendizaje.
-Se continu\'o con la propuesta propia de esta tesis, en la cual se agrega la infromaci\'on del \textit{handicap} al modelo.
-\'Esta involucra considerar a los valores de \textit{handicap} como jugadores, donde se requiere estimar su habilidad.
-\'Estos formar equipo con el jugador negro, enfrent\'andose al jugador blanco.
-Se observo como esta propuesta genera una mejor evidencia.
-Utilizando las relaciones estudiadas en el cap\'itulo 3 se realiz\'o un breve an\'alisis sobre los par\'amatros que minimizan la evidencia en esta base de datos en particular, siendo estos los utilizados en los an\'alisis finales.
-Con estas estimaciones, se logro observar un comportamiento lineal en las habilidades de los posibles valores de \textit{handicap}.
-Calculando las probabilidades de victoria de uno de los jugadores se comparo con la frecuencia de victorias del mismo.
-Con esto se logr\'o visualizar la eficacia del modelo como as\'i el efecto que conlleva la asignaci\'on de ventaja.
-Para \'esto, se realizaron diferentes filtros entre el \textit{handicap} utilizado en cada evento y el propuesto, mostrando en cada caso una consistencia con lo esperado.
-Se continu\'o con un estudio de an\'alisis predictivo.
-Para ello se simulo el uso del software y modelo propuesto de forma \'online, utilizando un conjunto de partidas de estudio y el resto de la base de datos como entrenamiento.
-Es decir, se estiman las habilidades de esta base de datos filtrada, utilizando los \textit{posteriors} de los jugadores de estudio como sus respectivos \textit{priors}.
-Con esto se visualizo las probabilidades de victorias estimadas y las fracciones de victorias correspondientes, mostrando un correcto comportamiento.
-
-Una de las cuestiones que quedo afuera del alcance de esta tesis es la incorporaci\'on de la informaci\'on del \textit{komi} utilizado en los eventos.
-La implementaci\'on de \'esta no se encuentra estudiada.
-Una posibilidad es realizar un estudio analogo, agregando al \textit{komi} como un jugador formando equipo con el jugador blanco.
-El efecto del \textit{komi} no se produce desde el principio de la partida como lo es en el caso del \textit{handicap}.
-Esto puede llevar a que la estimaci\'on de este tenga comportamientos no esperados.
-Debido a esto, tambi\'en se considero generar diferentes filtros, que intenten segmentar partidas en las cuales el \textit{komi} tuvo efecto en el resultado y en las cuales no.
-El fin de esta nuevo modelo, es que al estar considerando mayor informaci\'on de cada evento, se espera minimizar aun m\'as la evidencia, y as\'i mejorar las predicciones del modelo tanto de los jugadores como de la habilidad del \textit{handicap}.
-Con esto se obtendr\'ia un sistema de estimaci\'on mas certero el cual permitir\'ia lograr generar juegos mas desafiantes para los participantes.
-
-
-
-
-
-
-
-
-
-
-
+Utilizando \texttt{TrueSkill Through Time} en el ejemplo reci\'en contado los tres jugadores finalizan con la misma habilidad estimada.
 
 
 
@@ -716,30 +637,34 @@ Con esto se obtendr\'ia un sistema de estimaci\'on mas certero el cual permitir\
 \chapter{Fundamentos}
 
 
-\section{Introducci\'on te\'orica}
 
-En esta secci\'on veremos los fundamentos necesarios para entender el m\'etodo gr\'afico probabil\'istico de \texttt{TrueSkill}.
+Este cap\'itulo se encuentra divido en dos partes.
+En la primer secci\'on veremos los fundamentos necesarios para entender el m\'etodo gr\'afico probabil\'istico de \texttt{TrueSkill}.
 Primero veremos un modelo probabil\'istico bayesiano el cual es usado como marco de referencia.
-Luego veremos algunas propiedades de las distribuciones Gaussiana que resultan fundamentales para el m\'etodo en cuestion.
+Luego veremos algunas propiedades de las distribuciones gaussiana que resultan fundamentales para el m\'etodo en cuestion.
 A su vez veremos algunos conceptos como los gr\'aficos de factores, pasaje de mensajes, aproximaciones utilizadas, m\'etrica de evaluaci\'on y m\'as.
 Se finaliza explicando el funcionamiento de \texttt{TrueSkill} y del sucesor \texttt{TrueSkill Through Time}, utilizado en esta tesis.
 Por \'ultimo se realiza un breve ejemplo detallado del las cuentas del primer m\'etodo, el cual es utiliza todo lo necesario para lograr entender a estos m\'etodos.
 
 
-Si el lector cuenta con conocimientos de probabilidad y estad\'istica, puede avanzar a la subsecci\'on, modelos.
-En particular, las subsecciones de probabilidad y distribuciones Gaussianas, se consideran conocimientos b\'asicos.
+Si el lector cuenta con conocimientos de probabilidad y estad\'istica, puede avanzar a la secci\'on~\ref{Sec:Modelos} (\nameref{Sec:Modelos}).
+En particular, la secci\'on~\ref{Sec:ModeloProbalistico} (\nameref{Sec:ModeloProbalistico}) y \ref{Sec:PropiedadesGaussianas} (\nameref{Sec:PropiedadesGaussianas}) se consideran conocimientos b\'asicos.
 
 
+En la segunda secci\'on veremos algunos de los diversos tipos de m\'etodos y modelos predictivos existentes para estimar e inferir alguna variable oculta.
+En lo que concierne a esta tesis, nos centraremos en los modelos de habilidad en juegos y deportes.
+En particular en el m\'etodo \texttt{TrueSkill Through Time} y sus predecesores para contextualizar.
+
+\section{Introducci\'on te\'orica}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%% Saco todo de verosimilitud y me quedo con likelihood????
+%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
-%\todo[inline]{Parece ser que es comun que si la diferencia de habilidad hace que haya uno de handicap, se use solamente el komi 0.5. Si hay mas, puede ni usarse komi. En estos casos siempre el blanco es el de mayor rango.}
-\subsection{Modelo probabil\'istico}
+\subsection{Modelo probabil\'istico}\label{Sec:ModeloProbalistico}
 
-Uno de los primeros desaf\'ios que es poder ser capaces de manejar cantidades en las cuales desconocemos su valor.
+Uno de los primeros desaf\'ios que se tiene es poder ser capaces de manejar cantidades en las cuales desconocemos su valor.
 De hecho, la necesidad de lidiar con la incertidumbre surge en nuestro mundo cada vez m\'as basado en datos.
 En el caso de \texttt{TrueSkill}, cuando empezamos a estimar la habilidad de un nuevo jugador, arrancamos con una creencia con mucha incertidumbre (debido a que no tenemos informaci\'on sobre \'este) y a medida que va jugando las diferentes partidas del juego, se va induciendo su habilidad reduciendo su incertidumbre.
 En esta clase de juegos, siempre es m\'as probable que el jugador m\'as fuerte sea el ganador, aunque \'esto no est\'a garantizado.
@@ -750,40 +675,35 @@ Los diferentes valores que se pueden dar en esta  clase de eventos se conoce com
 Utilizaremos la notaci\'on est\'andar, donde la $p$ min\'uscula es la densidad de probabilidad de una variable continua, y la $P$ may\'uscula para denotar la distribuci\'on de probabilidad de una variable discreta.
 Representaremos con $x$ e $y$ a dos variables aleatorias.
 
-
-\todo[inline]{indicadora...}
-Existen diferentes distribuciones de importancia para esta tesis en particular.
-A la distribuci\'on en donde la variable aleatoria tiene solo dos valores, se la conoce como distribuci\'on de \textbf{Bernoulli} o bien como \textbf{indicadora} ($\mathbb{I}$).
+Existen diferentes distribuciones de importancia para esta tesis.
+A la distribuci\'on en donde la variable aleatoria tiene solo dos valores, se la conoce como distribuci\'on de \textbf{Bernoulli} o bien como \textbf{funci\'on indicadora} ($\mathbb{I}$).
 En los casos en donde se tiene absoluta certeza de la variable de dos estados (i.e. probabilidad del \SI{100}{\percent}),  se lo conoce como \textbf{punto de masa}.
-En general, esto \'ultimo se utiliza cuando se observa una variable, conociendo as\'i su real valor.
-La probabilidad condicional, $P(x|y)$, es la probabilidad que suceda un evento debido a que adquirimos  informaci\'on de otra variable $y$.
-Se conoce como variables independientes si vale que $P(x|y) = P(x)$.
-En caso contrario, se conoce como variables dependientes.
-El concepto de independencia es importante para este tipo de modelos, ya que cualquier variable no incluida expl\'icitamente en nuestro modelo se asume que es independiente a todas las variables del modelo.
-Es importante observar que la suma de los posibles valores de la variable condicionada $x$ se encuentra normalizado, pero no as\'i la suma con los valores posibles de la variable $y$.
-Se conoce como probabilidad conjunta, a la probabilidad de que dos o m\'as variables aleatorias tengan un determinado valor, $P(x,y)$.
-Si realizamos la suma de todas las variables excepto una, $x$, se conoce esto como marginalizaci\'on de la variable $x$, d\'andonos la probabilidad de esta variable.
-
+En general, esto \'ultimo se utiliza cuando se observa una variable, conociendo as\'i su valor real.
+La probabilidad condicional, $P(x|y)$, es la probabilidad de que suceda un evento dado que tenemos informaci\'on a partir de otra variable $y$.
+Se dice que dos variables son \textbf{independientes} si vale que $P(x|y) = P(x)$.
+En caso contrario, se las denomina como variables \textbf{dependientes}.
+El concepto de independencia es importante para este tipo de modelos, ya que cualquier variable no incluida expl\'icitamente en nuestro modelo se supone que es independiente a todas las otras variables.
+Es importante observar que la suma de los posibles valores de la variable condicionada $x$ se encuentra normalizada, pero no as\'i la suma con los valores posibles de la variable $y$.
+Se conoce como \textbf{probabilidad conjunta}, a la probabilidad de que dos o m\'as variables aleatorias tengan un determinado valor, $P(x,y)$.
+Realizar la suma de todas las variables excepto una ( en este caso, $x$), se lo conoce como \textbf{marginalizaci\'on} de la variable $x$, y da como resultado la probabilidad de esta variable.
 
 \begin{equation} \label{eq:sum_rule}
 \tag{regla de la suma}
-P(x) = \sum_{y \in Y} P(x,y)
+P(x) = \sum_{y \in Y} P(x,y) \ \ \ \ \ \text{o} \ \ \ \ \ p(x) = \int p(x,y) \, dy
 \end{equation}
 
-Esto significa que cualquier distribuci\'on marginal $p(x)$ puede ser obtenida integrando la distribuci\'on conjunta $p(x,y)$, en este caso sumando todos los valores de $Y$.
+Esto significa que cualquier distribuci\'on marginal $P(x)$ puede ser obtenida integrando la distribuci\'on conjunta $P(x,y)$, en este caso sumando todos los valores de $Y$.
 Otra propiedad muy importante de las distribuciones conjuntas es la conocida como regla del producto.
-Esta regla relaciona a \'esta distribuci\'on con la probabilidad condicional y marginal.
+Esta regla relaciona a esta distribuci\'on con la probabilidad condicional y marginal.
 
 \begin{equation}\label{eq:product_rule}
 \tag{regla del producto}
 P(x,y) = P(x|y) P(y)
 \end{equation}
-%
-
 
 Toda inferencia probabil\'istica, no importa cu\'an compleja ella sea, puede ser resuelta a trav\'es de dos simples ecuaciones: la~\ref{eq:sum_rule} y la~\ref{eq:product_rule}.
 Adem\'as, cualquier distribuci\'on conjunta puede ser expresada como el producto de distribuciones condicionales uni-dimensionles.
-Utilizando esta regla junto con la propiedad de simetr\'ia $p(x,y) = p(y,x)$, se obtiene inmediatamente el~\ref{eq:bayes_theorem}.
+Utilizando esta regla junto con la propiedad de simetr\'ia $P(x,y) = P(y,x)$, se obtiene inmediatamente el~\ref{eq:bayes_theorem}.
 %
 \begin{equation}\label{eq:bayes_theorem}
 \tag{teorema de Bayes}
@@ -795,48 +715,38 @@ Se conoce como modelo bayesiano, a un modelo estad\'istico en donde se utilizan 
 En este tipo de modelos, se utilizan los conceptos de distribuciones de probabilidad a priori y a posteriori.
 Es decir, poder usar teor\'ia probabil\'istica para representar nuestro conocimiento de alguna variable aleatoria, conocida como \textbf{prior} y luego de obtener nueva informaci\'on, poder hacer inferencia, y actualizar esta distribuci\'on a la cual se la denomina \textbf{posterior}.
 El uso inferencial del teorema de Bayes juega un rol central en las t\'ecnicas modernas de aprendizaje estad\'istico.
-Esta expresi\'on nos permite actualizar de forma \'optima nuestras creencia sobre ciertas hip\'otesis (\textit{hypothesis}), dado un modelo y los datos.
-%
+Esta expresi\'on nos permite actualizar nuestras creencias sobre ciertas hip\'otesis, dado un modelo y los datos.
+Para reducir la incertidumbre sobre la habilidad oculta utilizando la informaci\'on provista por el resultado observado y por el modelo causal descripto, se requiere resolver la siguiente ecuaci\'on,
+
 \begin{equation}\label{eq:inference}
-\underbrace{P(\text{Hypothesis}|\text{Data})}_{\text{Posterior}} = \frac{\overbrace{P(\text{Data}|\text{Hypothesis})}^{\text{likelihood}}\overbrace{P(\text{Hypothesis})}^{\text{Prior}}}{\underbrace{P(\text{Data})}_{\text{Evidence}}}
+\underbrace{p(\overbrace{\text{Skills}}^{Hidden}|\overbrace{\text{Result,Model}}^{Observed})}_{\text{Posterior}} = \frac{\overbrace{P(\text{Result}|\text{Skills,Model})}^{\text{likelihood}}\overbrace{p(\text{Skills})}^{\text{Prior}}}{\underbrace{P(\text{Result}|\text{Mode})}_{\text{Evidence}}}
 \end{equation}
-%
+
 donde el lugar que ocupa el modelo queda impl\'icito.
-Se conoce como la funci\'on \textit{likelihood} (Verosimilitud) a la medida de la bondad del ajuste de nuestro modelo luego de haber inferido con una muestra de datos (resultado de un juego) para valores dados de las variables desconocidas (habilidad de los jugadores, \textit{skill}).
+Se conoce como la funci\'on \textit{likelihood}  a la medida de la bondad del ajuste de nuestro modelo luego de haber inferido con una muestra de datos (resultado de un juego) para valores dados de las variables desconocidas (habilidad de los jugadores, \textit{skill}).
 En nuestro caso, la hip\'otesis es el valor de la habilidad a priori de los jugadores en un determinado evento y el dato es el resultado de dicho juego (\textit{result}).
-Reescribiendo la ecuaci\'on~\ref{eq:inference}, evalu\'andolo en el caso particular de esta tesis, el teorema de Bayes se escribe como,
-
-\begin{equation}\label{eq:inferenceEvidence}
-\underbrace{P(\text{Prior skill}|\text{Result})}_{\text{Posterior}} = \frac{\overbrace{P(\text{Result}|\text{Prior skill})}^{\text{likelihood}}\overbrace{P(\text{Prior skill})}^{\text{Prior}}}{\underbrace{P(\text{Result})}_{\text{Evidence}}}
-\end{equation}
-
-
-De esta forma, queda el \textit{likelihood} como la probabilidad de que ocurra el resultado observado con las habilidades a priori.
 La evidencia es simplemente una constante de normalizaci\'on, para que la probabilidad a posteriori lo est\'e.
 
 
 
-\todo[inline]{(XXX Propiedades de Gaussianas, solo ponerlas si las voy a nombrar m\'as adelante, si noen apendice) }
 
-\subsection{Propiedades de las Gaussianas}
+\subsection{Distribuci\'on gaussiana}\label{Sec:PropiedadesGaussianas}
 
-El m\'etodo de \texttt{TrueSkill},  modela a la habilidad y otras variables con distribuciones gaussianas.
-Estas son de gran importancia debido a su simplicidad, en la cual est\'an descriptas por unicamente dos  par\'ametros.
-Estos par\'ametros son, la media y la desviaci\'on est\'andar.
-La primera representa el valor m\'as probable de la variable aleatoria, y la desviaci\'on est\'andar representa la incerteza que se tiene sobre \'este.
-A su vez, estas distribuciones poseen diversas propiedades matem\'aticas, facilitando as\'i la manipulac\'ion algebraica de m\'ultiples gaussianas.
-
-
+El m\'etodo de \texttt{TrueSkill} se puede utilizar para obtener estimaciones de la habilidad y otras variables con distribuciones gaussianas.
 En teor\'ia de probabilidad, la distribuci\'on gaussiana, o tambi\'en conocida como distribuci\'on normal, es un tipo de distribuci\'on de probabilidad continua para una variable aleatoria de valor real.
+Este tipo de distribuci\'on resulta muy \'util debido a su simplicidad. 
+Solamente, es necesario utilizar dos par\'ametros para describirla: la media ($\mu$) y la desviaci\'on est\'andar ($\sigma$).
+La primera representa el valor m\'as probable de la variable aleatoria, y la desviaci\'on est\'andar representa la incerteza que se tiene sobre este valor.
+A su vez, estas distribuciones poseen diversas propiedades matem\'aticas que facilitan su manipulaci\'on algebraica, especialmente cuando se trabaja con m\'ultiples distribuciones gaussianas.
 Su forma general est\'a dada por,
 
 \begin{equation}
-N(x;\mu, \sigma^2)=\frac{1}{\sigma\sqrt{2\pi}}exp^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}
+N(x|\mu, \sigma^2)=\frac{1}{\sigma\sqrt{2\pi}}\exp^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2} \label{ec:gauss}
 \end{equation}
 
-\'Esta tiene una forma funcional de campana, tal como se observa en la figura~\ref{fig:gaus}
-
-
+Donde la notaci\'on muestra la variable aleatoria $x$, seguido por los par\'ametros de la distribuci\'on $\mu$ y $\sigma$ (an\'aloga a la notaci\'on $x \sim N(\mu, \sigma^2)$).
+El par\'ametro $\mu$ representa la media de la distribuci\'on, mientras que el par\'ametro $\sigma$ la desviaci\'on est\'andar, la cual representa el ancho de la campana.
+La figura~\ref{fig:gaus} presenta un esquema gr\'afico de una distribuci\'on normal o gaussiana t\'ipica definida en la ecuaci\'on~\ref{ec:gauss}.
 
 \begin{figure}[H]
 	\centering
@@ -845,28 +755,27 @@ N(x;\mu, \sigma^2)=\frac{1}{\sigma\sqrt{2\pi}}exp^{-\frac{1}{2}\left(\frac{x-\mu
 	\label{fig:gaus}
 \end{figure}
 
-El par\'ametro $\mu$ representa la media de la distribuci\'on, mientras que el par\'ametro $\sigma$ la desviaci\'on est\'andar, la cual representa el ancho de la campana.
-Esta distribuci\'on esta normalizada y ademas el \'area bajo la curva encerrada en una desviaci\'on est\'andar a cada lado de la media da el $68,2\%$ del total.
-Por convenci\'on se define a $\sigma^2$ como la varianza.
-Existen importantes propiedades que se utilizan para calcular \textit{TrueSkill}, como son la suma y producto entre Gaussinas, la funci\'on Gaussiana acumulada, entre otras propiedades.
-Las demostraciones de estas propiedades se encuentran en el ap\'endice~\ref{appendix:gauss}.
-Estas distribuciones cuentan con la siguiente simetr\'ia,
 
-\todo[inline]{poner bien apendice. y aclarar como se suman.., no demostrar todo... citar....}
+Esta distribuci\'on esta normalizada y ademas el \'area bajo la curva encerrada en una desviaci\'on est\'andar a cada lado de la media da el \SI{68.2}{\percent} del total.
+Por convenci\'on se define a $\sigma^2$ como la varianza.
+Existen importantes propiedades que se utilizan para calcular \textit{TrueSkill}, como son la suma y producto entre gaussianas, la funci\'on gaussiana acumulada, entre otras propiedades.
+Las demostraciones de estas propiedades se encuentran en el ap\'endice~\ref{appendix:gauss}.%(\nameref{appendix:gauss}). 
+Estas distribuciones cuentan con la siguiente simetr\'ia:
+
 
 \begin{equation}\label{eq:simetria}
 N(x|\mu,\sigma^2) = N(\mu|x,\sigma^2) = N(-\mu|-x,\sigma^2) = N(-x|-\mu,\sigma^2)
 \end{equation}
 
-La integral de la multiplicaci\'on de dos Gaussianas es,
+La integral de la multiplicaci\'on de dos gaussianas es,
 
 \begin{equation}\label{eq:multiplicacion_normales}
 \int_{-\infty}^{\infty} N(x|\mu_x,\sigma_x^2)N(x|\mu_y,\sigma_y^2) \, dx = N(\mu_x|\mu_y,\sigma_x^2+\sigma_y^2)
 \end{equation}
 
-Se define como $\Phi(x|\mu,\sigma^2)$ a la funci\'on de acumulada Gaussiana.
+Se define como $\Phi(x|\mu,\sigma^2)$ a la funci\'on de acumulada gaussiana.
 \'Esta tiene los mismos par\'ametros que la anterior distribuci\'on, integr\'andose desde $-\infty$ hasta $x$.
-En la figura~\ref{fig:acumulativa} se puede visualizar una distribuci\'on Gaussiana junto con la acumulada para todo $x$.
+En la figura~\ref{fig:acumulativa} se puede visualizar una distribuci\'on gaussiana junto con la acumulada para todo $x$.
 Esta definida como,
 
 
@@ -878,7 +787,7 @@ Esta definida como,
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{gaussian_cumulative.pdf}
-	\caption{La curva azul muestra una distribuci\'on Gaussiana con media cero y una desviaci\'on est\'andar de uno. El \'area bajo la curva de esta desde $-\infty$ hasta un punto $x$ es conocido como distribuci\'on Gaussiana acumulada y se muestra como una funci\'on de $x$ por la curva roja.}
+	\caption{La curva azul muestra una distribuci\'on gaussiana con media cero y una desviaci\'on est\'andar de uno. El \'area bajo la curva de esta desde $-\infty$ hasta un punto $x$ es conocido como distribuci\'on gaussiana acumulada y se muestra como una funci\'on de $x$ por la curva roja. Se muestra el valor que tiene esta funci\'on en el valor -1, marcando el \'area integrada de la distribuci\'on gaussiana.}
 	\label{fig:acumulativa}
 \end{figure}
 
@@ -894,9 +803,9 @@ Se pueden representar distribuciones conjuntas complejas usando gr\'aficos de fa
 Se utilizan dos tipos de nodos en estos gr\'aficos.
 Por un lado se encuentran los nodos de variables, habiendo uno por cada variable del modelo y el nodo de factor, donde hay uno por cada factor en la distribuci\'on conjunta.
 Estos factores tambi\'en se pueden interpretar como partes de la factorizaci\'on de una funci\'on, pudi\'endose aplicar a otros casos.
-
 En general se representan a los nodos de variables como c\'irculos, encerrando el nombre de la variable y como cuadrados negros con una etiqueta del factor, a los nodos de factores.
 Se conecta cada factor con los nodos de variables en las cuales \'este depende.
+
 El siguiente ejemplo, figura \ref{graph:FGej1}, se tiene una funci\'on de tres variables, en la cual se puede representar como un \'unico factor, o mediante la factorizaci\'on de \'esta, pudiendo quedar en tres factores. 
 Se observa que cada factor est\'a conectado con una l\'inea con cada variable dependiente.
 	\begin{equation*}
@@ -952,11 +861,11 @@ Se observa que cada factor est\'a conectado con una l\'inea con cada variable de
 \end{center}
 
 Como sabemos, una funci\'on no tiene una \'unica forma de factorizaci\'on, y es por eso que existen diversos gr\'aficos de factores para cada caso.
-Se elige el indicado dependiendo de qu\'e grado de abstracci\'on se requiera.
-El uso que se le dar\'a, ser\'a la combinaci\'on de este tipo de gr\'aficos con inferencia Bayesiana.
-Para ello veamos un ejemplo de estimaci\'on de par\'ametro $x$, como puede ser la media de una Gaussiana, y observaciones independientes $y$, usando inferencia Bayesiana, represent\'andolo con un gr\'afico de factores como se observa en figura~\ref{graph:FGej2}. 
-Esta estimaci\'on se puede representar algebraicamente utilizando la \ref{eq:product_rule} en donde distribuci\'on conjunta es igual a el \textit{prior} del par\'ametro $x$, multiplicado por la productoria de los \emph{likelihoods} de cada observaci\'on(probabilidad condicional de $y_i$ dado $x$).
-Estamos suponiendo que la distribuci\'on condicional de $y$ es una Gaussiana con media $x$ y varianza uno.
+Se elige el indicado dependiendo del grado de abstracci\'on que se requiera.
+En el caso de esta tesis, se utilizaran estos gr\'aficos con la combinaci\'on de inferencia bayesiana.
+Veamos un ejemplo en que se requiere estimar un par\'ametro $x$, como puede ser la media de una gaussiana, mediante observaciones independientes $y$, usando inferencia bayesiana, represent\'andolo con un gr\'afico de factores como se observa en figura~\ref{graph:FGej2}. 
+Esta estimaci\'on se puede representar algebraicamente utilizando la \ref{eq:product_rule} en donde la distribuci\'on conjunta es igual a el \textit{prior} del par\'ametro $x$, multiplicado por la productoria de los \emph{likelihoods} de cada observaci\'on(probabilidad condicional de $y_i$ dado $x$).
+Estamos suponiendo que la distribuci\'on condicional de $y$ es una gaussiana con media $x$ y varianza uno.
 
 
 
@@ -964,7 +873,7 @@ Estamos suponiendo que la distribuci\'on condicional de $y$ es una Gaussiana con
 	\begin{equation*}
 	\begin{split}
 	&p(x,y_1,...,y_n) = p(x)\prod_{i}p(y_i|x) \\
-	&p(y_i|x) = N(y_i;x,1)
+	&p(y_i|x) = N(y_i|x,1)
 	\end{split}
 	\end{equation*}
 	\begin{figure}[H]
@@ -975,7 +884,7 @@ Estamos suponiendo que la distribuci\'on condicional de $y$ es una Gaussiana con
 			\node[factor] (fs1) {} ;
 			\node[const, above=of fs1] (nfs1) {$p(x)$}; %
 
-			\node[latent, right=of fs1, xshift=1.25cm, yshift=-1cm,fill=red!50] (s1) {$x$} ; %
+			\node[latent, right=of fs1, xshift=1.25cm, yshift=-1cm,fill=cyan!50] (s1) {$x$} ; %
 
 
 			\node[factor, below=of s1,xshift=-1.4cm,yshift=-1cm] (fy0) {} ;
@@ -1009,7 +918,7 @@ Estamos suponiendo que la distribuci\'on condicional de $y$ es una Gaussiana con
 
 			\path[draw, -latex, fill=black!50,sloped] (fs1) edge[bend left,draw=black!50] node[midway,below,color=black!75] {}(s1);
 		}
-		\caption{Representaci\'on grafica por mediante a factores de la estimaci\'on de la media de una distribuci\'on gaussiana.}
+		\caption{Representaci\'on grafica por mediante a factores de la estimaci\'on de la media de una distribuci\'on gaussiana. Se sombrea en azul la variable a la cual se esta calculando su marginal.}
 		\label{graph:FGej2}
 	\end{figure}
 \end{center}
@@ -1020,7 +929,7 @@ Otra de las ventajas de este modelo gr\'afico, es que logra representar de forma
 En este ejemplo, cuando inferimos sobre $x$, vemos que los nodos de $y$, env\'ian mensajes a $x$.
 Aun con gr\'aficos de factores complejos, siempre la probabilidad conjunta sobre las variables aleatorias (representada por los nodos), puede ser escrita como el producto de los factores (representados por los nodos de factores).
 La probabilidad conjunta da una completa especificaci\'on del modelo, ya que define la probabilidad de cualquier posible combinaci\'on de valores para todos las variables aleatorias del modelo.
-En el caso de tener el valor de una variable aleatoria (evidencia), \'este se representa con el nodo de dicha variable sombreada, para enfatizar que es una variable observada.
+En el caso de tener el valor de una variable aleatoria, \'este se representa con el nodo de dicha variable sombreada en rojo, para enfatizar que es una variable observada.
 
 Representar un modelo probabil\'istico usando un gr\'afico de factores, trae muchos beneficios.
 Provee una manera simple de visualizar la estructura del modelo probabil\'istico y ver que variables tienen influencias entre ellas.
@@ -1031,7 +940,7 @@ C\'omputos realizados sobre el modelo pueden ser hechos de manera eficiente por 
 
 
 
-\subsection{Pasaje de mensajes}
+\subsection{Pasaje de mensajes}\label{Sec:PasajeDeMensajes}
 
 Una parte fundamental para poder entender el m\'etodo de \texttt{TrueSkill} m\'as adelante, es el concepto de pasaje de mensajes.
 Esto es debido que a medida que nuestros gr\'aficos de factores se acomplejan, como es en el caso reci\'en mencionado, es necesario poder inferir de manera mec\'anica mediante alg\'un algoritmo, de manera \'optima a nivel computo.
@@ -1131,11 +1040,8 @@ En el caso como el de esta tesis, donde se toman datos reales (si el juego lo ga
 En la siguiente secci\'on, luego de mostrar las bases del m\'etodo, podremos ver como calcular estas probabilidades y as\'i calcular la evidencia.
 
 
-\section{Modelos}
+\section{Modelos}\label{Sec:Modelos}
 
-
-En la actualidad, existen diversos tipos de m\'etodos y modelos predictivos para estimar e inferir alguna variable oculta.
-En lo que concierne a esta tesis, nos centraremos en los modelos de habilidad en juegos y deportes. En particular en el m\'etodo \texttt{TrueSkill Through Time} y sus predecesores para contextualizar.
 
 \subsection{Elo}
 El modelo de ranking de \texttt{Elo}, fue uno de los primeros en crearse. Fue desarrollado por Arpad \texttt{Elo} en 1959 \cite{elo1961-uscf}.
@@ -1169,13 +1075,13 @@ Las isobaras de diferencia de rendimiento $d_{ij} = p_i-p_j$, son l\'ineas paral
 La probabilidad de una cierta diferencia de rendimiento $d_{ij}$ se computa como,
 
 \begin{equation}\label{eq:ProbDiff}
-P(d_{ij}|s_i,s_j) = \iint \mathbb{I}(d_{ij}=p_i -p_j) N(p_i;s_i,\beta^2)N(p_j;s_j,\beta^2) \, dp_i \, dp_j
+P(d_{ij}|s_i,s_j) = \iint \mathbb{I}(d_{ij}=p_i -p_j) N(p_i|s_i,\beta^2)N(p_j|s_j,\beta^2) \, dp_i \, dp_j
 \end{equation}
 
-Bas\'andonos en las propiedades de las Gaussianas, se puede mostrar que la diferencia de rendimiento $d_{ij}$, tambi\'en est\'a distribuida normalmente, centrada en la diferencia de la habilidad, con el doble de varianza, como se observa en la figura~\ref{fig:fig7}.
+Bas\'andonos en las propiedades de las gaussianas, se puede mostrar que la diferencia de rendimiento $d_{ij}$, tambi\'en est\'a distribuida normalmente, centrada en la diferencia de la habilidad, con el doble de varianza, como se observa en la figura~\ref{fig:fig7}.
 
 \begin{equation}\label{eq:ProbDiff2}
-P(d_{ij}|s_i,s_j) = N(d_{ij};s_i-s_j,2\beta^2)
+P(d_{ij}|s_i,s_j) = N(d_{ij}|s_i-s_j,2\beta^2)
 \end{equation}
 
 \begin{figure}[H]
@@ -1201,30 +1107,40 @@ P(r_{ij}|s_i,s_j) = (r_{ij}) P(r_{ij}=0|s_i,s_j) +  (1-r_{ij})P(r_{ij}=1|s_i,s_j
 \end{equation}
 
 Con esto podemos calcular la probabilidad de un resultado dadas las estimaciones de la habilidad $ (s_i, s_j) $.
-Luego de esto tenemos una referencia para actualizarlas.
-Observando un resultado muy poco probable, indicar\'ia que las estimaciones de la habilidad est\'an lejos de ser correctas y deber\'ian ser actualizadas fuertemente para que el resultado observado sea esperado.
-Se define el sentido y grado de actualizaci\'on como,
+% Luego de esto tenemos una referencia para actualizarlas.
+% Observando un resultado muy poco probable, indicar\'ia que las estimaciones de la habilidad est\'an lejos de ser correctas y deber\'ian ser actualizadas fuertemente para que el resultado observado sea esperado.
+% Se define el sentido y grado de actualizaci\'on como,
+La soluci\'on metodologica es extramadamente simple y astuta: se empieza con una estimaci\'on arbitraria y luego de ver nueva informaci\'on se actualizan en base a la sorpresa generada por el resultado (i.e. un jugador d\'ebil le gana al mejor).
+La predicci\'on a priori inducida por la estimaci\'on previa $s_i$ y $s_j$, definen la sorpresa generada,
 
 \begin{equation}
-\Delta = \underbrace{y_{ij}}_{\hfrac{\text{Direction}}{\text{(Outcome)}}}\underbrace{\left(1-P(r_{ij}|s_i,s_j)\right)}_{\hfrac{\text{Magnitud}}{\text{(Outcome Surprise)}}}
+\Delta_i = \underbrace{y_{ij}}_{\hfrac{\text{Direction}}{\text{(Outcome)}}}\underbrace{\left(1-P(r_{ij}|s_i,s_j)\right)}_{\hfrac{\text{Magnitud}}{\text{(Outcome Surprise)}}}
 \end{equation}
 
-Donde la direcci\'on es $y_{ij} =  2\,r_{ij} - 1$.
-Finalmente, la actualizaci\'on del sistema \texttt{Elo} esta dado por,
+Donde $\Delta_i$ es la sorpresa generada, $y_{ij}$ es 1 si el agente $i$ es el ganador y -1 en caso contrario, definido como $y_{ij} =  2\,r_{ij} - 1$.
+La magnitud de la sorpresa esta relacionada con la probabilidad de que se obtenga el resultado.
+Si el resultado del evento es el esperado, entonces la sorpresa generada va a ser poca.
+En caso contrario, cuando nos encontramos con un resultado poco esperado, entonces la sorpresa sera grande.
+Esta sorpresa es usada para actualizar la habilidad hasta entonces de cada jugador,
 
 \begin{equation}\label{eq:elo}
-s_i^{\text{new}} = s_i^{\text{old}} + K \Delta
+s_i^{\text{new}} = s_i^{\text{old}} + \Delta_i
 \end{equation}
 
-Donde $K$ es un par\'ametro arbitrario que representa la cantidad m\'axima de puntos que se disputan en cada juego.
-Existen criterios para definir este valor.
-Al ser consideradas tecnicas ad-hoc, \'esta es una desventaja del sistema de calificaci\'on de \texttt{Elo}.
-Es importante observar que la escala en donde medimos la habilidad, es esencialmente arbitraria.
-Si agregamos un valor constante fijo a la habilidad de todos los jugadores, la probabilidad de ganar no cambiar\'ia, ya que por la Eq~\ref{eq:ProbDiff2}, depende solo de la diferencia del valor de la habilidad.
-Tambi\'en si multiplicamos a todas las habilidades por la misma constante, de nuevo la probabilidad de ganar quedar\'ia invariante.
-Lo \'unico que interesa es la diferencia de las habilidades medidas en relaci\'on al valor $d_{ij}$
+Donde $s_i^{\text{new}}$ es la habilidad actualizada del jugador $i$.
+De la misma forma,  $s_i^{\text{old}}$ es la estimaci\'on previa y  $\Delta_i$ es la sorpresa generada.
+De forma an\'aloga se realiza la actualizaci\'on para el agente $j$ utilizando la sorpresa $\Delta_i$ con signo opuesto.
+Un resultado poco esperado genera mucha sorpresa y por lo tanto una actualizaci\'on mas grande en la habilidad del jugador.
+En el caso contrario, cuando se encuentra un resultado esperado, la sorpresa generanda es chica y el cambio en la habilidad estimada es baja.
+Este procedimiento logra recuperar la escala relativa de los agentes, empezando desde un valor inicial arbitrario.
+Sin embargo, \'este presenta una gran debilidad.
+La regla de actualizaci\'on en la ecuaci\'on~\ref{eq:elo} es sim\'etrica: lo que un agente pierde el oponente lo obtiene.
+Al no poder tener estimaciones precisas de un jugador nuevo (un valor arbitrario fijo se usa para todos los jugadores nuevos), el primer juego tiende a generar mucha sorpresa.
+Estos juegos pueden modificar abruptamente habilidades que ya hab\'ian sido estimadas de forma precisa.
+Para romper esta simetr\'ia de la ecuaci\'on~\ref{eq:elo}, se propuso una solucion ad-hoc: reducir el impacto de la sorpresa generada $\Delta_i$ basada en el numero de eventos que participo el agente previamente.
+Este es el rol que juega el factor K, usado en FIDE, $s_i^{\text{new}} = s_i^{\text{old}} + K_i\Delta_i$.
 
-\todo[inline]{eucar\'istica??}
+
 Adem\'as de las limitaciones de tener un par\'ametro arbitrario $K$, el cual tiene que ser definido previamente, este m\'etodo cuenta con un segundo problema, en que la habilidad estimada tiene que ser considerada provisional hasta que el jugador alcance una cantidad arbitraria de juegos jugados.
 Un tercer problema es que con \texttt{Elo}, no se puede estimar la habilidad de los jugadores cuando se juega en equipo ni tampoco puede estimar la probabilidad de un empate.
 Varias modificaciones al sistema \texttt{Elo} b\'asico, fueron propuestos, en su mayor\'ia de naturaleza eucar\'istica, para poder manejar algunas de sus limitaciones.
@@ -1244,34 +1160,34 @@ El m\'etodo de  \texttt{TrueSkill}  fue introducido en el 2006 por Ralf Herbrich
 Es extendido mediante un modelo bayesiano que incorpora una distribuci\'on a priori de habilidad (\textit{prior}), un modelo de rendimiento de equipos y una funci\'on de actualizaci\'on no arbitraria (\textit{posterior}).
 
 Debido a que la habilidad es una cantidad incierta,  es incluida al modelo como una variable aleatoria.
-La distribuci\'on  \textit{prior} apta para esta variable, es la distribuci\'on normal, la cual captura el conocimiento a \textit{prior} sobre el jugador antes de que juegue una partida.
+La distribuci\'on  \textit{prior} apta para esta variable, es la distribuci\'on normal, la cual captura el conocimiento a priori sobre el jugador antes de que juegue una partida.
 \'Esta logra tambi\'en capturar la noci\'on de incertidumbre en la habilidad debido a su par\'ametro de desviaci\'on est\'andar.
-Como vemos a diferencia de \texttt{Elo}, una de las suposiciones de este nuevo modelo es que cada jugador tiene un valor de habilidad representado por una variable continua con una distribuci\'on a priori Gaussiana y no por un escalar.
+Como vemos a diferencia de \texttt{Elo}, una de las suposiciones de este nuevo modelo es que cada jugador tiene un valor de habilidad representado por una variable continua con una distribuci\'on gaussiana y no por un escalar.
 
-Una vez que un nuevo jugador haya disputado una partida, se utiliza el resultado de dicho evento para inferir en la actualizaci\'on de las distribuciones de habilidad de los jugadores involucrados.
+Una vez que un jugador haya disputado una partida, se utiliza el resultado de dicho evento para inferir y actualizar las distribuciones de habilidad de los jugadores involucrados.
 \'Esto involucra en resolver un problema de inferencia probabil\'istica para calcular la distribuci\'on a posteriori  de cada jugador,  tomando en cuenta la nueva informaci\'on prove\'ida por el resultado de la partida.
-A pesar de que nuestra distribuci\'on \textit{prior} es Gaussiana, la correspondiente \textit{posterior} puede no serla.
+A pesar de que nuestra distribuci\'on \textit{prior} es gaussiana, la correspondiente \textit{posterior} puede no serla.
 Este es el caso de usar el gr\'afico de factores de \texttt{TrueSkill}, e inferir de manera exacta.
-El beneficio de aproximar este \textit{posterior} mediante una Gaussiana se debe a que esta distribuci\'on de un jugador va a actuar efectivamente como la distribuci\'on \textit{prior} de la pr\'oxima partida.
+El beneficio de aproximar este \textit{posterior} mediante una gaussiana se debe a que esta distribuci\'on de un jugador va a actuar efectivamente como la distribuci\'on \textit{prior} de la pr\'oxima partida.
 Es por ello que interesa preservar su forma funcional.
-En caso contrario, por cada nueva estimaci\'on, cambiar\'ia la forma funcional que describe la habilidad, no solo complejizando las cuentas, ya que no tendr\'iamos las propiedades de las Gaussianas, si no que a su vez aumentar\'ia el n\'umero de par\'ametros para describir dicha distribuci\'on en cada nuevo evento.
-
-El modelo est\'a basado en gr\'aficos de factores.
+En caso contrario, por cada nueva estimaci\'on la forma funcional que describe la habilidad cambiar\'ia, no solo complejizando las cuentas (por no poder operar con las propiedades algebraicas de las gaussianas), si no que a su vez aumentar\'ia el n\'umero de par\'ametros para describir dicha distribuci\'on en cada nuevo evento.
+El modelo bayesiano \texttt{TrueSkill} esta basado en gr\'aficos de factores.
 Una generalizaci\'on se observa en la figura~\ref{graph:factorGraph}.
+
 \begin{figure}[H]
 	\centering
 	\scalebox{.9}{
 		\tikz{ %
 
-			\node[det, fill=black!10] (r) {$r_j$} ; %
+			\node[det, fill=red!50] (r) {$r_j$} ; %
 			\node[const, below=of r, yshift=-0.8cm,xshift=-0.8cm] (c_1a) {\scriptsize  with $o:=$ outcome};
 			\node[latent, left=of r] (d) {$d_j$} ; %
 			\node[latent, left=of d] (t) {$t_e$} ; %
 			\node[latent, left=of t] (p) {$p_i$} ; %
 			\node[latent, left=of p, yshift=-0.6cm] (s) {$s_i$} ; %
-			\node[obs, left=of p, yshift=0.6cm] (beta) {$\beta$} ; %
-			\node[obs, left=of s] (mu) {$\widehat{\mu}_i$} ; %
-			\node[obs, left=of s, yshift=1.2cm] (sigma) {$\widehat{\sigma}_i$} ; %
+			\node[param, left=of p, yshift=0.6cm] (beta) {$\beta$} ; %
+			\node[obs, left=of s] (mu) {$\mu_i$} ; %
+			\node[obs, left=of s, yshift=1.2cm] (sigma) {$\sigma_i$} ; %
 
 
 			\edge {d} {r};
@@ -1291,12 +1207,19 @@ Una generalizaci\'on se observa en la figura~\ref{graph:factorGraph}.
 			\node[const, above=of result-dist,yshift=0.3cm] (d-dist) {$d_j = t_{o_j} - t_{o_{j+1}}$};  %
 			\node[const, above=of d-dist,yshift=0.3cm] (t-dist) {$t_e = \sum_{i\in A_e} p_i $} ; %
 			\node[const, above=of t-dist,yshift=0.3cm] (p-dist) {$p_i \sim N(s_i,\beta^2)$} ; %
-			\node[const, above=of p-dist,yshift=0.3cm] (s-dist) {$s_i \sim N(\widehat{\mu}_i,\widehat{\sigma}_i^2)$} ; %
+			\node[const, above=of p-dist,yshift=0.3cm] (s-dist) {$s_i \sim N(\mu_i,\sigma_i^2)$} ; %
 
 	}}
-	\caption{\small Grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo \texttt{Trueskill}.}
+	\caption{ Representaci\'on esquem\'atica del modelo generativo \texttt{TrueSkill}.
+	Las habilidades ocultas causan los resultados observables a trav\'es de la diferencia de rendimientos ocultos.
+ En cada evento, gana el agente quien haya obtenido mayor rendimiento, $r = p_i > p_j$.
+Esta representaci\'on gr\'afica define una distribuci\'on de probabilidad conjunta.
+Las variables observables se pintan de rojo, la ocultas en blanco, los par\'ametros constantes en verde y los par\'ametros de la distribuci\'on \textit{prior} en gris.}
 	\label{graph:factorGraph}
 \end{figure}
+
+
+
 
 Para el caso de un evento en donde se enfrentan dos jugadores, el grafo exacto se puede ver en la figura~\ref{fig:ejfig1vs1}.
 
@@ -1327,7 +1250,7 @@ Para el caso de un evento en donde se enfrentan dos jugadores, el grafo exacto s
 		\node[latent, below=of fd,yshift=-.1cm] (d) {$d$} ; %
 		\node[factor, below=of d,yshift=-.1cm] (fr) {} ;
 		\node[const, left=of fr] (nfr) {$f_{r}$}; %
-		\node[latent, below=of fr,yshift=-.1cm, fill=black!30] (r) {$r$} ; %
+		\node[latent, below=of fr,yshift=-.1cm, fill=red!50] (r) {$r$} ; %
 
 		\edge[-] {s1} {fs1,fp1}
 		\edge[-] {s2} {fs2,fp2}
@@ -1339,10 +1262,12 @@ Para el caso de un evento en donde se enfrentan dos jugadores, el grafo exacto s
 		\edge[-] {r} {fr}
 
 	}
-\caption{Gr\'afico de factores de \texttt{TrueSkill} para el caso de dos jugadores enfrentados entre si.}
+\caption{ Factorizaci\'on gráfica del modelo generativo (Fig.~\ref{graph:factorGraph}), para el caso particular de dos jugadores enfrent\'andose.}
 \label{fig:ejfig1vs1}
 \end{figure}
-%\end{wrapfigure}
+
+
+
 Es importante entender, c\'omo funcionan estos grafos, para poder entender la intuici\'on de \'estos.
 Podemos observar gr\'aficamente a todas las variables aleatorias de nuestro inter\'es, tanto la habilidad, rendimiento como el resultado y un nodo de factor para cada una.
 Como ya se mostr\'o en la secci\'on introducci\'on, existen dos tipos de mensajes.
@@ -1350,7 +1275,7 @@ Los que van de nodos de variables a nodos de factores, y los contrarios.
 A su vez, se mostr\'o en la Eq~\ref{eq:marginal}, c\'omo se calcula la marginal de un nodo.
 \'Esto es lo que se usa para poder calcular la \textit{posterior} de la variable habilidad de cada jugador.
 Lo \'unico que se realiza es calcular mediante mensajes esta marginal, para cada nodo de inter\'es.
-Una de las consideraciones ya mencionadas, ser\'a el uso de \textit{expectation propagation}, para aproximar los mensajes que hacen cambiar la forma funcional Gaussiana a la marginal de habilidad.
+Una de las consideraciones ya mencionadas, ser\'a el uso de \textit{expectation propagation}, para aproximar los mensajes que hacen cambiar la forma funcional gaussiana a la marginal de habilidad.
 En la figura~\ref{fig:testTrueskill}, se puede observar el flujo de mensajes para el c\'alculo de las marginales de la habilidad de ambos jugadores.
 
 \begin{figure}[H]
@@ -1368,7 +1293,7 @@ En la figura~\ref{fig:testTrueskill}, se puede observar el flujo de mensajes par
 
 	\node[factor, xshift=2cm] (fs2) {} ;
 	\node[const, right=of fs2] (nfs2) {$f_{s_2}$}; %
-	\node[latent, below=of fs2,yshift=-0.5cm,fill=red!50] (s2) {$s_2$} ;
+	\node[latent, below=of fs2,yshift=-0.5cm,fill=cyan!50] (s2) {$s_2$} ;
 
 
 	\node[factor,below=of s2] (fp2) {} ;
@@ -1415,7 +1340,7 @@ En la figura~\ref{fig:testTrueskill}, se puede observar el flujo de mensajes par
 \tikz{ % Ejemplo con flechitas
 	\node[factor, xshift=-2cm] (fs1) {} ;
 	\node[const, right=of fs1] (nfs1) {$f_{s_1}$}; %
-	\node[latent, below=of fs1,yshift=-0.5cm,fill=red!50] (s1) {$s_1$} ;
+	\node[latent, below=of fs1,yshift=-0.5cm,fill=cyan!50] (s1) {$s_1$} ;
 
 	\node[factor,below=of s1] (fp1) {} ;
 	\node[const, right=of fp1] (nfp1) {$f_{p_1}$}; %
@@ -1466,7 +1391,9 @@ En la figura~\ref{fig:testTrueskill}, se puede observar el flujo de mensajes par
 \caption{}
 \label{graph:fig1vs1Bis}
 	\end{subfigure}
-	\caption{Pasaje de mensajes para el c\'alculo de marginales para las variables de habilidad marcadas en rojo. En \subref{graph:fig1vs1} se muestra el c\'alculo de la \textit{posterior} del jugador 2 y en \subref{graph:fig1vs1Bis} se muestra el c\'alculo de la \textit{posterior} del jugador 1. Por cuesti\'on de espacio, se omiti\'o el nodo de la variable observada $r$.}
+	\caption{Factorizaci\'on gráfica del modelo generativo para el caso particular de dos jugadores enfrent\'andose (Fig.~\ref{fig:ejfig1vs1}). 
+	Se muestra el pasaje de mensajes para el c\'alculo de marginales para las variables de habilidad marcadas en azul. 
+	En \subref{graph:fig1vs1} se muestra el c\'alculo de la \textit{posterior} del jugador 2 y en \subref{graph:fig1vs1Bis} se muestra el c\'alculo de la \textit{posterior} del jugador 1. Por cuesti\'on de espacio, se omiti\'o el nodo de la variable observada $r$.}
 	\label{fig:testTrueskill}
 \end{figure}
 
@@ -1477,65 +1404,70 @@ En este caso, implica que el jugador 1 fue el ganador del evento.
 Un ejemplo del c\'alculo de los mensajes y de c\'omo se calcula una marginal de habilidad se ver\'a m\'as adelante, cuando veamos el caso m\'as usual en esta tesis.
 
 
-\subsection{Definiciones intuitivas}
+\subsection{TrueSkill insights}
 A continuaci\'on veremos los diferentes nodos y definiciones usadas en \texttt{TrueSkill}.
-El comportamiento de los diferentes par\'ametros de este m\'etodo se ver\'a en la secci\'on  de validaci\'on
+El comportamiento de los diferentes par\'ametros de este m\'etodo y las relaci\'ones entre \'estos se ver\'a en la secci\'on de validaci\'on.
 
 \paragraph{Habilidad}
 Una de las novedades de \texttt{TrueSkill} es la noci\'on de incertidumbre en la estimaci\'on de habilidad.
 La habilidad estimada $s_i$, que en el modelo anterior se representaba con un escalar, ahora se representa con una distribuci\'on \textit{prior} de creencia con una funci\'on de distribuci\'on normal.
 
+
+
 \begin{equation}
-s_i \sim N(\mu_i, \sigma_i^2)
+s_i \sim N(\mu_i, \sigma_i^2) = N(s_i|\mu_i, \sigma_i^2)
 \end{equation}
 Donde $\mu$ y $\sigma$, se inicializan con un valor arbitrario para todos los jugadores.
 Cabe resaltar, que el valor absoluto de la media no es de inter\'es, si no la diferencia entre los dem\'as jugadores.
-Por el otro lado, la desviaci\'on est\'andar tiene que ser lo suficientemente grande para poder representar la incertidumbre que realmente tenemos con respecto a la media.
-En general se utiliza los valores iniciales, $ \mu = 25 $ y $ \sigma=\frac{25}{3} $.
+Por el otro lado, la desviaci\'on est\'andar inicial tiene que ser lo suficientemente grande para poder representar la incertidumbre que realmente tenemos con respecto a la media, pero lo suficientemente chico para que se requiera la menor cantidad de eventos para caracterizar a un nuevo jugador.
+En esta tesis utilizaremos los valores iniciales, $ \mu_0 = 25 $ y $ \sigma_0=3\beta$, donde el $\beta$ se analizara en la seccion validaci\'on.
+Se enfatiza que son los iniciales de cada jugador con el sub\'indice 0.
+El par\'ametro $\beta$, al no variar entre cada evento, no se agrega el \'indice.
 
 
 
-\todo[inline]{Chequear que ya se dijo que el beta significa la probabilidad de ganar}
 \paragraph{Rendimiento}
 Al igual que el sistema \texttt{Elo}, donde se asume que el resultado final depende del rendimiento de los jugadores, $p_i$.
 Nuevamente se representa como una distribuci\'on gaussiana con media igual a la habilidad y con una desviaci\'on est\'andar $\beta$.
 
 \begin{equation}
-p_i \sim N(s_i, \beta^2)
+p_i \sim N(s_i, \beta^2) = N(p_i|s_i, \beta^2)
 \end{equation}
 
-Por como esta conformado el m\'etodo, cuando la diferencia de habilidad entre dos jugadores en los cuales hipot\'eticamente no poseen incertidumbre (i.e. $\sigma$=0) es igual a $\beta$, representa que el jugador de mayor habilidad tiene un \SI{76}{\percent} de probabilidad de ganar.
-\'Este parametro es el que nos indica la escala relativa entre los jugadores, como se vera en la secci\'on validaci\'on.
-
-Ahora la probabilidad de un dado rendimiento $p_i$, considera la distribucio\'n  \textit{prior}.
-Se define como,
+Por como esta conformado el m\'etodo, cuando la diferencia de habilidad entre dos jugadores es igual a $\beta$ y la incertidumbre de \'estos es nula (i.e. $\sigma$=0), la probabilidad que tiene el jugador de mayor habilidad en ganar es de un \SI{76}{\percent}.
+\'Este parametro es el que nos indica la escala relativa entre los jugadores, como se ver\'a en la secci\'on validaci\'on.
+La probabilidad  que tiene un dado rendimiento $p_i$, la cual considera a la distribucio\'n  \textit{prior}, se define como,
 
 \begin{equation}\label{eq:p.p_i}
-P(p_i|\mu_i,\sigma_i) = \int N(p_i; s_i, \beta^2)N(s_i;\mu_i,\sigma_i^2) ds_i
+P(p_i|\mu_i,\sigma_i) = \int N(p_i| s_i, \beta^2)N(s_i|\mu_i,\sigma_i^2) ds_i
 \end{equation}
 
 Este resultado, sale del pasaje de mensajes del gr\'afico de factores del modelo, como se mostr\'o en la figura~\ref{fig:ejfig1vs1}. 
-Se puede reescribir el integrando de la ecuaci\'on ~\ref{eq:p.p_i} usando propiedades de simetr\'ia, $ N (x; \mu, \sigma^2) = N (\mu; x, \sigma^2)$.
+Se puede reescribir el integrando de la ecuaci\'on ~\ref{eq:p.p_i} usando propiedades de simetr\'ia, $ N (x| \mu, \sigma^2) = N (\mu| x, \sigma^2)$.
 
-\begin{equation}
-P(p_i|\mu_i,\sigma_i) = \int N(s_i; p_i, \beta^2)N(s_i;\mu_i,\sigma_i^2) ds_i
+\begin{equation}\label{eq:rend}
+P(p_i|\mu_i,\sigma_i) = \int N(s_i| p_i, \beta^2)N(s_i|\mu_i,\sigma_i^2) ds_i
 \end{equation}
 
-Se representa graficam\'ente  este resultado en la figura~\ref{fig:fig8}.
+Tanto la media del jugador $i$, $\mu_i$, como su incerteza, $\sigma_i$, son escalares.
+A su vez, $p_i$ y $s_i$ son variables aleatorias donde en la ecuaci\'on~\ref{eq:rend} se integra por \'esta \'ultima.
+Se representa graficam\'ente el integrando de este resultado en la figura~\ref{fig:fig8}.
+En donde por cada valor de $p_i$ hay una distribuci\'on gaussiana.
+Lo mismo sucede en caso contrario para cada valor de $s_i$.
 
-%XXX esta bien que la diagonal de la distribucion no sea paralela a pi=sj?)
+\todo[inline]{Esteban: este grafico y el siguiente, aportan algo? o menos es mas?}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{trueSkill.pdf}
-	\caption{Distribuci\'on de rendimiento, $\N(p_i;s_i,\beta^2)$, pesado por la probabilidad de distribuci\'on de habilidad $\N(s_i;\mu_i,\sigma_i^2)$. El \'area bajo la curva s\'olida tiene que ser integrada para computar una cierta probabilidad $p_i$.}
+	\caption{Distribuci\'on de rendimiento, $\N(p_i|s_i,\beta^2)$, pesado por la probabilidad de distribuci\'on de habilidad $\N(s_i|\mu_i,\sigma_i^2)$. El \'area bajo la curva s\'olida tiene que ser integrada para computar una cierta probabilidad $p_i$.}
 	\label{fig:fig8}
 \end{figure}
 
 Luego, se computa la probabilidad de un dado rendimiento $p_i$, al integrar el \'area bajo la l\'inea s\'olida de la figura~\ref{fig:fig8}.
-Utilizando la propiedad de producto de Gaussiana \ref{eq:multiplicacion_normales}, esta probabilidad tambi\'en es una distribuci\'on normal.
+Utilizando la propiedad de producto de gaussiana \ref{eq:multiplicacion_normales}, esta probabilidad tambi\'en es una distribuci\'on normal.
 
 \begin{equation}
-P(p_i|\mu_i,\sigma_i) = \int \underbrace{N(p_i;\mu_i,\beta^2 + \sigma_i^2)}_{\text{Scalar independent of $s_i$}} N(s_i,\mu_{*},\sigma_{*}^2)  \ ds_i  = N(p_i;\mu_i,\beta^2 + \sigma_i^2)
+P(p_i|\mu_i,\sigma_i) = \int \underbrace{N(p_i|\mu_i,\beta^2 + \sigma_i^2)}_{\text{Scalar independent of $s_i$}} N(s_i|\mu_{*},\sigma_{*}^2)  \ ds_i  = N(p_i|\mu_i,\beta^2 + \sigma_i^2)
 \end{equation}
 
 \paragraph{Equipos}
@@ -1553,7 +1485,7 @@ t_e = \sum_{j\in A_e } p_j
 
 Luego, mediante los mensajes, la probabilidad de un dado rendimiento de equipo se define como,
 \begin{equation}
-P(t_e|A_e) = \int \dots \int \mathbb{I}(t_e = \sum_{j\in A_e } p_j ) \left(\prod_{i \in A_e} N(p_i;\mu_i,\beta^2 + \sigma^2) \right) d\vec{p}
+P(t_e|A_e) = \int \dots \int \mathbb{I}(t_e = \sum_{j\in A_e } p_j ) \left(\prod_{i \in A_e} N(p_i|\mu_i,\beta^2 + \sigma^2) \right) d\vec{p}
 \end{equation}
 
 La suposici\'on de rendimiento de equipo, es solo usado para adoptar la habilidad individual de jugadores de forma tal que el resultado del equipo pueda ser mejor precedido en base a la suposici\'on de adici\'on de las habilidades.
@@ -1569,50 +1501,48 @@ Matem\'aticamente, el rendimiento de un equipo con dos jugadores, se puede obser
 \end{figure}
 
 Para computar la probabilidad de un dado rendimiento $c$ de equipo, se tiene que integrar el \'area bajo la isobara correspondiente, $ t_e = c $ como se muestra en la figura~\ref{fig:fig9}.
-Obteniendo as\'i una nueva Gaussiana.
+Obteniendo as\'i una nueva gaussiana.
 En el caso de un equipo con $2$ jugadores, \'este queda como,
 
 
 \begin{equation}
 \begin{split}
 P(t_e|A_e=\{i,j\}) & =\int\int I(t_e=p_i+p_j)N(p_i \vert \mu_i,\beta_i^2+\sigma_i^2)N(p_j \vert \mu_j,\beta_j^2+\sigma_j^2)dp_idp_j\\
-  & = \int N(p_i\,;\,\mu_{*},\sigma_{*}^2) \overbrace{N(t_e\,;\,\mu_i+\mu_j,2*\beta^2 + \sigma_i^2 + \sigma_j^2)}^{\text{Scalar independent of $p_i$}} dp_i \\[0.3cm]
-& = N(t_e \,;\, \mu_i+\mu_j,2\beta^2 + \sigma_i^2 + \sigma_j^2)
+  & = \int N(p_i\,|\,\mu_{*},\sigma_{*}^2) \overbrace{N(t_e\,|\,\mu_i+\mu_j,2*\beta^2 + \sigma_i^2 + \sigma_j^2)}^{\text{Scalar independent of $p_i$}} dp_i \\[0.3cm]
+& = N(t_e \,|\, \mu_i+\mu_j,2\beta^2 + \sigma_i^2 + \sigma_j^2)
 \end{split}
 \end{equation}
 
-\todo[inline]{no tengo la demo, chau}
 Por inducci\'on se demuestra que en un equipo con $n$ jugadores, la probabilidad de un dado rendimiento de equipo viene dado por,
 
 \begin{equation}
-P(t_e|A_e) = N\left(t\,;\,\sum_{i\in A_e} \mu_i,\sum_{i\in A_e} \beta^2 + \sigma_i^2\right)
+P(t_e|A_e) = N\left(t\,|\,\sum_{i\in A_e} \mu_i,\sum_{i\in A_e} (\beta^2 + \sigma_i^2)\right)
 \end{equation}
 
 \paragraph{Diferencia}
 
-Las diferencias en los rendimientos de equipos son lo que determina el resultado del juego.
-
-\begin{equation}
-d_{ab}=t_a - t_b
-\end{equation}
-
-Donde $d_{ab}$ representa la diferencia entre el equipo $a$ versus el equipo $b$.
+Las diferencias en los rendimientos de equipos son lo que determina el resultado del juego, definida como $d_{ab}=t_a - t_b$.
+Donde $d_{ab}$ representa la diferencia entre el equipo $a$ y el equipo $b$.
 De la misma manera como en figura~\ref{fig:fig6}, la isobara de diferencia de rendimiento son l\'ineas paralelas a la diagonal de diferencia cero.
 La probabilidad de una dada diferencia de rendimiento $d_ {ab}$ viene dada por,
 \begin{align}\label{eq:mensajeCum}
-P(d_{ab}|A_a,A_b) = \iint & \mathbb{I}(d_{ab}=t_a -t_b)\cdot N(t_a;\sum_{i\in A_a} \mu_i,\sum_{i\in A_a} \beta^2 + \sigma_i^2) \cdot \nonumber \\
-& N(t_b;\sum_{i\in A_b} \mu_i,\sum_{i\in A_b} \beta^2 + \sigma_i^2) \, dt_a dt_b
+P(d_{ab}|A_a,A_b) = \iint & \mathbb{I}(d_{ab}=t_a -t_b)\cdot N(t_a|\sum_{i\in A_a} \mu_i,\sum_{i\in A_a} \beta^2 + \sigma_i^2) \cdot \nonumber \\
+& N(t_b|\sum_{i\in A_b} \mu_i,\sum_{i\in A_b} (\beta^2 + \sigma_i^2)) \, dt_a dt_b
 \end{align}
 
+Donde $A_a$ representa al conjunto de agentes del equipo $a$ y $A_b$ representa al conjunto de agentes del equipo $b$.
 Se puede mostrar que que la probabilidad de una dada diferencia de rendimiento $d_ {ab} $ viene dada como,
 \begin{equation}\label{eq:proba_handicap}
-P(d_{ab}|A_a,A_b) = N\Bigg(d_{ab} \ ; \  \underbrace{\sum_{i\in A_a} \mu_i - \sum_{i\in A_b} \mu_i}_{\text{Expected difference }(\delta)},\underbrace{\sum_{i\in A_a\cup A_b} \beta^2 + \sigma_i^2}_{\text{Total variance }(\vartheta)}\Bigg) = N(d_{ab} \ ; \  \delta, \vartheta )
+P(d_{ab}|A_a,A_b) = N\Bigg(d_{ab} \ | \  \underbrace{\sum_{i\in A_a} \mu_i - \sum_{i\in A_b} \mu_i}_{\text{Expected difference }(\delta)},\underbrace{\sum_{i\in A_a\cup A_b} \beta^2 + \sigma_i^2}_{\text{Total variance }(\vartheta)}\Bigg) = N(d_{ab} \ | \  \delta, \vartheta )
 \end{equation}
+
+Se recuerda que el m\'etodo \textit{TrueSkill} organiza a los equipos por ganadores.
+Es decir, en este caso el equipo $a$ fue el ganador.
 
 
 \paragraph{Resultado}
 
-\'Esta es nuestra variable observada, la cual nos aporta la nueva informaci\'on.
+\'Esta es nuestra variable observable, la cual nos aporta la nueva informaci\'on.
 Una victoria del equipo $ a $ sobre otro equipo $ b $, es modelado como,
 
 \begin{equation}
@@ -1629,10 +1559,11 @@ Luego, la probabilidad de victoria de un equipo sobre el otro, se computa como,
 
 
 \begin{equation} \label{eq:proba_win}
-P(r_{ab}=1|A_a,A_b) = P(d_{ab} > 0 | A_a,A_b) = \Phi\left( \frac{\delta}{\sqrt{2\vartheta} } \right)= \Phi\left( 0; \delta, \vartheta \right)
+P(r_{ab}=1|A_a,A_b) = P(d_{ab} > 0 | A_a,A_b) = \Phi\left( \frac{\delta}{\sqrt{2\vartheta} } \right)= \Phi\left( 0| \delta, \vartheta \right)
 \end{equation}
 
-Donde nuevamente $\Phi$ es la funci\'on de distribuci\'on acumulada de la distribuci\'on normal est\'andar, $N(0, 1)$.
+Donde nuevamente $\Phi$ es la funci\'on de la distribuci\'on acumulada de la distribuci\'on normal est\'andar.
+En caso de no aclarar la media y desviaci\'on es con respecto a la distribuci\'on, $N(0, 1)$.
 En el caso de m\'ultiples equipos, el resultado observado de un juego, se modela con un vector de equipos ordenados, $o$, tal que $t_{o_1}> \dots > t_{o_{|A|}}$, siendo el ganador el de mayor valor.
 
 \paragraph{Posterior} En resumen, el modelo de \texttt{TrueSkill} puede ser representado por una red gr\'afica como se muestra en figura~\ref{graph:factorGraph_trueskill}.
@@ -1650,7 +1581,7 @@ En el caso de m\'ultiples equipos, el resultado observado de un juego, se modela
 			\node[factor, left=of d] (fd) {} ;
 			\node[const, above=of fd] (nfd) {$f_d$}; %
 			\node[const, above=of nfd] (dfd) {\large $\mathbb{I}(d_{ab}=t_a - t_b)$}; %
-			\node[const, below=of d,yshift=-0.15cm] (j) {\footnotesize con signo $g:=1 - 2*\mathbb{I}(o_a < o_b) $};
+			\node[const, below=of d,yshift=-0.15cm] (j) {\footnotesize with sign $g:=1 - 2*\mathbb{I}(o_a < o_b) $};
 
 			\node[latent, left=of fd,xshift=-0.9cm] (t) {$t_e$} ; %
 			\node[factor, left=of t] (ft) {} ;
@@ -1679,54 +1610,55 @@ En el caso de m\'ultiples equipos, el resultado observado de un juego, se modela
 			\plate {personas} {(p)(s)(fs)(nfs)(dfp)(dfs)} {$i \in A_e$}; %
 			\node[invisible, below=of ft, yshift=-0.6cm] (inv_below_e) {};
 			\node[invisible, above=of ft, yshift=1.1cm] (inv_above_e) {};
-			\plate {equipos} {(personas) (t)(ft)(dft) (inv_above_e) (inv_below_e)} {$  \text{con $A$ partici\'on de jugadores }$  \hspace{3cm} $0 < e \leq |A|$}; %
+			\plate {equipos} {(personas) (t)(ft)(dft) (inv_above_e) (inv_below_e)} {$  \text{with $A$ partition of players }$  \hspace{3cm} $0 < e \leq |A|$}; %
 			\node[invisible, below=of fr, yshift=-0.6cm] (inv_below) {};
 			\node[invisible, above=of fr, yshift=1.1cm] (inv_above) {};
-			\plate {comparaciones} {(fd) (dfd) (d) (fr) (dfr) (inv_below) (inv_above)} {$a$ equipo focal \hspace{0.6cm} $0 < b \leq |A| \ , \ a \neq b$};
+			\plate {comparaciones} {(fd) (dfd) (d) (fr) (dfr) (inv_below) (inv_above)} {$a$ winning team \hspace{0.6cm} $0 < b \leq |A| \ , \ a \neq b$};
 	}  }
 	\caption{\small Grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo \texttt{Trueskill}.}
 	\label{graph:factorGraph_trueskill}
 \end{figure}
 
-Recordando la expresi\'on de Bayes, \'esta nos permite actualizar de forma \'optima nuestras creencia sobre ciertas hip\'otesis, dado un modelo y los datos.
-
-\begin{equation}\label{eq:inference2}
-\underbrace{p(\text{Hypothesis}|\text{Data})}_{\text{Posterior}} = \frac{\overbrace{p(\text{Data}|\text{Hypothesis})}^{\text{Likelihood}}\overbrace{p(\text{Hypothesis})}^{\text{Prior}}}{\underbrace{p(\text{Data})}_{\text{Evidence}}}
+Recordando la ecuaci\'on~\ref{eq:inference}, la cual nos permite actualizar nuestras creencia sobre ciertas hip\'otesis, dado un modelo y los datos.
+\begin{equation}\tag{\ref{eq:inference}}
+\underbrace{p(\overbrace{\text{Skills}}^{Hidden}|\overbrace{\text{Result,Model}}^{Observed})}_{\text{Posterior}} = \frac{\overbrace{P(\text{Result}|\text{Skills,Model})}^{\text{likelihood}}\overbrace{p(\text{Skills})}^{\text{Prior}}}{\underbrace{P(\text{Result}|\text{Mode})}_{\text{Evidence}}}
 \end{equation}
-
-En nuestro caso, las hip\'otesis son las habilidades de las personas, los datos son los resultados y el modelo est\'a definido por la figura~\ref{graph:factorGraph_trueskill}.
-Con una distribuci\'on de probabilidad que represente nuestras creencias a priori sobre las habilidad de las personas, podemos obtener la distribuci\'on de creencias a posterori exacta usando tan solo las reglas de la suma y el producto, mediante el algoritmo sum-product~\cite{Kschischang2001} sobre el gr\'afico de factores (figura~\ref{graph:factorGraph_trueskill}).
-En el caso de dos equipos, la \textit{posterior} exacta quedar\'ia,
+% \begin{equation}\label{eq:inference2}
+% \underbrace{p(\text{Hypothesis}|\text{Data})}_{\text{Posterior}} = \frac{\overbrace{p(\text{Data}|\text{Hypothesis})}^{\text{Likelihood}}\overbrace{p(\text{Hypothesis})}^{\text{Prior}}}{\underbrace{p(\text{Data})}_{\text{Evidence}}}
+% \end{equation}
+En nuestro caso, las hip\'otesis son las habilidades de las personas (\textit{Skills}), los datos son los resultados (\textit{Result}) y el modelo est\'a definido por la figura~\ref{graph:factorGraph_trueskill}.
+Con una distribuci\'on de probabilidad que represente nuestras creencias a priori sobre las habilidad de las personas, podemos obtener la distribuci\'on de creencias a posterori exacta usando tan solo las reglas de la suma y el producto, mediante el algoritmo sum-product explicado en la seccion anterior~\ref{Sec:PasajeDeMensajes} (\nameref{Sec:PasajeDeMensajes})  sobre el gr\'afico de factores (figura~\ref{graph:factorGraph_trueskill}).
+En el caso de dos jugadores, la \textit{posterior} exacta queda como,
 
 \begin{equation}\label{eq:bayesaprox}
-\underbrace{P(s_i \mid \bm{o}, A)}_{\text{Posterior}} \propto
-\begin{cases}
- \overbrace{\Phi(0 \, ; \, \delta(s_i), \vartheta - \sigma_i^2)}^{\text{Likelihood}}\,\overbrace{N(s_i \, ; \, \mu_i, \sigma_i^2)}^{\text{Prior}}  & \text{Winner} \\
- \underbrace{(1 - \Phi(0 \, ; \, \delta(s_i), \vartheta - \sigma_i^2))}_{\text{Likelihood}} \,  \underbrace{N(s_i \, ; \, \mu_i, \sigma_i^2 )}_{\text{Priori}}& \text{Looser}
-\end{cases}
+\underbrace{p(s_i, r_{ij}| s_j)}_{\text{Posterior}} \propto
+ \underbrace{[1 - \Phi(0 \, | \, \overbrace{s_i - \mu_j}^{\delta(s_i)},  \overbrace{ 2\beta^2 + \sigma_j^2}^{\vartheta_i^2})]}_{\text{Likelihood}} \,  \underbrace{N(s_i \, | \, \mu_i, \sigma_i^2 )}_{\text{Priori}}
 \end{equation}
 
-donde $\delta(s_i) = \delta - \mu_i + s_i$, es la diferencia esperada entre los equipos reemplazando la habilidad estimada ($\mu$) por la real habilidad $s_i$.
-La distribuci\'on a posteriori resultante del c\'alculo de la marginal en el nodo de habilidad de cada jugador, se obtiene como el producto de la distribuci\'on \textit{prior} y el \textit{Likelihood}.
-Esta distribuci\'on a posteriori calculada de manera exacta no tiene la forma funcional deseada.
-Conseguir la Gaussiana que mejor la aproxima nos permitir\'ia extender la inferencia iterativamente en el tiempo a trav\'es del uso de las \textit{posteriors} como \textit{priors} de las siguientes observaciones.
+% La distribuci\'on a posteriori resultante del c\'alculo de la marginal en el nodo de habilidad de cada jugador, se obtiene como el producto de la distribuci\'on \textit{prior} y el \textit{Likelihood}.
+% Esta distribuci\'on a posteriori calculada de manera exacta no tiene la forma funcional deseada.
+% Conseguir la Gaussiana que mejor la aproxima nos permitir\'ia extender la inferencia iterativamente en el tiempo a trav\'es del uso de las \textit{posteriors} como \textit{priors} de las siguientes observaciones.
 
+Donde el \textit{posterior} se encuentra sin normalizar, para ello se lo divide por $p(r_{ij})$.
+La \'unica variable libre es la hip\'otesis $s_i$.
+La incertidumbre posterior de cada hip\'otesis es proporcional al producto entre la propia incertidumbre previa y su \textit{likelihood}.
+Se puede notar que el \textit{likelihood} es solo la predicci\'on previa del resultado ganador observado, realizada con todas las hip\'otesis de habilidad del oponente, asumiendo $s_i$ como la verdadera habilidad del agente.
+Eso es lo que computa la densidad acumulada de todos los valores positivos de la distribucion gaussiana centrada en la diferencia entre la hipotesis $s_i$ y la media estimada del oponente $s_j$, con una varianza que incluye todas las incertezas excepto la de $s_i$, $\vartheta_i^2$.
 
 \paragraph{Mensaje aproximado}
 
 El modelo \texttt{TrueSkill} utiliza el m\'etodo \textit{expectation propagation} para realizar las aproximaciones necesarias.
 En particular, la forma que realiza esta aproximaci\'on, es mediante la minimizaci\'on de la divergencia de \textbf{Kullback-Leibler}, el cual es una m\'etrica para comparar dos distribuciones.
 Es una medida de que tan bien es aproximada una distribuci\'on $q(x)$, en comparaci\'on con otra distribuci\'on, $p(x)$.
-Si $p(x)$ es una Gaussiana truncada, esta m\'etrica se minimiza al elegir una Gaussiana,  $q(x)$, con la misma media y la varianza que p(x).
-%(xxx Pafnuty Chebyshev in 1887) no se puede citar
-Este caso de \texttt{expectation propagation} es algunas veces conocido como \textbf{moment matching}, debido a que se basa en la comparaci\'on  de las medias.
-Se conoce como el primer momento (\textit{first moment}) de una distribuci\'on a su media.
-La forma de calcular la media y varianza de una distribuci\'on Gaussiana truncada se deja en el ap\'endice~\ref{appendix:trunc}
+Si $p(x)$ es una gaussiana truncada, esta m\'etrica se minimiza al elegir una gaussiana,  $q(x)$, con la misma media y la varianza que p(x).
+Este caso de \texttt{expectation propagation}.
+La forma de calcular la media y varianza de una distribuci\'on gaussiana truncada se deja en el ap\'endice~\ref{appendix:truncada}.
 
 
-Este mensaje, $p(x)$ es el mensaje de subida de los nodos diferencias (en caso de un jugador versus otro,  el nodo diferencia).
+El mensaje $p(d)$ es el mensaje de subida de los nodos diferencias (en caso de un jugador en contra de otro,  hay un \'unico nodo diferencia).
+Existen $n-1$ nodos de diferencia, siendo $n$ la cantidad de equipos.
 Para realizar esta aproximaci\'on, primero se calcula la marginal del nodo diferencia, teniendo as\'i que calcular todos los mensajes entrantes a este nodo.
-La marginalizaci\'on de \'esto queda una Gaussiana truncada.
+La marginalizaci\'on de \'esto queda una gaussiana truncada.
 
 \begin{equation}
 	p(d) = N(d|\delta,\vartheta) \mathbb{I}(d > 0)
@@ -1734,37 +1666,48 @@ La marginalizaci\'on de \'esto queda una Gaussiana truncada.
 
 Si suponemos que el jugador $i$ gan\'o sobre $j$, estos par\'ametros quedan de la forma, $\delta = \mu_{i}-\mu_{j}$ y
 $\vartheta^2 = \sigma_i^2 + \sigma_j^2+2\beta^2$.
-Sea la aproximaci\'on a esta $\widehat{p}(d)$.
-\'Esta esta definida como,
+La aproximaci\'on  de $p(d)$ se la denota como $\widehat{p}(d)$, definida como,
 
 \begin{equation}\label{eq:aprox}
 \widehat{p}(d) = N\Bigg(d \,  \bigg| \,  \delta + \vartheta \, V(t) ,  \vartheta^2 \big( 1 - W(t) \big)  \Bigg)
 \end{equation}
 
-\todo[inline]{citar. Tambien se puede citar algun libro o algo asi....}
+
 
 Las funciones $V_1(t)$ y $W_1(t)$, se explican en la secci\'on ap\'endice \ref{appendix:trunc}.
-\'Estas son combinaciones de distribuciones normales y acumuladas, que aparecen al calcular el primer y segundo momento de la distribuci\'on $p(x)$.
-El par\'ametro $t$, esta definido como $t = (\delta-x_1)/\vartheta$, con $x_1$ el valor en el eje $x$ donde se encuentra truncada la Gaussiana.
-Teniendo la marginal aproximada, lo que se realiza es sacarle la informaci\'on (dividir) del mensaje que no nos interesa, el mensaje del factor diferencia $f_d$ al nodo diferencia, $d$.
+\'Estas son combinaciones de distribuciones normales y acumuladas, que aparecen al calcular el primer y segundo momento de la distribuci\'on $p(d)$.
+El par\'ametro $t$, esta definido como $t = (\delta-x_1)/\vartheta$, con $x_1$ el valor donde se encuentra truncada la gaussiana.
+Teniendo la marginal aproximada, lo que se realiza es sacarle la informaci\'on del mensaje que no nos interesa, es decir el mensaje del factor diferencia $f_d$ al nodo diferencia, $d$.
+\'Esto se realiza simplemente dividiendo la marginal por este mensaje.
 
-\begin{equation}
- m_{d \rightarrow t_d} \propto\widehat{m_{d \rightarrow t_d}} = \frac{\widehat{P}(d)}{m_{f_d \rightarrow d}} = N(d,\delta_{\div},\vartheta_{\div}^2 )
+\begin{equation}\label{eq:aprox_}
+ m_{d \rightarrow t_d} \propto\widehat{m_{d \rightarrow t_d}} = \frac{\widehat{p}(d)}{m_{f_d \rightarrow d}} = N(d,\delta_{\div},\vartheta_{\div}^2 )
 \end{equation}
 
-Donde $\delta_{\div}$ y $\vartheta_{\div}$ son la media y varianza que mejor aproximan la Gaussiana truncada.
+Donde $\delta_{\div}$ y $\vartheta_{\div}$ son la media y varianza que mejor aproximan la gaussiana truncada.
 %Este enfoque de usar un mensaje entrante para proporcionar el contexto en el cual aproximar el mensaje saliente correspondiente se conoce como \textbf{expectation propagation} (o EP).
 Podemos ver que la aproximaci\'on se hace de manera local en el nodo de factor, y en una forma independiente a la estructura restante del grafo.
+Con este mensaje, se puede continuar con la marginalizaci\'on de los nodos de inter\'es, para poder calcular los \textit{posteriors} de los jugadores preservando la forma gaussiana.
+
 
 
 \paragraph{M\'ultiples juegos}
+
 Como ya mencionamos, \texttt{TrueSkill} utiliza el \textit{posterior} de un jugador como \textit{prior} de su siguiente juego.
 Para ello se usa el enfoque de inferencia aproximada conocida como \textbf{online learning} (llamado algunas veces como \textit{filtering}), en donde cada distribuci\'on de habilidad de jugador, obtiene una actualizaci\'on solo cuando se obtiene un nuevo resultado de juego en el cual involucre \'este jugador.
-Cuando un jugador juega una nueva partida, se realiza inferencia usando esta actual distribuci\'on de habilidad gaussiana como \textit{prior} , y la distribuci\'on a \textit{posterior} resultante es luego guardada para ser el \textit{prior} del pr\'oximo juego del agente en cuesti\'on.
-Cada juego individual es entonces descrito por el grafo de la forma mostrada de la figura~\ref{graph:factorGraph}.
+Cuando un agente juega una nueva partida, se realiza inferencia usando esta actual distribuci\'on de habilidad gaussiana como \textit{prior} , y la distribuci\'on a \textit{posterior} resultante es luego guardada para ser el \textit{prior} del pr\'oximo juego del agente en cuesti\'on.
+Cada juego individual es entonces descrito por el grafo de la forma mostrada de la figura~\ref{graph:factorGraph_trueskill}.
+Para \textit{TrueSkill}, el \textit{posterior} con distribuci\'on gaussiana calculado en cualquier tiempo es,
+ 
+\begin{equation}
+ \widehat{\text{Posterior}}_t \propto \widehat{\text{Likelihood}}_t  \overbrace{\widehat{\text{Likelihood}}_{t-1} \dots \widehat{\text{Likelihood}}_{2} \underbrace{\widehat{\text{Likelihood}}_{1} \text{Prior}_1}_{\widehat{\text{Posterior}}_{1} \text{ as } \text{Prior}_{2}} }^{\widehat{\text{Posterior}}_{t-1} \text{ as } \text{Prior}_{t}} 
+\end{equation}
 
-Es importante notar, que cuando se hace \textit{online learining}, el orden en el que se infiere las partidas toma una importancia significativa y  puede influir a la evaluaci\'on de habilidad.
-Este tema se ver\'a m\'as adelante cuando se vea \texttt{TrueSkill Through Time}.
+Donde {\footnotesize $\widehat{\text{Posterior}}_i$} y {\footnotesize $\widehat{\text{Likelihood}}_i$} representan las aproximaciones inducidas por la ecuaci\'on~\ref{eq:aprox_} en el $i$-\'esimo evento.
+Si consideramos el \textit{likelihood} como un filtro del \textit{prior}, cada \textit{posterior} puede ser visto como una acumulaci\'on de todos los filtros anteriores.
+De esta forma, la informaci\'on se propaga de estimaciones pasadas hacia futuras.
+Debido a que las habilidades son variables din\'amicas es importante agregar alguna incertidumbre $\gamma$ en cada paso.
+
 
 
 \paragraph{Ruido}
@@ -1772,38 +1715,55 @@ Por como esta formado el m\'etodo, al utilizar los \textit{posteriors} como \tex
 Esto es un error, ya que un jugador puede evolucionar (i.e. mejorar su habilidad) en el tiempo, contradiciendo a esta suposici\'on.
 Para corregir \'esto, se utiliza la suposici\'on por la cual dice que cada jugador tiene un valor de habilidad, representado por una variable continua, dada por su valor de habilidad en su juego previo, m\'as alg\'un tipo de cambio en la habilidad que tenga una media nula con una distribuci\'on en forma de campana, en particular gaussiana.
 Es decir se adiciona una constante de ruido $\gamma$ al \textit{prior}.
-Al agregarle una incertidumbre a la habilidad del jugador, esto nos permite evitar valores de incerteza muy chicas, las cuales impiden una actualizaci\'on correcta de la media.
+Al agregarle una incertidumbre a la habilidad del jugador, esto nos permite evitar valores de incerteza muy chicas, las cuales impiden una correcta actualizaci\'on de la media.
 
 El valor de  $\gamma$ tiene que ser lo suficientemente grande para que pueda seguir a los cambios reales (ocultos) de la habilidad del jugador, pero no tanto como para que haga oscilar la habilidad.
-La elecci\'on de este valor se discutir\'a en la seccion de validaci\'on.
-
+La elecci\'on de este valor se discutir\'a en la secci\'on de validaci\'on.
 \begin{equation}
-	\text{Prior}=N(x;\mu,\sigma^2+\gamma^2)
+	\text{Prior}= \widehat{p}(s_{i_t}) = \N(s_{i_t} | \mu_{i_{t-1}}, \sigma_{i_{t-1}}^2 + \gamma^2 )
 \end{equation}
+
+ Debido a que el enfoque de filtrado no se surge de ningún modelo probabil\'istico, sufre de un serie de problemas.
+ Sus debilidades están relacionadas con el hecho de que la informaci\'on propaga en un solo sentido por el sistema.
+ El inicio de toda secuencia de estimaciones siempre tiene alta incertidumbre.
+ Pero también sufre de desacoplamientos ``temporales'' y ``espaciales''.
+ A pesar de que la diferencia relativa entre estimaciones contempor\'aneas al interior de comunidades bien conectadas puedan ser correctas, las estimaciones separadas en el tiempo y entre comunidades poco conectadas suelen ser incorrectas.
+ A fin de obtener buenas estimaciones iniciales y garantizar compatibilidad temporal y espacial, necesitamos un modelo causal del proceso temporal que vincule todas las actividades hist\'oricas.
+ Este enfoque, conocido como \emph{smoothing}, es el implementado por \texttt{TrueSkill Through Time}~\cite{Dangauthier2007}
+ Es dif\'icil imaginar la compleja estructura que pueden adquerir este tipo de modelos gr\'aficos, cualquier videojuego requerirá t\'ipicamente una red de millones de eventos.
+Es importante notar, que cuando se hace \textit{online learining}, el orden en el que se infiere las partidas toma una importancia significativa y  puede influir a la evaluaci\'on de habilidad.
+Este tema se ver\'a m\'as adelante cuando se vea \texttt{TrueSkill Through Time}.
+
 
 \paragraph{Evidencia}
 Teniendo todas las herramientas, podemos ahora explorar un poco m\'as la m\'etrica de evaluaci\'on ya contada en la introducci\'on te\'orica.
 Lo que nos interesa es utilizar Bayes, para poder saber la probabilidad que sucede un resultado de un juego dado nuestros \textit{priors} (los cuales fueron inferidos en partidas previas).
 Para ello recordemos el ecuaci\'on~\ref{eq:bayes_theorem}, donde lo que estamos necesitando es el dividendo.
-Como esta probabilidad hace que nuestro \textit{posterior} este normalizado, si integramos el divisor nos dar\'a exactamente lo que estamos buscando, $P(Datos)$.
-Podemos ver en la figura~\ref{eq:inference2}, la distribuci\'on \textit{prior} y \textit{likelihood} para un caso gen\'erico, calculadas de manera exacta, junto con su \textit{posterior} no normalizado, como vimos en la ecuaci\'on~\ref{eq:bayesaprox}.
+Como esta probabilidad hace que nuestro \textit{posterior} este normalizado, si integramos el divisor nos dar\'a exactamente lo que estamos buscando, $p(r_{ij})$.
+Podemos ver en la figura~\ref{eq:inference}, la distribuci\'on \textit{prior} y \textit{likelihood} para un caso gen\'erico, calculadas de manera exacta, junto con su \textit{posterior} no normalizado, como vimos en la ecuaci\'on~\ref{eq:bayesaprox}.
 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{evidence.pdf}
-	\caption{Actualizaci\'on para el caso ganador usando \textit{Belief propagation}. El priori es una distribuci\'on Gaussiana, mientras que la verosimilitud es una funci\'on acumulada de la distribuci\'on Gaussiana. Esta ultima se encuentra en otra escala para poder mostrar su comportamiento de filtro para el priori.}
+	\caption{Actualizaci\'on para el caso ganador usando \textit{Belief propagation}. El \textit{posterior} se obtiene con el producto del \textit{prior} (distribuci\'on gaussiana) y el \textit{likelihood} (funci\'on acumulada de la distribuci\'on gaussiana). La sorpresa, definido como el complemento del \textit{likelihood}, funciona como filtro para el \textit{prior}. La evidencia es la intragracion del \textit{posterior}. Las distribuciones no estan necesariamente en la misma escala: el \textit{prior} integra 1, mientras que el \textit{likelihood} va de 0 a 1.}
 	\label{fig:evidencia}
 \end{figure}
 
-Podemos ver el \textit{likelihood} en otra escala, por el motivo de mostrar su funci\'on de filtro para el \textit{prior}.
-En las regiones de alta habilidad, donde un resultado ganador no generar\'ia ninguna sorpresa, la distribuci\'on \textit{posterior} se mantiene pegada a la distribuci\'on a \textit{prior} (i.e. no se produce una actualizaci\'on visible).
-En cambio en las regiones de poca habilidad, donde un resultado ganador generar\'ia mucha sorpresa (poco esperado), la distribuci\'on a \textit{posterior} pierde casi toda la densidad.
-Es importante aclarar, que al estar usando el \textit{posterior} exacto, esta no es una distribuci\'on Gaussiana, como ya fue discutido.
+% Podemos ver el \textit{likelihood} en otra escala, por el motivo de mostrar su funci\'on de filtro para el \textit{prior}.
+% En las regiones de alta habilidad, donde un resultado ganador no generar\'ia ninguna sorpresa, la distribuci\'on \textit{posterior} se mantiene pegada a la distribuci\'on a \textit{prior} (i.e. no se produce una actualizaci\'on visible).
+% En cambio en las regiones de poca habilidad, donde un resultado ganador generar\'ia mucha sorpresa (poco esperado), la distribuci\'on a \textit{posterior} pierde casi toda la densidad.
+% Es importante aclarar, que al estar usando el \textit{posterior} exacto, esta no es una distribuci\'on Gaussiana, como ya fue discutido.
+
+El \textit{posterior} recibe la densidad del \textit{prior} no filtrado por el \textit{likelihood}.
+En la regi\'on con hipot\'eticos valores grandes de habilidad, donde un resultado ganador pr\'acticamente no genera sorpresa, el \textit{posterior} recibe casi toda la densidad del \textit{prior}.
+Es importante enfatizar que el \textit{posterior}, a pesar de su apariencia, no es una distribuci\'on gaussiana, lo cual impide usar la ecuaci\'on~\ref{eq:bayesaprox} de forma iterativa.
+Sin embargo, debido a la forma de esta \textit{posterior} exacta, una gaussiana parece ser una buena aproximaci\'on como ya se vio en secciones anteriores.
+\'Esto permite evitar los costos computacionales de diversos m\'etodos para aproximar distribuciones.
 
 El concepto de evidencia se mantiene para el caso aproximado y para el caso de multi-equipos que se vera en la siguiente secci\'on.
 La forma practica de realizar \'esto, es aprovechar que los equipos ya se encuentran organizados por el m\'etodo, y de esa forma se puede estudiar la distribuci\'on diferencia, la cual tiene toda la informaci\'on necesaria.
-Esta distribuci\'on, al haber utilizado la aproximaci\'on, tiene una forma funcional Gaussiana, centrada en la diferencia.
+Esta distribuci\'on, al haber utilizado la aproximaci\'on, tiene una forma funcional gaussiana, centrada en la diferencia.
 La integral de $-\infty$ a cero representa la probabilidad que tiene de ganar el jugador que en realidad perdi\'o y la integral de cero a  $\infty$, representa la probabilidad de ganar que tiene el jugador ganador.
 En caso de m\'ultiples equipos se genera esto para cada pares de diferencias, es decir para cada nodo de diferencia.
 Realizando de forma an\'aloga, se calcula la acumulada de esta distribuci\'on hasta cero, y como nos interesa la probabilidad que tiene el ganado restamos esta acumulada a 1, de forma que nos de lo deseado.
@@ -1813,21 +1773,23 @@ Esto se puede observar en la figura~\ref{fig:evidenciadiff}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{evidence_diff.pdf}
-	\caption{Distribuci\'on Gaussiana de la diferencia. La integral hasta cero da la probabilidad de que el jugador perdedor gane.}
+	\caption{Distribuci\'on gaussiana de la diferencia. La integral hasta cero da la probabilidad de que el jugador perdedor gane.}
 	\label{fig:evidenciadiff}
 \end{figure}
 
 Guardando este valor juego a juego, se multiplican las evidencias para as\'i tener una medida de nuestro modelo. Si utilizamos la evidencia logar\'itmica negativa y promediada, esto nos queda.
-Si llamamos a la evidencia total como Evidencia y a la por cada juego $i$, $ev_i=(1-\Phi(0;\delta_i,\vartheta_i^2))$.
+Si llamamos a la evidencia total como Evidencia y a la por cada juego $i$, $ev_i=(1-\Phi(0|\delta_i,\vartheta_i^2))$.
+Se tiene,
 
 \begin{equation}
 	\text{Evidencia} = -\frac{log(\prod_{i=1}^{N}ev_i)}{N}
-\end{equation}
+\end{equation}  
 
-\todo[inline]{Esteban: ni aclaro empate ya que ni lo uso...}
+Donde como se comento anteriormente, para tener un mejor manejo de este valor se toma el logaritmo de las evidencia, que al generar valores negativos se multiplica a todo por $-1$ y se le toma promedio.
+De esta forma obtenemos un  valor que representa el grado de coincidencia entre nuestro modelo y los resultados observados.
 
 
-\subsection{Full TrueSkill}
+\subsection{Full TrueSkill}\label{sec:iterative_posterior}
 
 
 Como fue mencionado, \texttt{TrueSkill} permite la implementaci\'on de juegos de m\'ultiples equipos, por comodidad lo denominamos \texttt{Full TrueSkill}.
@@ -1891,86 +1853,30 @@ Es importante destacar que el m\'etodo organiza a los equipos en orden de ganado
 		\path[draw, -latex, fill=black!50,sloped] (tc) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{posterior}$(t_0)$} (ftc);
 
 	}
-	\caption{\small Grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo \texttt{TrueSkill} para el caso de multi equipos. 
-	Se recortaron algunos nodos para una simplificaci\'on en la explicaci\'on.}
+	\caption{\small Grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo \texttt{TrueSkill} para el caso de multi-equipos. 
+	Se recortaron algunos nodos para una mejor visualizaci\'on de los cambios relevantes al caso de \textit{TrueSkill} explicado anteriormente.}
 	\label{graph:FullTrue}
 \end{figure}
 
 Los nombres fueron elegidos solamente para simplificar la notaci\'on.
-Podemos observar que una diferencia importante, es que ahora los nodos de la variable de rendimiento de equipo, $t_i$ puede estar conectada a dos nodos de factores de diferencia, $f_{d_i}$.
+Podemos observar que una diferencia importante, es que ahora los nodos de la variable de rendimiento de equipo, $t_i$, puede estar conectada a dos nodos de factores de diferencia, $f_{d_i}$.
 Esto hace que haya una dependencia mutua entre las marginales de la diferencia de rendimiento de equipos , $p(d_i)$, haciendo imposible realizar una inferencia directa sin bucle.
 La idea b\'asica es actualizar r\'apidamente, tanto para adelante como para atr\'as, todos los mensajes en el camino m\'as corto entre cualquiera dos marginales $p(d_i)$ hasta que converja.
-Los mensajes que todav\'ia no est\'an definidos, por ejemplo \emph{winLikelihood}$(t_1)$ en la primer pasada hacia adelante, tienen que ser reemplazados por una forma neutral, como puede ser un escalar unidad o una distribuci\'on Gaussiana con varianza infinita.
+Los mensajes que todav\'ia no est\'an definidos, por ejemplo \emph{winLikelihood}$(t_1)$ en la primer pasada hacia adelante, tienen que ser reemplazados por una forma neutral, como puede ser un escalar unidad o una distribuci\'on gaussiana con varianza infinita.
 Si el mensaje ya hab\'ia sido definido, entonces usamos la \'ultima definici\'on posible.
 
 En el primer ciclo, se calcula el mensaje $prior(d_0)$.
 Para ello  se calculan los mensajes que le llegan al factor $f_{d_0}$,  $m_{t_0 \rightarrow f_{d_0}}(t_0)$ y  $m_{t_1 \rightarrow f_{d_0}}(t_1)$.
-El primero de estos mensajes se realiza igual que en \texttt{TrueSkill}, la diferencia radica en el segundo.
-En \'este tenemos que calcular primero los mensajes que le llegan al nodo $t_1$.
-En el tenemos el mensaje an\'alogo a $t_0$ pero adem\'as tenemos el mensaje que viene del nodo de factor $f_{d_1}$, el cual todav\'ia no fue calculado.
-Este ultimo mensaje es se pasa con una forma neutra.
-Con \'esto logramos calcular la marginal $p(d_0)$ y hacer la aproximaci\'on igual que en la secci\'on anterior.
-De esta forma, subimos con el mensaje aproximado, y se lo pasamos al nodo de la izquierda ($\emph{loseLikelihood}(t_{i+1})$).
-
-Teniendo esta informaci\'on procedemos de la misma forma a calcular la marginal $p(d_{i+1})$.
-Se prosigue hasta llegar al ultimo nodo de diferencia, y se repite el proceso invirtiendo el sentido.
-Esta vez, luego de cada marginal se entrega el mensaje al nodo de la derecha ($\emph{winLikelihood}(t_{i})$) y se prosigue a calcular la marginal $p(d_{i})$, repitiendo el proceso hasta llegar al primer nodo $p(d_{0})$.
-Esto se reitera hasta que no haya cambios relevantes en los mensajes.
-
-\todo[inline]{Esteban: Ests mensajes, los dejo o los mando directo a appendice?}
-De esta forma podemos generalizar todos los mensajes y marginales de inter\'es.
-Sea la marginal $p(d_i)$,
-%%%
-%\begin{equation}
-%p(t_e) = \emph{prior}(t_e) \cdot \emph{looseLikelihood}(t_e) \cdot \emph{winLikelihood}(t_e)
-%\end{equation}
-
-\begin{equation}
-p(d_i) = \emph{prior}(d_i) \cdot \emph{likelihood}(d_i)
-\end{equation}
-\paragraph{$\bm{\emph{winPosterior}(t_i)}$: $m_{t_i \rightarrow f_{d_i}}(t_i)$ }
-%%
-\begin{equation}
-\begin{split}
-\emph{winPosterior}(t_{i}) = \emph{prior}(t_i) \cdot \emph{winLikelihood}(t_i)
-\end{split}
-\end{equation}
-%%
-%%
-\paragraph{$\bm{\emph{losePosterior}(t_i)}$: $m_{t_i \rightarrow f_{d_{i-1}}}(t_i)$}
-Se inicializan con una forma neutra
-\begin{equation}
-\begin{split}
-\emph{losePosterior}(t_{i}) = \emph{prior}(t_i) \cdot \emph{loseLikelihood}(t_i)
-\end{split}
-\end{equation}
-
-
-\paragraph{$\bm{\emph{prior}(d_i)}$: $m_{f_{d_0} \rightarrow d_0}(d_0)$}
-
-\begin{equation}
-\begin{split}
-\emph{prior}(d_{i}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \cdot winPosterior(t_i) \cdot losePosterior(t_{i+1}) \, dt_idt_{i+1}
-\end{split}
-\end{equation}
-
-
-\paragraph{$\bm{\widehat{p}(d_i)}$:}
 
 \begin{equation}
 \widehat{p}(d_i) = \emph{prior}(d_i) \, \widehat{\emph{likelihood}}(d_i)
 \end{equation}
 
-Siguiendo el algoritmo de \textit{expectation propagation}, aproximamos el \emph{likelihood}$(d_i)$, mediante la aproximacion de la marginal $p(d_i)$ mediante \textit{moment matching}, resultando en $\widehat{p}(d_i)$ que es una Gaussiana con misma media y varianza que $p(d_i)$.
-
-\begin{equation}
-\begin{split}
-\widehat{p}(d_i) & = \emph{approx}(p(d_i)) = \emph{approx}(\emph{prior}(d_i) \cdot \emph{likelihood}(d_i))
-\end{split}
-\end{equation}
-
-Entonces,
-\paragraph{$\bm{\widehat{\emph{likelihood}}(d_i)}$:}
+El primero de estos mensajes se realiza igual que en \texttt{TrueSkill}, la diferencia radica en el segundo.
+En \'este tenemos que calcular primero los mensajes que le llegan al nodo $t_1$.
+En el tenemos el mensaje an\'alogo a $t_0$ pero adem\'as tenemos el mensaje que viene del nodo de factor $f_{d_1}$, el cual todav\'ia no fue calculado.
+Este ultimo mensaje es se pasa con una forma neutra.
+Con \'esto logramos calcular la marginal $p(d_0)$ y hacer la aproximaci\'on igual que en la secci\'on anterior.
 
 \begin{equation}
 \begin{split}
@@ -1978,50 +1884,35 @@ Entonces,
 \end{split}
 \end{equation}
 
-\paragraph{$\bm{\widehat{\emph{posterior}}(d_i)}$:}
 
-
-\begin{equation}
-\begin{split}
-\widehat{\emph{posterior}}(d_i) &= \widehat{\emph{likelihood}}(d_i)
-\end{split}
-\end{equation}
-
-\paragraph{\emph{loseLikelihood}$\bm(t_{i+1})$: $m_{f_{d_i} \rightarrow t_{i+1}}(t_{i+1})$}
-
-\begin{equation}
-\begin{split}
-\emph{loseLikelihood}(t_{i+1}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \emph{winPosterior}(t_i) \widehat{\emph{posterior}}(d_i) \, dd_idt_{i+1}
-\end{split}
-\end{equation}
-
-
-\paragraph{\emph{winLikelihood}$\bm(t_{i})$: $m_{f_{d_{i-1}} \rightarrow t_{i}}(t_{i})$}
-Se inicializan con su forma neutra
-\begin{equation}
-\begin{split}
-\emph{winLikelihood}(t_{i}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \emph{losePosterior}(t_{i+1}) \widehat{\emph{posterior}}(d_i) \, dd_idt_{i+1}
-\end{split}
-\end{equation}
+De esta forma, subimos con el mensaje aproximado, y se lo pasamos al nodo de la izquierda ($\emph{loseLikelihood}(t_{i+1})$).
+Teniendo esta informaci\'on procedemos de la misma forma a calcular la marginal $p(d_{i+1})$.
+Se prosigue hasta llegar al ultimo nodo de diferencia, y se repite el proceso invirtiendo el sentido.
+Esta vez, luego de cada marginal se entrega el mensaje al nodo de la derecha ($\emph{winLikelihood}(t_{i})$), se prosigue a calcular la marginal $p(d_{i})$, repitiendo el proceso hasta llegar al primer nodo $p(d_{0})$.
+Esto se reitera hasta que no haya cambios relevantes en los mensajes.
+De esta forma se asegura que toda la informaci\'on del evento se propague a todos los \textit{posteriors} de los agentes en cuesti\'on.
+De esta forma podemos generalizar todos los mensajes y marginales de inter\'es.
+En el ap\'endice~\ref{appendix:full} (\nameref{appendix:full})
 
 
 
 
 
-\subsection{TrueSkil Through Time}
+\subsection{TrueSkill Through Time}
 
-El m\'etodo \textit{TrueSkil Through Time} (\texttt{TTT}) \cite{Dangauthier2007}.
-La novedad del m\'etodo consiste en la propagaci\'on temporal de la informaci\'on.
+
+La novedad del m\'etodo  \texttt{TrueSkill Through Time} (\texttt{TTT})~\cite{Dangauthier2007}, consiste en la propagaci\'on temporal de la informaci\'on.
 En el m\'etodo anterior, a medida que obtenemos un nuevo observable, se actualiza el conocimiento de la habilidad de los jugadores en cuesti\'on, utilizado esta informaci\'on para un evento futuro.
-En cambio \textit{TTT} no solo realiza \'esto, si no que a su vez utiliza esta nueva informaci\'on, para propagarla en sentido contrario y as\'i actualizar la informaci\'on de eventos pasados.
+En cambio \texttt{TTT} no solo realiza \'esto, si no que a su vez utiliza esta nueva informaci\'on, para propagarla en sentido contrario y as\'i actualizar la informaci\'on de eventos pasados.
 De esta forma a medida que obtenemos mas eventos de un jugador, podemos estimar de manera mas certera la habilidad del jugador  que tuvo en cada evento, incluso en la primer partida observada.
-En \textit{TrueSkill}, esta primer partida posee mucha incertidumbre debido a que es la \'unica informaci\'on hasta ese momento.
-\'Esto tambien implica que este m\'etodo, logra  obtener una habilidad certera de un jugador con una menor cantidad de eventos.
+En \texttt{TrueSkill}, esta primer partida posee mucha incertidumbre debido a que es la \'unica informaci\'on hasta ese momento.
+\'Esto tambi\'en implica que este m\'etodo, logra  obtener una habilidad certera de un jugador con una menor cantidad de eventos.
+Por como esta formado el m\'etodo, en la primer pasada de la primer iteracio\'n, se obtiene \texttt{TrueSkill}, pudiendo guardar esta informaci\'on de forma separada en caso de requerirse.
 
 Consideremos que tenemos de un juego, $N$ eventos $\{1, \dots, N\}$ y son completados en pasos o baches temporales $T$ (e.g. d\'ia, semana, mes, a\~nos, etc).
 Denotamos al resultado de un juego entre dos jugadores $i$ y $j$ dentro de un bache temporal $t$ como $\vm{y}^t_{ij}(k)$, donde $k \in \{1,\dots,K^t_{ij}\}$, con $K^t_{ij}$ el numero de resultados de juegos disponibles para ese par de jugadores dentro de ese bache temporal.
 
-\paragraph{Consideraciones}
+\paragraph{Consideraciones del m\'etodo}
 \begin{itemize}
 	\item Inferencia entre un bache temporal (d\'ia, semana, mes) depende del orden aleatorio elegido para la actualizaci\'on. De todas formas el resultado deber\'ia ser independiente del orden de los juegos dentro de un bache temporal.
 	\item Dentro de un bache temporal, no se adiciona ninguna constante de ruido $\gamma$, como se realiza en \texttt{TrueSkill}. 
@@ -2033,7 +1924,7 @@ Denotamos al resultado de un juego entre dos jugadores $i$ y $j$ dentro de un ba
 El gr\'afico de factores de una variable de habilidad temporal $s_i^t$ es,
 
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 	\tikz{ %
 		\node[latent] (s0) {$s_i^{t-1}$} ; %
@@ -2086,9 +1977,9 @@ El gr\'afico de factores de una variable de habilidad temporal $s_i^t$ es,
 
 
 Debido que en cada bache hay una \'unica habilidad por jugador, cada nodo $s_i^t$ representa la informaci\'on de un mismo jugador dentro de un bache.
-Las flechas representan los mensajes computados por el algoritmo de sum-product.
+Las flechas representan los mensajes computados por el algoritmo de \textit{sum-product}.
 Nuevamente los nombres fueron elegidos solamente para simplificar la notaci\'on.
-Mediante el algoritmo de sum-product, sabemos que la distribuci\'on marginal de cualquier variable, es el producto de los mensajes, que esta variable recibe de sus vecinos,
+Mediante el algoritmo de \textit{sum-product}, sabemos que la distribuci\'on marginal de cualquier variable, es el producto de los mensajes, que esta variable recibe de sus vecinos,
 
 \begin{equation}
 p(s^t) = \prod_{h \in n(s^t)} m_{h \rightarrow s^t}(s^t)
@@ -2100,12 +1991,34 @@ Remplazando los mensajes por los nombres seleccionados, esta distribuci\'on se p
 p(s_i^t) = \emph{prior}_i(t) \cdot \emph{inversePrior}_i(t) \cdot \prod_{k=1}^{K_i^t} \emph{likelihood}_i(t,k)
 \end{equation}
 
+
+Los mensajes \emph{prior} e \emph{inversePrior} son las estimaciones de habilidad vecinas, a las que se le agrega cierta incertidumbre $\gamma$ por el paso temporal.
+
+%xxx Para gus, no se agrega solamente en la primer iteracion? si no estoy agregando ruidado en cada pasada
+
+\begin{equation*}
+\emph{prior}_i(t) = \N(s_{i_t}|s_{i_{t-1}}, \gamma^2) \ \ \ \ \ \ \emph{inversePrior}_i(t) = \N(s_{i_t}|s_{i_{t+1}}, \gamma^2)
+\end{equation*}
+%
+los \textit{likelihoods} se computan siguiendo la secci\'on~\ref{sec:iterative_posterior} (\nameref{sec:iterative_posterior}), usando como prior toda la informaci\'on salvo la de la partida de inter\'es.
+
+ \begin{equation}
+ \emph{withinPrior}_i(t,k) = \emph{prior}_i(t) \cdot \emph{inversePrior}_i(t) \cdot \prod_{\hfrac{q=1}{q\neq k}}^{K_{i_t}} \emph{likelihood}_i(t,q) = \frac{p(s_i^t) }{\emph{likelihood}_i(t,k)}
+ \end{equation}
+ 
 Existe una dependencia muta entre los mensajes hacia adelante y hacia atr\'as, haciendo imposible una inferencia de \'unica iteraci\'on.
 La idea b\'asica es la de actualizar repetidas veces los mensajes hacia adelante y hacia atr\'as hasta su convergencia, asegur\'andonos que el efecto de la actualizaci\'on previa sea removida antes de que el nuevo efecto se agregue.
-Los mensajes que no est\'an todav\'ia definidos, por ejemplo el \textit{prior} inverso en la primer pasada hacia adelante, es remplazado por una forma neutral como un escalar unidad o una distribuci\'on Gaussiana con infinita varianza.
+Los mensajes que no est\'an todav\'ia definidos, por ejemplo el \textit{prior} inverso en la primer pasada hacia adelante, es remplazado por una forma neutral como un escalar unidad o una distribuci\'on gaussiana con infinita varianza.
+Finalmente, los mensajes que la variable $s_{i_t}$ env\'ia al pasado y al futuro son,
+%
+\begin{equation*}
+  \emph{posterior}_i(t-1) = \frac{p(s_{i_{t-1}})}{\emph{inversePrior}_i(t-1)} \ \ \ , \ \ \ \emph{inversePosterior}_i(t+1) = \frac{p(s_{i_{t+1}})}{\emph{prior}_i(t+1)}
+\end{equation*}
+
+En cada pasada hacia adelante, guardamos cada mensaje hacia adelante (i.e. $prior_i(t+1)$).
+En cada pasada hacia atr\'as computamos el mensaje hacia atr\'as (i.e. $inversePrior_i(t-1)$).
 De esta forma, \textit{TTT} logra mejorar las estimaciones de las habilidades en relaci\'on a su antecesor con una menor cantidad de eventos.
 
-\subsubsection{Convergencia}
 
 \paragraph{Bache temporal} Dentro de un bache temporal $t$, pasamos por los resultados de los juegos $\vm{y}^t$, varias veces hasta su convergencia.
 La actualizaci\'on para un resultado de un juego $y^t_i(k)$, se realiza de la misma manera que \texttt{TrueSkill} original, usando como priori el \emph{withinPrior}$_i(t,k)$ y guardando el \emph{likelihood}$_i(t,k)$.
@@ -2114,75 +2027,19 @@ La actualizaci\'on para un resultado de un juego $y^t_i(k)$, se realiza de la mi
 En cada pasada hacia adelante, guardamos cada mensaje hacia adelante, i.e. \emph{prior}$_i(t+1)$.
 En cada pasada hacia atr\'as computamos el mensaje hacia atr\'as, i.e. \emph{inversePrior}$_i(t-1)$.
 Este mensaje, junto con el ultimo \emph{likelihood}$_i(t,k)$ guardado, usaremos para computar cada \emph{withinPrior}$_i(t,k)$ en el bache temporal.
+
+En el ap\'endice~\ref{appendix:ttt} (\nameref{appendix:ttt}), se pueden encontrar todas las definiciones de los diferentes mensajes de la representaci\'on gr\'afica~\ref{graph:factorttt}.
+ 
+
 \vspace{0.3cm}
 
-\paragraph{\emph{posterior}$\bm{_i(t-1)}$:}
-
-\begin{equation}
-\begin{split}
-\emph{posterior}_i(t-1)&= m_{s_i^{t-1}\rightarrow f_{s_i^t}}(s_i^{t-1}) \\
-&= \emph{prior}_i(t-1) \cdot \prod_{k=1}^{K_i^{t-1}} \emph{likelihood}_i(t-1,k)\\
-&= p(s_i^{t-1}) \, \emph{inversePrior}_i(t-1)^{-1}
-\end{split}
-\end{equation}
-
-
-\paragraph{\emph{prior}$_i\bm{(t)}$:}
-
-\begin{equation}
-\begin{split}
-\emph{prior}_i(t) &= m_{f_{s_i^t} \rightarrow s_i^t}(s_i^t) \\
-&= \int f_{s^t} \cdot \emph{posterior}_i(t-1) \, ds_i^{t-1}
-\end{split}
-\end{equation}
-
-\paragraph{\emph{likelihood}$_i\bm{(t,k)}$:}
-
-\begin{equation}
-\begin{split}
-\emph{likelihood}_i(t,k) &= m_{f_{p^{t}(k)} \rightarrow s^t}(s^t) \\
-&= \emph{trueSkillVariationalLikelihood}_i(t,k)
-\end{split}
-\end{equation}
-
-\paragraph{\emph{withinPrior}$_i\bm{(t,k)}$:}
-
-
-\begin{equation}
-\begin{split}
-\emph{withinPrior}_i(t,k) &= m_{s_i^t \rightarrow f_{p_i^t(k)}}(s_i^t)  \\
-&= \emph{prior}_i(t) \cdot \emph{inversePrior}_i(t) \cdot \prod_{q=1, q\neq k}^{K_i^t} \emph{likelihood}_i(t,q) \\
-&= p(s_i^t) \cdot \emph{likelihood}_i(t,k)^{-1}
-\end{split}
-\end{equation}
-
-\paragraph{\emph{inversePrior}$\bm{_i(t)}$: }
-
-\begin{equation}
-\begin{split}
-\emph{inversePrior}_i(t) &= m_{f_{s_i^{t+1}} \rightarrow s_i^t}(s_i^t) \\
-&= \int f_{s_i^{t+1}} \cdot \emph{inversePosterior}_i(t+1) \, ds_i^{t+1}
-\end{split}
-\end{equation}
-
-\paragraph{\emph{inversePosterior}$\bm{_i(t+1)}$: }
-
-\begin{equation}
-\begin{split}
-\emph{inversePosterior}_i(t+1) &= m_{s_i^{t+1} \rightarrow f_{s_i^{t+1}}}(s_i^{t+1}) \\
-&= \emph{inversePrior}_i(t+1) \cdot \prod_{k=1}^{K_i^{t+1}} \emph{likelihood}_i(t+1,k) \\
-&= p(s_i^{t+1}) \cdot \emph{prior}_i(t+1)^{-1}
-\end{split}
-\end{equation}
 
 
 
-\todo[inline]{Lo dejo o va para el apendice?}
+\subsection{Visualizaci\'on}
 
-
-\paragraph{Visualizaci\'on}
-
-Veamos entonces que pasa con las distribuciones de habilidades luego de aplicar \texttt{expectation propagation} al evento entre el jugador blanco y negro que est\'abamos usando.
+Veamos entonces que pasa con las distribuciones de habilidades luego de aplicar                                 
+\texttt{expectation propagation} al evento entre el jugador blanco y negro que est\'abamos usando.
 Tomemos de ejemplo, que el jugador negro es un jugador nuevo para el m\'etodo, en el cual cuenta con mucha varianza, mientras que el jugador blanco cuenta con una habilidad con m\'as informaci\'on, teniendo una menor varianza y una media m\'as grande que el jugador negro.
 En la figura~\ref{fig:ejTrue}, podemos ver el \textit{prior} y \textit{posterior} de la distribuci\'on de habilidad de los jugadores para los dos casos posibles.
 En la figura~\ref{fig:ejTrueWin} tenemos el caso donde el jugador negro es el que gana, mientras que en la figura~\ref{fig:ejTrueLose}, la gana el jugador blanco.
@@ -2360,11 +2217,11 @@ Una de las consideraciones es que en cada elecci\'on de par\'ametro dentro de un
 Este ultimo par\'ametro para cada caso se itera hasta encontrar el valor \'optimo, el cual minimiza la evidencia.
 
 El primer caso, es  un barrido para distintos valores de la media con la que se inicializan los jugadores ($\mu_0$), se observa que la evidencia llegada con un mismo gamma en cada caso es la misma. Para realizar el barrido, sin que \texttt{TTT}, converja a un \'unico valor (debido a su propagaci\'on de informaci\'on), cada iteraci\'on de este m\'etodo se realizo una iteraci\'on por cantidad de partidas.
-Es decir, se fue agregando de a una partida y buscando la convergencia. \
+Es decir, se fue agregando de a una partida y buscando la convergencia.
 Esto se lo conoce como \textit{Online}.
 Podemos ver en la figura~\ref{fig:Mu_lc} algunas curvas de aprendizaje para un agente de estudio.
 
-\begin{figure*}[H]
+\begin{figure}[H]
   \begin{subfigure}{0.33\textwidth}
     \includegraphics[width=\linewidth]{synthetic_model_mu_jugador0.pdf}
     \caption{Mu inicial = 0}
@@ -2382,13 +2239,15 @@ Podemos ver en la figura~\ref{fig:Mu_lc} algunas curvas de aprendizaje para un a
     \caption{Mu inicial = 25}
     \label{fig:Mu_jugador25}
   \end{subfigure}
-  \caption{Media estimada para el agente de estudio en funci\'on a la cantidad de partidas.	Se muestran 3 casos de diferentes medias iniciales para los m\'etodos \texttt{TrueSkill} y \texttt{TTT}.	Este ultimo m\'etodo se uso de manera \textit{online}. Se observa que en cada caso las curvas de un mismo modelo son iguales con una diferencia de \emph{bias}.}
-\end{figure*}
+
+  \caption{Media estimada para el agente de estudio en funci\'on a la cantidad de partidas.	Se muestran tres casos de diferentes medias iniciales para los m\'etodos \texttt{TrueSkill} y \texttt{TTT}. Este \'ultimo m\'etodo se uso de manera \textit{online}. Se observa que en cada caso las curvas de un mismo modelo son iguales con una diferencia de \emph{bias}.}
+  \label{fig:Mu_lc}
+\end{figure}
 
 
 En el podemos observar como cada curva del mismo modelo tienen la misma forma con una diferencia de una constante.
 Justamente, lo que realiza el cambio de este par\'ametro, es nada m\'as que agregarnos un bias a nuestra escala.
-Ademas, se encuentra que la diferencia entre todos los jugadores se mantiene constante.
+Adem\'as, se encuentra que la diferencia entre todos los jugadores se mantiene constante.
 Es decir la escala relativa no var\'ia o dicho de otra manera, que la probabilidad de ganar en cada evento no var\'ia.
 Esto se puede visualizar para el caso de dos jugadores en la tabla~\ref{tab:mu}
 
@@ -2787,7 +2646,7 @@ Esto se puede deber a que los jugadores de esta base de datos ya poseen un ciert
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Curvas de aprendizaje}
+\subsection{Curvas de aprendizaje}
 
 Por el momento se mencion\'o la importancia de la habilidad, pero no se profundiz\'o en la evoluci\'on que tiene \'esta a lo largo del tiempo.
 La habilidad es adquirida, principalmente, por experiencia individual (\textsl{La pr\'actica hace al maestro}).
@@ -2808,7 +2667,6 @@ Uno de las m\'as usados y, a su vez de las m\'as simples, es la que describe una
 	\label{fig:lc_sigmoide}
 \end{figure}
 
-%\todo[inline]{para KGS la media es la misma }
 
 Una curva de aprendizaje normal~\cite{newell1981-skillAcquisitionAndLawOfPractice} tiene tres etapas bien definidas: un primer estadio en el cual la persona experimenta, pero su habilidad no mejora notablemente.
 En cierto momento, representado aproximadamente por la partida 50 en la figura, el jugador comienza una segunda etapa de mejora en su habilidad caracterizado por un fuerte cambio en su habilidad.
@@ -2861,7 +2719,6 @@ Otro efecto que ocurre al estar considerando mayor informaci\'on de cada evento,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% y si meto gamma igual cero para el H?%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\todo[inline]{Esteban: leer el por que un modelo y no el otro.}
 La propuesta para atacar este problema es contar a las piedras de ventaja como jugadores que conforman un equipo con quien recibi\'o el \emph{handicap}.
 Cada cantidad de piedras de ventaja diferente se la considera un jugador diferente.
 Es decir, dos piedras de \textit{handicap} es un jugador al que se le va a estimar su habilidad, como as\'i tambi\'en al jugador de tres piedras de \textit{handicap} y as\'i sucesivamente.
@@ -3265,65 +3122,70 @@ En trabajos futuros se pretende realizar un an\'alisis similar considerando el v
 % Conclusiones
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusiones y trabajo a futuro}
-
 %Entendimiento de trueskill
-
 %documentacion
-
 %implementacion en python
-
 %caracterizacion de handicap
-
-
 %Vender que se hizo en cada caputulo
-
 %vender trabajo a futuro con komi
 
-La tesis presentada propuso un modelo de estimaci\'on en base al m\'etodo \textbf{TrueSkil Throught Time} con el fin de caracterizar el sistema de ventajas del juego go.
-Con ello se pretende generar un sistema que permita generar partidas lo mas desafiante posible mediante la asignaci\'on correcta de ventaja.
-Para ello contribuy\'o al desarrollo de la implementaci\'on en \texttt{Python} y \texttt{Julia} de dicho m\'etodo propio del Laboratorio Interdisciplinario de Computaci\'on de Alto Rendimiento (LICAR).
-Se utiliz\'o la base de datos del servidor en l\'inea \texttt{KGS}.
-La modificaci\'on propuesta consta en agrega al modelo la informaci\'on del  \textit{handicap} utilizado en cada evento.
-Con estas estimaciones se logro estudiar el comportamiento de las piedras de ventajas del juego.
 
-En el cap\'itulo 2 se desarroll\'o la teor\'ia involucrada al modelo.
-Con el se pretende dejar una documentaci\'on te\'orica del m\'etodo en cuesti\'on la cual sirva como fuente de informaci\'on de la implementaci\'on creada por el Laboratorio.
-Para ello se vieron los fundamentos necesarios para entender el m\'etodo grafico  probabil\'istico del m\'etodo.
-En particular, se mostraron las propiedades de las distribuciones usadas, como las cuentas detr\'as del algoritmo de \textit{sum-product}.
-Se mostr\'o un ejemplo detallado del predecesor \texttt{TrueSkill}, necesario para entender  \texttt{TTT}, con todos los mensajes y cuentas de interes.
-A su vez, se explica el m\'etodo de una forma mas intuitiva para lograr captar el funcionamiento del mismo.
-Se finaliza con una visualizaci\'on de las estimaciones \textit{priors} y \textit{posteriors} en un ejemplo general. 
+La tesis presentada propuso un modelo basado \texttt{TrueSkill Through Time} con el fin de analizar la asignaci\'on de \textit{handicap} en el juego de go en base a informaci\'on de partidas recolectadas de un servicio en l\'inea.
+Modelando a los diferentes valores posibles de \textit{handicap} como jugadores adicionales que hacen equipo con el jugador m\'as d\'ebil, se logr\'o estimar no solo las habilidades de los jugadores involucrados si no, a su vez, el valor que aportan las fichas de ventaja. 
+Ésto permiti\'o definir una nueva forma de asignaci\'on de \textit{handicap} en las partidas de go.
+Al comparar nuestra propuesta de asignaci\'on de \textit{handicap} con la tradicional, se mostr\'o que con nuestra propuesta se pueden lograr partidas m\'as parejas. 
 
-El cap\'itulo 3 se realizaron diversas pruebas y simulaciones con el fin de validar tanto el modelo a como la implementaci\'on.
-Se mostr\'o minimizando la evidencia del modelo se obtienen las estimaciones que mayor representan la realidad.
-Mediante simulaciones, se observ\'o el efecto que tienen los diferentes par\'amtros en las distribuciones de habilidad actualizadas.
-Entre ellos se encuentra el efecto del par\'ametro $\gamma$ y la evidencia.
-Con esto se encontraron diferentes relaciones de importancia, las cuales se utilizaron en los an\'alisis posteriores.
+En el cap\'itulo 2 se mostr\'o la teor\'ia necesaria para entender el m\'etodo bayesiano  \texttt{TrueSkill} y  su predecesor \texttt{TrueSkill Through Time}.
+Se mostraron algunas de las propiedades b\'asicas de las distribuciones usadas, como tambi\'en algunos conceptos utilizados en el m\'etodo como los gr\'aficos de factores, el pasajes de mensajes entre sus nodos a trav\'es del algoritmo \textit{sum-product}, la metodolog\'ia de evaluaci\'on del modelo, entre otros.
+Se describieron las diferentes variables y par\'ametros de \texttt{TrueSkill}, como a su vez su correcto funcionamiento tanto en este m\'etodo como su predecesor.
+Se finalizo con una visualizaci\'on de la actualizaci\'on de los \textit{priors} para un ejemplo gen\'erico. 
 
-En el cap\'itulo 4, se caracteriz\'o la base de dato usada,   estudiando brevemente el sistema de ranking utilizado por el servidor y la comunidad de go.
-En particular, se observo que los jugadores involucrados en esta tesis, son expertos en el juego, mostrando el efecto que tiene de forma te\'orica en las curvas de aprendizaje.
-Se continu\'o con la propuesta propia de esta tesis, en la cual se agrega la infromaci\'on del \textit{handicap} al modelo.
-\'Esta involucra considerar a los valores de \textit{handicap} como jugadores, donde se requiere estimar su habilidad.
-\'Estos formar equipo con el jugador negro, enfrent\'andose al jugador blanco.
-Se observo como esta propuesta genera una mejor evidencia.
-Utilizando las relaciones estudiadas en el cap\'itulo 3 se realiz\'o un breve an\'alisis sobre los par\'amatros que minimizan la evidencia en esta base de datos en particular, siendo estos los utilizados en los an\'alisis finales.
-Con estas estimaciones, se logro observar un comportamiento lineal en las habilidades de los posibles valores de \textit{handicap}.
-Calculando las probabilidades de victoria de uno de los jugadores se comparo con la frecuencia de victorias del mismo.
-Con esto se logr\'o visualizar la eficacia del modelo como as\'i el efecto que conlleva la asignaci\'on de ventaja.
-Para \'esto, se realizaron diferentes filtros entre el \textit{handicap} utilizado en cada evento y el propuesto, mostrando en cada caso una consistencia con lo esperado.
-Se continu\'o con un estudio de an\'alisis predictivo.
-Para ello se simulo el uso del software y modelo propuesto de forma \'online, utilizando un conjunto de partidas de estudio y el resto de la base de datos como entrenamiento.
-Es decir, se estiman las habilidades de esta base de datos filtrada, utilizando los \textit{posteriors} de los jugadores de estudio como sus respectivos \textit{priors}.
-Con esto se visualizo las probabilidades de victorias estimadas y las fracciones de victorias correspondientes, mostrando un correcto comportamiento.
+En el cap\'itulo 3 se valido tanto el modelo como la implementaci\'on utilizada.
+Para ello se realizaron diversas simulaciones, logrando comparar de forma satisfactoria las estimaciones halladas con las simuladas.
+Se mostr\'o que la m\'etrica elegida, mediante la minimizacio\'n de la evidencia del modelo, se obtienen las estimaciones correctas.
+Por otra parte, se estudiaron los impactos y efectos que tienen los diferentes par\'amtros en las distribuciones de habilidad actualizadas como tambi\'en la relaciones entre \'estos.
+Se mostr\'o por ejemplo, como el par\'ametro $\mu$ inicial representa un \textit{bias} en la escala absoluta de las medias de habilidad, como tambi\'en el efecto que tiene el par\'ametro $\gamma$ en la evidencia.
+Con esto se encontraron diferentes relaciones de importancia, las cuales se utilizaron en los an\'alisis posteriores teniendo un criterio a la hora de elegir los par\'ametros a utilizar.
 
+
+El cap\'itulo 4 se separo en dos partes.
+En la primera se caracteriz\'o la base de dato usada como tambi\'en se estudi\'o brevemente el sistema de ranking utilizado por el servidor y la comunidad de go.
+En particular, se observo que los jugadores involucrados en esta tesis, son expertos en el juego seg\'un el sistema de ranking del servidor.
+\'Esto muestra, que estos jugadores se encuentran posiblemente al final de la curva de aprendizaje, implicando variaciones chicas en habilidad en el tiempo.
+En la segunda parte se detallo la propuesta propia de esta tesis, en la cual se agrega la infromaci\'on del \textit{handicap} al modelo.
+\'Esta involucra considerar a los valores de \textit{handicap} como jugadores, los cuales forman parte del equipo del jugador mas d\'ebil, estimando de esta forma ambas habilidades.
+Debido a que en el juego go, el jugador mas d\'ebil se le asigna el color de fichas negro, los jugadores  \textit{handicap} formar equipo con \'este, enfrent\'andose al jugador blanco.
+Una de las primeras observaciones de esta propuesta, fue en la disminuc\'on que genera en la evidencia, en realaci\'on al m\'etodo sin considerar al \textit{handicap} como un jugador, mostrando as\'i estimaciones mas certeras seg\'un nuestra metodolog\'ia de evaluaci\'on.
+Utilizando las relaciones estudiadas en el cap\'itulo 3 se realiz\'o un breve an\'alisis sobre los par\'amatros que minimizan la evidencia en esta base de datos en particular, siendo \'estos los utilizados en los an\'alisis finales.
+Aplicando \'estos, se estimaron las habilidades de los diferentes valores de \textit{handicap}, en lo cual se observ\'o un comportamiento lineal.
+Teniendo las habilidades estimadas de los jugadores m\'as la de los \textit{handicap} provista por la caracterizaci\'on lineal, se calcul\'o probabilidad de victoria del evento para los posibles valores de ventaja buscando el valor que m\'as se acerque al equiprobable.
+El valor encontrado para cada evento es el que se considera como el valor de ventaja propuesto por nuestro modelo.
+Se encotr\'o que en el \SI{59}{\percent} de los casos este valor se diferencia al utilizado por el servidor KGS.
+A trav\'es de diferentes estudios se logro comprobar la consistencia del modelo propuesto.
+
+Uno de estos estudios consisti\'o en calcular la probabilidad de victoria en cada evento de uno de los jugadores, en particular el de ficha negra.
+Estos eventos se separaron en intervalos de acuerdo a su probabilidad calculada y en cada uno de \'estos se calcul\'o la frecuencia de victorias de las fichas negras.
+Al haber obtenido valores similares se logr\'o visualizar la eficacia del modelo.
+Otro estudio consisti\'o en realizar diferentes filtros, agrupando los eventos entre el \textit{handicap} utilizado en cada evento y el propuesto, y calcular la frecuencia de victorias del jugador negro seg\'un el \textit{handicap} propuesto.
+\'Esto mostr\'o en cada caso una consistencia con lo esperado.
+En los casos en los cuales el modelo propuesto considero un mayor valor de \textit{handicap} al usado, se encontr\'o una frecuencia de victorias por debajo al equiprobable, y en el caso de un menor valor de \textit{handicap}, se encotr\'o que esta frecuencia se encontraba por arriba.
+
+Para lograr simular el uso del m\'etodo propuesto de forma \'online, se realizo un  an\'alisis predictivo.
+Utilizando y separando un conjunto de partidas a las que se las denomino de estudio, se estim\'o el resto de la base de datos denominada de entrenamiento.
+Con \'esto se obtuvieron las habilidades de esta base de datos filtrada y se utilizaron las ultimas de cada jugador seleccionado como \textit{priors} para las partidas de estudio.
+Con esto se calcularon las probabilidades de victorias de estas partidas, separandolas en intervalos y se calcularon las fracciones de victorias en cada uno de estos.
+Se encontr\'o que las probabilidades estimadas y las fracciones de victorias eran similares, mostrando un correcto comportamiento.
+
+En estos estudios, se encontraron algunas anomal\'ias no esperadas en determinados casos.
+Entre \'estas hubieron algunas diferencias en la probabilidad calculada mediante el m\'etodo propuesto y la frecuencia de victorias.
 Una de las cuestiones que quedo afuera del alcance de esta tesis es la incorporaci\'on de la informaci\'on del \textit{komi} utilizado en los eventos.
 La implementaci\'on de \'esta no se encuentra estudiada.
-Una posibilidad es realizar un estudio analogo, agregando al \textit{komi} como un jugador formando equipo con el jugador blanco.
+Una posibilidad es realizar un estudio an\'alogo, agregando ademas al \textit{komi} como un jugador formando equipo con el jugador blanco.
 El efecto del \textit{komi} no se produce desde el principio de la partida como lo es en el caso del \textit{handicap}.
-Esto puede llevar a que la estimaci\'on de este tenga comportamientos no esperados.
-Debido a esto, tambi\'en se considero generar diferentes filtros, que intenten segmentar partidas en las cuales el \textit{komi} tuvo efecto en el resultado y en las cuales no.
-El fin de esta nuevo modelo, es que al estar considerando mayor informaci\'on de cada evento, se espera minimizar aun m\'as la evidencia, y as\'i mejorar las predicciones del modelo tanto de los jugadores como de la habilidad del \textit{handicap}.
+Al estar considerando una mayor cantidad de informaci\'on de cada evento, podr\'ia responder alguna de estas anomal\'ias y a su vez minimizar aun m\'as la evidencia, y as\'i mejorar las predicciones del modelo tanto de los jugadores como de la habilidad del \textit{handicap}.
 Con esto se obtendr\'ia un sistema de estimaci\'on mas certero el cual permitir\'ia lograr generar juegos mas desafiantes para los participantes.
+
+
 
 
 
@@ -3337,101 +3199,9 @@ Con esto se obtendr\'ia un sistema de estimaci\'on mas certero el cual permitir\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ApendiceA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Ap\'endice A}
+\chapter{Ap\'endice A:Propiedades de las gaussianas}
 %\input{chapters/ApendiceA}
 \label{appendix:gauss}
-\section{Suma de n normales}\label{suma_normales_induccion}
-
-Sabemos que
-
-\begin{equation}
-	\begin{split}
-		&t_n = \sum_{i=1}^n x_i\\
-		&\int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( N(t_n;\mu_t,\sigma_t^2)\prod_{i>1}^n N(x_i;\mu_i,\sigma_i^2) \right) dt_ndx_2 \dots dx_n =  N\left(x_1;\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
-	\end{split}
-\end{equation}
-
-
-Queremos probar por inducci\'on.
-\begin{equation}
-	P(n):= \int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( \prod_{i=1}^n N(x_i;\mu_i,\sigma_i^2) \right) dx_1 \dots dx_n \overset{?}{=} N\left(x_1;\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
-\end{equation}
-
-\paragraph{Casos base}
-
-\begin{equation}
-	\begin{split}
-		P(1) := \int \mathbb{I}(t_1 = x_1) N(t_1;\mu_t,\sigma_t^2) dt_1 = N(x_1;\mu_t,\sigma_t^2)
-	\end{split}
-\end{equation}
-
-Luego $P(1)$ es verdadera.
-
-\begin{equation}
-	\begin{split}
-		P(2) & := \iint \mathbb{I}(t_2 = x_1 + x_2) N(t_2|\mu_t, \sigma_t^2)N(x_2|\mu_2, \sigma_2^2) dx_tdx_2 \\
-		&= \int N( x_1 + x_2|\mu_t, \sigma_t^2) N(x_2|\mu_2, \sigma_2^2) dx_2   \\
-		& = \int N(x_1|\mu_t-x_2, \sigma_1^2) N(x_2| \mu_2, \sigma_2^2) dx_2 \\
-		& = \int N(x_2|\mu_t-x_1, \sigma_1^2) N(x_2| \mu_2, \sigma_2^2) dx_2 \\
-		& \overset{*}{=} \int \underbrace{N(\mu_t-x_1|\mu_2,\sigma_t^2 + \sigma_2^2)}_{\text{const.}} \underbrace{N(x_1|\mu_{*},\sigma_{*}^2) dx_1}_{1} \\
-		& = N(-x_1|\mu_2-\mu_t,\sigma_t^2 + \sigma_2^2)\\
-		& = N(x_1|\mu_t-\mu_2,\sigma_t^2 + \sigma_2^2) = N(x_1;\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n \sigma_i^2 )
-	\end{split}
-\end{equation}
-
-Donde $\overset{*}{=}$ vale por la demostraci\'on de multiplicaci\'on de normales en la secci\'on xxx%~\ref{multiplicacion_normales}.
-Luego, vale $P(2)$.
-
-
-\paragraph{Paso inductivo} $P(n) \Rightarrow P(n+1)$
-
-Sea,
-\begin{equation}
-	\begin{split}
-		P(n) &:=\int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( N(t_n;\mu_t,\sigma_t^2)\prod_{i>1}^n N(x_i;\mu_i,\sigma_i^2) \right)  dt_ndx_2 \dots dx_n\\ &=N\left(x_1;\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
-	\end{split}
-\end{equation}
-
-Queremos ver que vale $P(n+1)$
-
-\begin{equation}
-	\begin{split}
-		P(n+1) &:= \int \dots \int \mathbb{I}(t_{n+1}=  x_{n+1} + \sum_{i=1}^{n} x_i ) \left(N(t_n;\mu_t,\sigma_t^2) \prod_{i=1}^{n} N(x_i;\mu_i,\sigma_i^2) \right)\\
-		& N(x_{n+1};\mu_{n+1},\sigma_{n+1}^2) dt_ndx_2 \dots dx_{n} dx_{n+1}
-	\end{split}
-\end{equation}
-
-Por independencia
-\begin{equation}
-	\begin{split}
-		&\int N(x_{n+1};\mu_{n+1},\sigma_{n+1}^2)\Big( \int \dots \int \mathbb{I}(t_{n+1}=  x_{n+1} + \sum_{i=1}^{n} x_i ) \left(N(t_{n+1};\mu_t,\sigma_t^2) \prod_{i=1}^{n} N(x_i;\mu_i,\sigma_i^2) \right)\\
-		& N(x_{n+1};\mu_{n+1},\sigma_{n+1}^2) dt_ndx_2 \dots dx_{n} \Big) dx_{n+1}
-	\end{split}
-\end{equation}
-
-
-Por hip\'otesis inductiva
-\begin{equation}
-	\begin{split}
-		&\int N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) N\left(x_1+x_{n+1}|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right) dx_{n+1} \\
-		&=\int N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) N\left(x_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right) dx_{n+1} \\
-		&=\int N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2) N\left(x_{n+1}|\mu_{\ast},\sigma_{\ast}\right) dx_{n+1} \\
-		&= N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2) \underbrace{\int N\left(x_{n+1}|\mu_{\ast},\sigma_{\ast}\right) dx_{n+1}}_{=1} \\
-		&= N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2)\\
-		&= N(x_1|\mu_t-\sum_{i>1}^n \mu_i-\mu_{n+1},\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2)\\
-		&= N(x_1|\mu_t-\sum_{i>1}^{n+1} \mu_i,\sigma_t^2+\sum_{i>1}^{n+1}\sigma_i^2)
-	\end{split}
-\end{equation}
-
-Por demostraci\'on xxx%de la secci\'on~\ref{multiplicacion_normales},
-\begin{equation}
-	N\left(x_1;\mu_t-\sum_{i>1}^{n+1} \mu_i,\sigma_t^2+\sum_{i>1}^{n+1}\sigma_i^2\right)
-\end{equation}
-
-Luego, vale $P(n+1)$.
-
-
-%\input{chapters/ApendiceA}
 
 
 \section{Propiedades}
@@ -3451,10 +3221,100 @@ De esto mismo se puede pensar con la funci\'on acumulativa $\Phi$, haciendo camb
 
 Es por esto que Si tengo la integral de una gaussiana evaluada en un dado valor $p_i$, vale la siguiente,
 
-\begin{equation}\label{eq:simetria}
+\begin{equation}
 	\centering
 	\int N(p_i \vert s_i,\beta^2) ds_i =  \int N(s_i \vert p_i,\beta^2)ds_i
 \end{equation}
+
+\section{Suma de n normales}\label{suma_normales_induccion}
+
+Sabemos que
+
+\begin{equation}
+	\begin{split}
+		&t_n = \sum_{i=1}^n x_i\\
+		&\int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( N(t_n|\mu_t,\sigma_t^2)\prod_{i>1}^n N(x_i|\mu_i,\sigma_i^2) \right) dt_ndx_2 \dots dx_n =  N\left(x_1|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
+	\end{split}
+\end{equation}
+
+
+Queremos probar por inducci\'on.
+\begin{equation}
+	P(n):= \int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( \prod_{i=1}^n N(x_i|\mu_i,\sigma_i^2) \right) dx_1 \dots dx_n \overset{?}{=} N\left(x_1|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
+\end{equation}
+
+\paragraph{Casos base}
+
+\begin{equation}
+	\begin{split}
+		P(1) := \int \mathbb{I}(t_1 = x_1) N(t_1|\mu_t,\sigma_t^2) dt_1 = N(x_1|\mu_t,\sigma_t^2)
+	\end{split}
+\end{equation}
+
+Luego $P(1)$ es verdadera.
+
+\begin{equation}
+	\begin{split}
+		P(2) & := \iint \mathbb{I}(t_2 = x_1 + x_2) N(t_2|\mu_t, \sigma_t^2)N(x_2|\mu_2, \sigma_2^2) dx_tdx_2 \\
+		&= \int N( x_1 + x_2|\mu_t, \sigma_t^2) N(x_2|\mu_2, \sigma_2^2) dx_2   \\
+		& = \int N(x_1|\mu_t-x_2, \sigma_1^2) N(x_2| \mu_2, \sigma_2^2) dx_2 \\
+		& = \int N(x_2|\mu_t-x_1, \sigma_1^2) N(x_2| \mu_2, \sigma_2^2) dx_2 \\
+		& \overset{*}{=} \int \underbrace{N(\mu_t-x_1|\mu_2,\sigma_t^2 + \sigma_2^2)}_{\text{const.}} \underbrace{N(x_1|\mu_{*},\sigma_{*}^2) dx_1}_{1} \\
+		& = N(-x_1|\mu_2-\mu_t,\sigma_t^2 + \sigma_2^2)\\
+		& = N(x_1|\mu_t-\mu_2,\sigma_t^2 + \sigma_2^2) = N(x_1|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n \sigma_i^2 )
+	\end{split}
+\end{equation}
+
+Donde $\overset{*}{=}$ vale por la demostraci\'on de multiplicaci\'on de normales en la secci\'on xxx%~\ref{multiplicacion_normales}.
+Luego, vale $P(2)$.
+
+
+\paragraph{Paso inductivo} $P(n) \Rightarrow P(n+1)$
+
+Sea,
+\begin{equation}
+	\begin{split}
+		P(n) &:=\int \dots \int \mathbb{I}(t_n= \sum_{i=1}^n x_i ) \left( N(t_n|\mu_t,\sigma_t^2)\prod_{i>1}^n N(x_i|\mu_i,\sigma_i^2) \right)  dt_ndx_2 \dots dx_n\\ &=N\left(x_1|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right)
+	\end{split}
+\end{equation}
+
+Queremos ver que vale $P(n+1)$
+
+\begin{equation}
+	\begin{split}
+		P(n+1) &:= \int \dots \int \mathbb{I}(t_{n+1}=  x_{n+1} + \sum_{i=1}^{n} x_i ) \left(N(t_n|\mu_t,\sigma_t^2) \prod_{i=1}^{n} N(x_i|\mu_i,\sigma_i^2) \right)\\
+		& N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) dt_ndx_2 \dots dx_{n} dx_{n+1}
+	\end{split}
+\end{equation}
+
+Por independencia
+\begin{equation}
+	\begin{split}
+		&\int N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2)\Big( \int \dots \int \mathbb{I}(t_{n+1}=  x_{n+1} + \sum_{i=1}^{n} x_i ) \left(N(t_{n+1}|\mu_t,\sigma_t^2) \prod_{i=1}^{n} N(x_i|\mu_i,\sigma_i^2) \right)\\
+		& N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) dt_ndx_2 \dots dx_{n} \Big) dx_{n+1}
+	\end{split}
+\end{equation}
+
+
+Por hip\'otesis inductiva
+\begin{equation}
+	\begin{split}
+		&\int N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) N\left(x_1+x_{n+1}|\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right) dx_{n+1} \\
+		&=\int N(x_{n+1}|\mu_{n+1},\sigma_{n+1}^2) N\left(x_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_t^2+\sum_{i>1}^n\sigma_i^2\right) dx_{n+1} \\
+		&=\int N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2) N\left(x_{n+1}|\mu_{\ast},\sigma_{\ast}\right) dx_{n+1} \\
+		&= N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2) \underbrace{\int N\left(x_{n+1}|\mu_{\ast},\sigma_{\ast}\right) dx_{n+1}}_{=1} \\
+		&= N(\mu_{n+1}|-x_1+\mu_t-\sum_{i>1}^n \mu_i,\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2)\\
+		&= N(x_1|\mu_t-\sum_{i>1}^n \mu_i-\mu_{n+1},\sigma_{n+1}^2+\sigma_t^2+\sum_{i>1}^n\sigma_i^2)\\
+		&= N(x_1|\mu_t-\sum_{i>1}^{n+1} \mu_i,\sigma_t^2+\sum_{i>1}^{n+1}\sigma_i^2)
+	\end{split}
+\end{equation}
+
+Por demostraci\'on xxx%de la secci\'on~\ref{multiplicacion_normales},
+\begin{equation}
+	N\left(x_1|\mu_t-\sum_{i>1}^{n+1} \mu_i,\sigma_t^2+\sum_{i>1}^{n+1}\sigma_i^2\right)
+\end{equation}
+
+Luego, vale $P(n+1)$.
 
 
 \section{Multiplicaci\'on normales}
@@ -3923,13 +3783,14 @@ Equipo $t_j$ pierde.
 
 \subsection{Posterior ganador y perdedor}
 \label{appendix:trunc}
-Si se realiza, estos mensajes para calcular la posterior, este deja de ser una Gaussiana si no lo que se conoce como gaussiana truncada.
+Si se realiza, estos mensajes para calcular la posterior, este deja de ser una gaussiana si no lo que se conoce como gaussiana truncada.
 
 \paragraph{Ganador}
 \begin{equation}\label{eq:posterior_ganador}
 	p(s_1|o,A) = \prod_{h \in n(x_i)} m_{h \rightarrow x_i} =  N(s_1| \mu_1, \sigma_1^2)  \Phi\left(\frac{\delta_1(s_1)}{\vartheta_1}\right)
 \end{equation}
 
+\paragraph{Normal truncada}\label{appendix:truncada}
 Veamos el mensaje que genera que el resto de los mensajes dejen de ser gaussianos. Para ello veamos la marginal del nodo $d_1$.
 
 Rec: $\delta = \sum_{i\in A_{win}}\mu_i-\sum_{i\in A_{win}}\mu_i= \mu_{win}-\mu_{lose}$
@@ -3943,8 +3804,7 @@ $\vartheta^2 = \sum_{i\in A_{win}\cup A_{lose}}(\beta_i^2+\sigma_i^2)	$
 	\end{split}
 \end{equation}
 Para tener una \textit{posterior} normal lo que se hace es un buscar la normal que m\'as se aproxima a esta normal truncada.
-
-La funcion de densidad de probabilidad, para una gaussiana truncada entre $x_1$ y $x_2$, vale cero afuera del intervalo  y dentro vale:
+La funci\'on de densidad de probabilidad, para una gaussiana truncada entre $x_1$ y $x_2$, vale cero afuera del intervalo  y dentro vale:
 
 \begin{equation}
 	f(x_1<x<x_2|\delta,\vartheta,x_1,x_2) = \frac{1}{\vartheta}\frac{N\left(\frac{x-\delta}{\vartheta}|0,1\right)}{\Phi\left(\frac{x_2-\delta}{\vartheta}\right)-\Phi\left(\frac{x_1-\delta}{\vartheta}\right)}
@@ -3952,7 +3812,7 @@ La funcion de densidad de probabilidad, para una gaussiana truncada entre $x_1$ 
 
 Con
 \begin{equation}
-	N(y|0,1) = \frac{1}{\sqrt{2\pi}}exp\left(-\frac{1}{2}y^2\right)
+	N(y|0,1) = \frac{1}{\sqrt{2\pi}}\exp\left(-\frac{1}{2}y^2\right)
 \end{equation}
 \begin{equation}
 	\Phi(y|0,1) = \frac{1}{2}(1+erf(x/\sqrt{2}))
@@ -4130,7 +3990,7 @@ Teniendo la normal aproximada $\widehat{P}(d_1)$ podemos calcular el mensaje asc
 \end{equation}
 
 
-La generalizacion, se consigue utilizando la propiedad de suma de N normales, que se muestra en el anexo.
+La generalizaci\'on, se consigue utilizando la propiedad de suma de $n$ normales, que se muestra en el anexo.
 \begin{equation}
 	\begin{split}
 		\widehat{m}_{f_{t_a} \rightarrow p_1}(p_1) &=\int \int \mathbb{I}(t_a = p_1 + p_2 + ...+ P_N) N(t_a \, | \, \mu_b + \delta_{\div} \, , \, \vartheta_{\div}^2 + \sigma_b^2) N(p_2 | \mu_2 , \sigma_2^2 + \beta_2^2)\\ &N(p_3 | \mu_2 , \sigma_3^2 + \beta_3^2)... N(p_N | \mu_N , \sigma_N^2 + \beta_N^2)  \, d{t_a} d_{p_2}d_{p_3}...d_{p_N} \\
@@ -4452,16 +4312,16 @@ Los mensajes para este caso se pueden ver la figura~\ref{graph:fig1vs1HBis}
 \end{figure}
 
 
-El mensaje (1) (como el \^{1} y \"{1}) devuelve el factor Gaussiana mismo, el mensaje (2) (y \"{2}) es solamente el producto de todos los mensajes de llegada en el borde del nodo $s_1$ ($s_3$) y como solo hay un mensaje de llegada, solamente copiamos ese como mensaje de salida.
+El mensaje (1) (como el \^{1} y \"{1}) devuelve el factor gaussiana mismo, el mensaje (2) (y \"{2}) es solamente el producto de todos los mensajes de llegada en el borde del nodo $s_1$ ($s_3$) y como solo hay un mensaje de llegada, solamente copiamos ese como mensaje de salida.
 \begin{equation}
 m_{s_i\rightarrow f_{p_i}}(s_i) =  N(s_i \vert \mu_i,\sigma_i^2)
 \end{equation}
 
 
 Luego tenemos que computar el mensaje (3) (y \"{3}).
-El algoritmo de belief propagetion nos dice que tenemos que multiplicar el mensaje de entrada (2) (y el \"{2}) por el factor Gaussiana y luego integrar sobre la variable $s_2$ (y $s_3$ respectivamente).
-Estos mensajes son una Gaussiana donde su media es la media de la distribuci\'on de $f_{s_2}$ ($f_{s_3}$) y que su varianza es la suma de la varianza de $f_{s_2}$ y $f_{p_2}$ ($f_{s_3}$ y $f_{p_3}$).
-Este proceso de solapar  una Gaussiana usando otra Gaussiana es un ejemplo de la operaci\'on matem\'atica denominada \textbf{convoluci\'on}.
+El algoritmo de \textit{belief propagetion} nos dice que tenemos que multiplicar el mensaje de entrada (2) (y el \"{2}) por el factor gaussiana y luego integrar sobre la variable $s_2$ (y $s_3$ respectivamente).
+Estos mensajes son una gaussiana donde su media es la media de la distribuci\'on de $f_{s_2}$ ($f_{s_3}$) y que su varianza es la suma de la varianza de $f_{s_2}$ y $f_{p_2}$ ($f_{s_3}$ y $f_{p_3}$).
+Este proceso de solapar  una gaussiana usando otra gaussiana es un ejemplo de la operaci\'on matem\'atica denominada \textbf{convoluci\'on}.
 
 \begin{equation}
 m_{f_{p_i}\rightarrow p_i}(p_i)= \int\cdots\int f_{p_i}(p_i) m_{s_i\rightarrow f_{p_i}}(s_i)d\textbf{x}_{\backslash \{p_i\}} =  N(p_i \vert \mu_i,\beta_i^2+\sigma_i^2)
@@ -4498,7 +4358,7 @@ El mensaje (11), se calcula con la multiplicaci\'on de mensajes entrantes, sin c
 \end{equation}
 
 El mensaje (12) es una copia del (11).
-El mensaje (13) se computa multiplicando el factor Gaussiana, describiendo la variabilidad del rendimiento, con el mensaje de llegada (12) y luego integrando sobre $p_2$.
+El mensaje (13) se computa multiplicando el factor gaussiana, describiendo la variabilidad del rendimiento, con el mensaje de llegada (12) y luego integrando sobre $p_2$.
 Esto es de nuevo una convoluci\'on.
 \begin{equation}
 \begin{split}
@@ -4506,10 +4366,10 @@ Esto es de nuevo una convoluci\'on.
 &=  N( s_2|(\mu_a - \mu_3) - \delta_{\div}  ,\beta_2^2+ \vartheta_{\div}^2 + \sigma_a^2 + \sigma_3^2 + \beta_3^2)
 \end{split}
 \end{equation}
-Finalmente el mensaje (\^{1}) es la distribuci\'on Gaussiana de la habilidad a priori del jugador negro.
+Finalmente el mensaje (\^{1}) es la distribuci\'on gaussiana de la habilidad a priori del jugador negro.
 
 Para obtener la distribuci\'on marginal de $s_2$, se multiplica el mensaje (13) y (\^{1}).
-Obteniendo de esta manera la \textit{posterior} del jugador negro, que al haber utilizado la aproximaci\'on su distribuci\'on de probabilidad sigue siendo una Gaussiana.
+Obteniendo de esta manera la \textit{posterior} del jugador negro, que al haber utilizado la aproximaci\'on su distribuci\'on de probabilidad sigue siendo una gaussiana.
 
 \begin{equation}
 \begin{split}
@@ -4523,6 +4383,256 @@ De esta forma obtuvimos la actualizaci\'on de habilidad del jugador negro.
 De forma an\'aloga se realiza la marginalizaci\'on para el nodo de habilidad del jugador blanco y el de \textit{handicap}.
 
 
+
+\subsection{Full TrueSkill} \label{appendix:full}
+\begin{figure}[H]
+	\centering
+	\tikz{ %
+        \node[factor, xshift=-5cm] (fta) {} ;
+		\node[const, right=of fta] (nfta) {$f_{t_0}$}; %
+		\node[latent, below=of fta,yshift=-0.5cm] (ta) {$t_0$} ; %
+
+		\node[factor] (ftb) {} ;
+		\node[const, right=of ftb] (nftb) {$f_{t_1}$}; %
+		\node[latent, below=of ftb,yshift=-0.5cm] (tb) {$t_1$} ; %
+
+		\node[factor, xshift=5cm] (ftc) {} ;
+		\node[const, right=of ftc] (nftc) {$f_{t_2}$}; %
+		\node[latent, below=of ftc,yshift=-0.5cm] (tc) {$t_2$} ; %
+
+		\node[factor, below=of tb, xshift=-3cm] (fd1) {} ;
+		\node[const, left=of fd1] (nfd1) {$f_{d_0}$}; %
+		\node[latent, below=of fd1,yshift=-1cm] (d1) {$d_{0}$} ; %
+		\node[factor, below=of d1,yshift=-1cm] (fr1) {} ;
+
+		\node[factor, below=of tb, xshift=3cm] (fd2) {} ;
+		\node[const, above=of fd2] (nfd2) {$f_{d_{1}}$}; %
+		\node[latent, below=of fd2,yshift=-1cm] (d2) {$d_{1}$} ; %
+		\node[factor, below=of d2,yshift=-1cm] (fr2) {} ;
+
+		\edge[-] {ta} {fta,fd1}
+		\edge[-] {tb} {ftb,fd1,fd2}
+		\edge[-] {tc} {ftc,fd2}
+		\edge[-] {d1} {fd1,fr1}
+		\edge[-] {d2} {fd2,fr2}
+
+
+
+        \path[draw, -latex, fill=black!50,sloped] (fd1) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize  \emph{loseLikelihood}$(t_1)$} (tb);
+
+		\path[draw, -latex, fill=black!50,sloped] (tb) edge[bend left,draw=black!50] node[midway,below,color=black!75] {\scriptsize  \emph{losePosterior}$(t_1)$} (fd1);
+
+		\path[draw, -latex, fill=black!50,sloped] (fd2) edge[bend right,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{winLikelihood}$(t_1)$} (tb);
+
+		\path[draw, -latex, fill=black!50,sloped] (tb) edge[bend right,draw=black!50] node[midway,below,color=black!75] {\scriptsize \emph{winPosterior}$(t_1)$} (fd2);
+
+		\path[draw, -latex, fill=black!50,sloped] (fta) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{prior}$(t_0)$} (ta);
+
+		\path[draw, -latex, fill=black!50,sloped] (fr1) edge[bend left,draw=black!50] node[midway,above,color=black!75, rotate=180] {\scriptsize \emph{likelihood}$(d_{0})$} (d1);
+
+		\path[draw, -latex, fill=black!50,sloped] (d1) edge[bend right,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{\ \ posterior}$(d_{0})$} (fd1);
+
+		\path[draw, -latex, fill=black!50,sloped] (fd1) edge[bend right,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{prior}$(d_{0})$} (d1);
+
+		\path[draw, -latex, fill=black!50,sloped] (tc) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{posterior}$(t_0)$} (ftc);
+
+	}
+	\caption{\small Grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo \texttt{TrueSkill} para el caso de multi-equipos. 
+	Se recortaron algunos nodos para una mejor visualizaci\'on de los cambios relevantes al caso de \textit{TrueSkill} explicado anteriormente.}
+	\label{graph:FullTrue_}
+\end{figure}
+
+Sea la marginal $p(d_i)$,
+
+\begin{equation}
+p(d_i) = \emph{prior}(d_i) \cdot \emph{likelihood}(d_i)
+\end{equation}
+\paragraph{$\bm{\emph{winPosterior}(t_i)}$: $m_{t_i \rightarrow f_{d_i}}(t_i)$ }
+%%
+\begin{equation}
+\begin{split}
+\emph{winPosterior}(t_{i}) = \emph{prior}(t_i) \cdot \emph{winLikelihood}(t_i)
+\end{split}
+\end{equation}
+%%
+%%
+\paragraph{$\bm{\emph{losePosterior}(t_i)}$: $m_{t_i \rightarrow f_{d_{i-1}}}(t_i)$}
+Se inicializan con una forma neutra
+\begin{equation}
+\begin{split}
+\emph{losePosterior}(t_{i}) = \emph{prior}(t_i) \cdot \emph{loseLikelihood}(t_i)
+\end{split}
+\end{equation}
+
+
+\paragraph{$\bm{\emph{prior}(d_i)}$: $m_{f_{d_0} \rightarrow d_0}(d_0)$}
+
+\begin{equation}
+\begin{split}
+\emph{prior}(d_{i}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \cdot winPosterior(t_i) \cdot losePosterior(t_{i+1}) \, dt_idt_{i+1}
+\end{split}
+\end{equation}
+
+
+\paragraph{$\bm{\widehat{p}(d_i)}$:}
+
+\begin{equation}
+\widehat{p}(d_i) = \emph{prior}(d_i) \, \widehat{\emph{likelihood}}(d_i)
+\end{equation}
+
+Siguiendo el algoritmo de \textit{expectation propagation}, aproximamos el \emph{likelihood}$(d_i)$, mediante la aproximacion de la marginal $p(d_i)$ mediante \textit{moment matching}, resultando en $\widehat{p}(d_i)$ que es una gaussiana con misma media y varianza que $p(d_i)$.
+
+\begin{equation}
+\begin{split}
+\widehat{p}(d_i) & = \emph{approx}(p(d_i)) = \emph{approx}(\emph{prior}(d_i) \cdot \emph{likelihood}(d_i))
+\end{split}
+\end{equation}
+
+Entonces,
+\paragraph{$\bm{\widehat{\emph{likelihood}}(d_i)}$:}
+
+\begin{equation}
+\begin{split}
+\widehat{\emph{likelihood}}(d_i) &= \frac{\emph{approx}(\emph{prior}(d_i) \cdot \emph{likelihood}(d_i))}{ \emph{prior}(d_i)}
+\end{split}
+\end{equation}
+
+\paragraph{$\bm{\widehat{\emph{posterior}}(d_i)}$:}
+
+
+\begin{equation}
+\begin{split}
+\widehat{\emph{posterior}}(d_i) &= \widehat{\emph{likelihood}}(d_i)
+\end{split}
+\end{equation}
+
+\paragraph{\emph{loseLikelihood}$\bm(t_{i+1})$: $m_{f_{d_i} \rightarrow t_{i+1}}(t_{i+1})$}
+
+\begin{equation}
+\begin{split}
+\emph{loseLikelihood}(t_{i+1}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \emph{winPosterior}(t_i) \widehat{\emph{posterior}}(d_i) \, dd_idt_{i+1}
+\end{split}
+\end{equation}
+
+
+\paragraph{\emph{winLikelihood}$\bm(t_{i})$: $m_{f_{d_{i-1}} \rightarrow t_{i}}(t_{i})$}
+Se inicializan con su forma neutra
+\begin{equation}
+\begin{split}
+\emph{winLikelihood}(t_{i}) = \iint \mathbb{I}(d_{i} = t_i - t_{i+1} ) \emph{losePosterior}(t_{i+1}) \widehat{\emph{posterior}}(d_i) \, dd_idt_{i+1}
+\end{split}
+\end{equation}
+
+\subsection{TrueSkill Through Time}\label{appendix:ttt}
+
+\begin{figure}[H]
+\centering
+	\tikz{ %
+		\node[latent] (s0) {$s_i^{t-1}$} ; %
+
+		\node[factor, right=of s0,xshift=1cm ] (fs1) {} ;
+		\node[const, above=of fs1] (nfs1) {$f_{s_i^{t}}$}; %
+
+		\node[latent, right=of fs1, xshift=1.25cm] (s1) {$s_i^t$} ; %
+
+		\node[factor, right=of s1, xshift=1.25cm ] (fs2) {} ;
+		\node[const, above=of fs2] (nfs2) {$f_{s_i^{t+1}}$}; %
+
+		\node[latent, right=of fs2,xshift=1cm] (s2) {$s_i^{t+1}$} ; %
+
+		\node[factor, below=of s1,xshift=-1.4cm,yshift=-1cm] (fp0) {} ;
+		\node[const, right=of fp0] (nfp0) {$f_{p_i^{t}(1)}$}; %
+
+		\node[factor, color=white, below=of s1] (fp1) {} ;
+		%\node[const, right=of fp1] (nfp1) {$f_{p_i^{t}(2)}$}; %
+
+		\node[factor, below=of s1,xshift=1.4cm,yshift=-1cm] (fp2) {} ;
+		\node[const, left=of fp2] (nfp2) {$f_{p_i^{t}(k)}$}; %
+
+		\node[latent, below=of fp0] (p0) {\footnotesize$p_i^{t}(1)$} ; %
+		%\node[latent, below=of fp1] (p1) {\footnotesize$p_i^{t}(2)$} ; %
+		\node[latent, below=of fp2] (p2) {\footnotesize$p_i^{t}(k)$} ; %
+
+		%\draw[bend right=90] (fs1) arc (s1) node[midway,above]{label};
+		%\draw[bend left,->]  (fs1) to node [auto] {Link} (s1);
+		\edge[-] {s1} {fp0,fp1,fp2};
+		\edge[-] {fp0} {p0};
+		%\edge[-] {fp1} {p1};
+		\edge[-] {fp2} {p2};
+		\edge[-] {fs1} {s0,s1};
+		\edge[-] {fs2} {s1,s2};
+		%\edge[bend right] {s0} {fs1};
+		\path[draw, -latex, fill=black!50] (s0) edge[bend right,draw=black!50] node[midway,below,color=black!75] {\scriptsize \emph{posterior}$(t-1)$} (fs1);
+		\path[draw, -latex, fill=black!50] (fs1) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{prior}$(t)$} (s1);
+		\path[draw, -latex, fill=black!50] (s2) edge[bend left,draw=black!50] node[midway,below,color=black!75] {\scriptsize \emph{\ \ inversePosterior}$(t+1)$} (fs2);
+		\path[draw, -latex, fill=black!50] (fs2) edge[bend right,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{inversePrior}$(t)$} (s1);
+		\path[draw, -latex, fill=black!50,sloped] (fp0) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{likelihood}$(t,k)$} (s1);
+		\path[draw, -latex, fill=black!50,sloped] (s1) edge[bend left,draw=black!50] node[midway,above,color=black!75] {\scriptsize \emph{\ \ withinPrior}$(t,k)$} (fp2);
+	}
+	\caption{Representaci\'on del grafo bipartito de la factorizaci\'on (\emph{factor graph}) del modelo  \texttt{TTT} para el caso de la habilidad de un jugador $i$.}
+	\label{graph:factorttt_}
+\end{figure}
+
+
+
+\paragraph{\emph{posterior}$\bm{_i(t-1)}$:}
+
+\begin{equation}
+\begin{split}
+\emph{posterior}_i(t-1)&= m_{s_i^{t-1}\rightarrow f_{s_i^t}}(s_i^{t-1}) \\
+&= \emph{prior}_i(t-1) \cdot \prod_{k=1}^{K_i^{t-1}} \emph{likelihood}_i(t-1,k)\\
+&= p(s_i^{t-1}) \, \emph{inversePrior}_i(t-1)^{-1}
+\end{split}
+\end{equation}
+
+
+\paragraph{\emph{prior}$_i\bm{(t)}$:}
+
+\begin{equation}
+\begin{split}
+\emph{prior}_i(t) &= m_{f_{s_i^t} \rightarrow s_i^t}(s_i^t) \\
+&= \int f_{s^t} \cdot \emph{posterior}_i(t-1) \, ds_i^{t-1}
+\end{split}
+\end{equation}
+
+\paragraph{\emph{likelihood}$_i\bm{(t,k)}$:}
+
+\begin{equation}
+\begin{split}
+\emph{likelihood}_i(t,k) &= m_{f_{p^{t}(k)} \rightarrow s^t}(s^t) \\
+&= \emph{trueSkillVariationalLikelihood}_i(t,k)
+\end{split}
+\end{equation}
+
+\paragraph{\emph{withinPrior}$_i\bm{(t,k)}$:}
+
+
+\begin{equation}
+\begin{split}
+\emph{withinPrior}_i(t,k) &= m_{s_i^t \rightarrow f_{p_i^t(k)}}(s_i^t)  \\
+&= \emph{prior}_i(t) \cdot \emph{inversePrior}_i(t) \cdot \prod_{q=1, q\neq k}^{K_i^t} \emph{likelihood}_i(t,q) \\
+&= p(s_i^t) \cdot \emph{likelihood}_i(t,k)^{-1}
+\end{split}
+\end{equation}
+
+\paragraph{\emph{inversePrior}$\bm{_i(t)}$: }
+
+\begin{equation}
+\begin{split}
+\emph{inversePrior}_i(t) &= m_{f_{s_i^{t+1}} \rightarrow s_i^t}(s_i^t) \\
+&= \int f_{s_i^{t+1}} \cdot \emph{inversePosterior}_i(t+1) \, ds_i^{t+1}
+\end{split}
+\end{equation}
+
+\paragraph{\emph{inversePosterior}$\bm{_i(t+1)}$: }
+
+\begin{equation}
+\begin{split}
+\emph{inversePosterior}_i(t+1) &= m_{s_i^{t+1} \rightarrow f_{s_i^{t+1}}}(s_i^{t+1}) \\
+&= \emph{inversePrior}_i(t+1) \cdot \prod_{k=1}^{K_i^{t+1}} \emph{likelihood}_i(t+1,k) \\
+&= p(s_i^{t+1}) \cdot \emph{prior}_i(t+1)^{-1}
+\end{split}
+\end{equation}
 
 
 \end{document}
