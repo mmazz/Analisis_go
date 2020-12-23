@@ -17,22 +17,12 @@ name = os.path.basename(__file__).split(".py")[0]
 df_TTT_h = pd.read_csv('./Datos/TTT_H_analizada.csv')
 print('partidas con posible cambio de color', df_TTT_h[df_TTT_h.handicap_prediction < 1 ].shape[0])
 # Fit a normal distribution to the data:
-'''
+"""
 tot = df_TTT_h.shape[0]
 conH =  df_TTT_h[(df_TTT_h.handicap >1)].shape[0]
-conH_dist = df_TTT_h[(df_TTT_h.handicap_prediction == 1) & (df_TTT_h.handicap >1)].shape[0]
+conH_dist = df_TTT_h[(df_TTT_h.handicap == df_TTT_h.handicap_prediction)].shape[0]
 print(100*conH_dist/conH)
-conH =  df_TTT_h[(df_TTT_h.handicap >1)].shape[0]
-conH_dist = df_TTT_h[(df_TTT_h.handicap_prediction != df_TTT_h.handicap) & (df_TTT_h.handicap >1)].shape[0]
-print(100*conH_dist/conH)
-
-sinH =  df_TTT_h[(df_TTT_h.handicap ==1)].shape[0]
-sinH_dist = df_TTT_h[(df_TTT_h.handicap_prediction >1) & (df_TTT_h.handicap ==1)].shape[0]
-print(100*sinH_dist/sinH)
-sinH =  df_TTT_h[(df_TTT_h.handicap ==1)].shape[0]
-
-asd
-'''
+"""
 bins = 100
 df_TTT_h['proba_real_bins'] = pd.cut(df_TTT_h['proba_real'], bins)
 df_TTT_h['proba_real_bins'] = df_TTT_h.groupby('proba_real_bins')['proba_real'].transform('mean')

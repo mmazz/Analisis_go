@@ -8,7 +8,6 @@ Created on Tue  un  2 16:00:17 2020
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from statistics import NormalDist
 import math
 import os
 name = os.path.basename(__file__).split(".py")[0]
@@ -36,10 +35,25 @@ sqrt2 = math.sqrt(2)
 #h_values = [0.08604661124825415, 1.3449424858082308, 2.2963710218985667, 3.5780375856054145, 4.495241957738279, 5.367722600128796, 6.4026781916377224, 7.0226838161250935, 8.127094973490343, 9.127094973490343]
 h_std = [0.008046329946480087, 0.015502314322638268, 0.019893728722348326, 0.03434667031891241, 0.06067102656362156, 0.0645205360018915, 0.319566591380724, 0.5155001566669764, 0.5155001566669764, 0.5155001566669764, 0.5155001566669764]
 
+def cdf(x, mu, sigma):
+    z = -(x - mu) / (sigma * sqrt2)
+    return (0.5 * erfc(z))
+
+
+def erfc(x):
+    #"""(http://bit.ly/zOLqbc)"""
+    z = abs(x)
+    t = 1.0 / (1.0 + z / 2.0)
+    a = -0.82215223 + t * 0.17087277; b = 1.48851587 + t * a
+    c = -1.13520398 + t * b; d = 0.27886807 + t * c; e = -0.18628806 + t * d
+    f = 0.09678418 + t * e; g = 0.37409196 + t * f; h = 1.00002368 + t * g
+    r = t * math.exp(-z * z - 1.26551223 + t * h)
+    return r if not(x<0) else 2.0 - r
+
 def h_value(w_mean, b_mean, w_std, b_std):
     std = math.sqrt(2*beta**2 + w_std**2 + b_std**2 + h_std[0]**2)
     diff = w_mean - (b_mean + h_values[0])
-    proba = NormalDist(mu=diff, sigma=std).cdf(0)*100  # tienen velocidades parecidas
+    proba = cdf(0, diff, std)*100  # tienen velocidades parecidas
     return proba
 
 

@@ -16,18 +16,17 @@ x = np.linspace(-mu,3*mu,1000)
 y = np.linspace(-mu,3*mu,1000)
 
 
-
 def gaus(x,mu,sigma):
     y = 1/(sigma*(np.sqrt(2*np.pi)))*np.exp(-0.5*((x-mu)/sigma)**2)
     return y
 
 for i in range(len(x)):
-    y[i] = gaus(x[i],mu,sigma)
+    y[i] = gaus(x[i], mu, sigma)
 
  #%%
 #Grillado
 plt.figure(0)
-plt.plot(x,y,c='steelblue',linewidth=2)
+plt.plot(x, y, c='steelblue', linewidth=2)
 plt.axvline(x=mu-4*sigma,c='grey',linewidth=0.5)
 plt.fill_between(x[161:250],y[161:250],facecolor='steelblue', alpha=0.1)
 plt.axvline(x=mu-3*sigma,c='grey',linewidth=0.5)
@@ -65,23 +64,32 @@ plt.xticks(ticks=[mu-3*sigma,mu-2*sigma,mu-sigma,mu,mu+sigma,mu+2*sigma,mu+3*sig
 plt.savefig(f'./{name}.pdf')
 
 #%%
-plt.figure(1)
-z = np.zeros(1000)
-delta=x[1]-x[0]
+mu = 0
+sigma = 3
+x = np.linspace(-sigma,sigma,1000)
+y = np.linspace(-sigma,sigma,1000)
 
 for i in range(len(x)):
-    y[i] = gaus(x[i],0,1)
+    y[i] = gaus(x[i], mu, sigma)
+plt.figure(1)
+
+z = np.zeros(1000)
+delta = x[1]-x[0]
+for i in range(len(x)):
+    y[i] = gaus(x[i], 0, 1)
     if i == 0:
-        z[i] =y[i]*delta
+        z[i] = y[i]*delta
     else:
-        z[i]=z[i-1] + y[i]*delta
-plt.plot(x,y,c='steelblue',linewidth=2)
-x0 = x[:241]
-plt.text(x[240]+0.1,z[241]-0.04,round(z[240],3))
-plt.fill_between(x0,y[:241],facecolor='steelblue', alpha=0.5)
-plt.plot(x,z,c='firebrick',linewidth=2)
-plt.scatter(x[240],z[240],c='firebrick')
-plt.axvline(x=x[240],c='grey',linewidth=0.5)
-plt.xlim(-3,3)
-plt.ylim(0,1.1)
+        z[i] = z[i-1] + y[i]*delta
+plt.plot(x, y, c='steelblue', linewidth=2, label='Gaussian distribution')
+i = 500
+x0 = x[:i] # valor 0 tal que es 50%
+plt.text(x[i-1]+0.1, z[i]-0.04, 0.5)
+plt.fill_between(x0, y[:i], facecolor='steelblue', alpha=0.5)
+plt.plot(x, z, c='firebrick', linewidth=2, label='Cumulative distribution function')
+plt.scatter(x[i-1], z[i-1], c='firebrick')
+plt.axvline(x=x[i-1], c='grey', linewidth=0.5)
+plt.xlim(-3, 3)
+plt.ylim(0, 1.1)
+plt.legend()
 plt.savefig(f'./{name}_cumulative.pdf')

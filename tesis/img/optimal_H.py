@@ -7,7 +7,6 @@ Created on Tue  un  2 16:00:17 2020
 black_win es 1 si gano el negro.
 """
 import pandas as pd
-from statistics import NormalDist
 import math
 import os
 name = os.path.basename(__file__).split(".py")[0]

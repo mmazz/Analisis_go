@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import math
-from statistics import NormalDist
+
 # Posteriors finales de cada jugador
 #df_ts_h = pd.read_csv('./Datos/TrainingSet_diffRank_TS.csv')
 df_TTT_h = pd.read_csv('./TrainingSet_diffRank_TTT.csv')
