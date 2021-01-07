@@ -63,7 +63,25 @@ plt.xticks(xlabels, labels)
 
 plt.savefig('./lc_sigmoide.pdf')
 
+plt.figure(5)
+plt.plot(x, z, color='steelblue', linewidth=2, zorder=5)
+plt.axvline(x=3.35, linestyle='--', linewidth=1)
+plt.axvline(x=6.68, linestyle='--', linewidth=1)
+plt.fill_between(x[:333], -1, 2, facecolor='steelblue', alpha=0.2)
+plt.fill_between(x[334:666], -1, 2, facecolor='steelblue', alpha=0.4)
+plt.fill_between(x[667:], -1, 2, facecolor='steelblue', alpha=0.6)
+plt.text(1.6, 0.15, 'Stage I', fontsize=16)
+plt.text(4.8, 0.15, 'Stage II', fontsize=16)
+plt.text(8, 0.15, 'Stage III', fontsize=16)
+plt.xlabel("Games played", fontsize=16)
+plt.ylabel("Skill", fontsize=16)
+plt.xlim(0, 10)
+plt.ylim(0, 0.6)
+labels = [0, 10, r'$10^2$', r'$10^3$', r'$10^4$', r'$10^5$']
+xlabels = [0, 2, 4, 6, 8, 10]
+plt.xticks(xlabels, labels)
 
+plt.savefig('./lc_sigmoide_intro.pdf')
 
 df_white = df_TTT_h[['white','w_mean', 'w_mean_prior','whiteRank']]
 df_black = df_TTT_h[['black','b_mean', 'b_mean_prior','blackRank']]

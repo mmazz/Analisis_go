@@ -58,7 +58,7 @@ fig = plt.figure(1)
 ax = fig.add_subplot(111)
 df_TTT_h[df_TTT_h.handicap_prediction >= 1 ].hist(column='proba', bins=bins, color='forestgreen', ax=ax, alpha=0.5,
               label='Estimations with \n proposed handicap', edgecolor='black',density=True)
-df_TTT_h[df_TTT_h.black_win==1].hist(column='proba_real', bins=bins, color='steelblue', ax=ax,
+df_TTT_h[df_TTT_h.black_win == 1].hist(column='proba_real', bins=bins, color='steelblue', ax=ax,
               alpha=0.5, label='Actual results', edgecolor='black',density=True)
 
 df_TTT_h.hist(column='proba_real', bins=bins, color='firebrick', ax=ax,
