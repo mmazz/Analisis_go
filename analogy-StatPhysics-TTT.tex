@@ -1,0 +1,211 @@
+\documentclass[20pt]{extarticle}
+\usepackage[left=1in,right=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts} % simbolos como el I de matriz identidad
+\usepackage{graphicx} % paquete para ver imagenes
+\usepackage[pdftex,dvipsnames,svgnames,nonamebreak,table]{xcolor}
+
+\usepackage{bm}
+\usepackage{mdframed}
+\definecolor{frenchblue}{rgb}{0.0, 0.45, 0.73} % ESTE!!!!
+
+\newcommand{\N}{\mathcal{N}}
+\begin{document}
+
+\section{Fisica estadistica: David Tong}
+\begin{mdframed}[backgroundcolor=frenchblue!20]
+Para un sistema aislado en equilibrio, todos los posibles microestados son equiprobables.
+\end{mdframed}
+
+Vamos a tomar el caso de mecanica cuantica, y consideramos un caso en donde tenemos un sistema el cual se encuentra definido por un hamiltoneano con un numero muy grande de grados de libertad $\N\approx 10^{23}$ con una energia fija E.
+Los autoestados de energia son denominadas microestados.
+
+El valor esperado de cualquier operador $\hat{\mathcal{O}}$ para una base de estados $|n>,c$ esta dado por,
+\begin{equation}
+	\left< \hat{\mathcal{O}}\right> = \sum_np(n)<n|\hat{\mathcal{O}}|n>
+\end{equation}
+
+El objetivo es entender cual es la distribucion de probabilidad $p(n)$ apropiada para sistemas grandes.
+Algunas restricciones, primero tomamos los casos en los cuales los sistemas se encuentran aislados que se haya dejado tranquilo por un periodo de tiempo.
+Esto nos asegura que la energia y el momento del sistema se redistribuyeron entre todas las partidas y cualquier memoria sobre cualquier condicion iniciales especial del sistema se perdio.
+Esto es que \texttt{la distribucion de probabilidad es independiente del tiempo} que nos garantiza que el valor esperado de un obervable macroscopico es tambien independiente del tiempo.
+Esto se conoce como que el sistema esta en \textit{equilibrio}.
+Microscopicamente no significa que se encuentre quieto.
+
+\begin{mdframed}[backgroundcolor=frenchblue!20]
+Para un sistema aislado en equilibrio, todos los microestados accesibles son equiprobables.
+\end{mdframed}
+
+Donde dejamos la libertad en la paralabra \textit{accesible}.
+Esto es a cualquier estado que podemos llegar mediante una peque\~na perturbacion en el sistema.
+Denominaremos $\Omega(E)$, como el numero de estados con energia $E$.
+Entonces la probabilidad del sistema con energia fija $E$ este en un dado estado $|n>$ es simplemente
+
+\begin{equation}
+	p(n) = \frac{1}{\Omega(E)}
+\end{equation}
+
+La probabilidad de que el sistema este en un estado con una energia diferente $E^2$ es cero.
+La distribucion de probabilidad, relervante para sistemas con energia fija, es conocido como ensamble microcanonico.
+
+\subsection{entropia y la segunda ley de la termodinamica}
+
+Definimos la \textit{entropia} del sistema como,
+
+\begin{equation}
+	S(E) = k_B log(\Omega(E))
+\end{equation}
+
+Con $k_B$ como la constante de \textit{Boltzmann} $\approx1.381 \times 10^{-23}JK^{-1}$.
+Log base e.
+Se toma logaritmo ya que $\Omega\sim e^N$ y la entropia es proporcional a la cantidad de particulas del sistema, $S\sim N$.
+Ademas genera que la entropia sea aditiva.
+
+
+\section{Jaynes}
+Bernoulli:
+\begin{itemize}
+	\item Principio de razonamiento insuficiente: Si tenemos diferentes eventos y no tenemos nada que amerite que uno tiene mas probabilidad que el otro, entonces lo mas logico es iniciarlizar con el equiprobable, o mejor dicho ,$P(A) =M/N=$ $\#\text{casos de A}/ \#\text{total de casos}$
+	\item Ley de numeros grandes: Si no podemos calcular la probabilidad mediante M/N, se puede estimar aproximadamente observando frecuencias en varias pruebas. Bernoulli muestra que cuando n tiende a infinito, la frecuencia observada f=m/n (m seria x de la figura) tienede a la probabilidad p. esta f tiene termina siendo una distribucion gaussiana (se demuestra con teoria de limite)
+		distribucion $P(df|n,p) approx [n/(2pi(1-p))]^{1/2}  exp[-(n(f-p)^2)/(2p(1-p))]df$  (A4)
+\end{itemize}
+Laplace:
+rule of succession:
+
+Distribuciones
+
+Binomial:
+\begin{itemize}
+	\item (n x) (en vertical) es la cantidad de formas que podemos elegir 48 positivos de 50 reviews (el “orden” en que salieron seria). Se multiplica por las probabilidades individuales de cada review positivo (p a la x) y lo mismo para las reviews negativas. Esto vale si asumimos que cada review es independiente de las demas. Si no no valdria la productoria de probabilidades.
+	\item Ej: una publicacion de amazon con n reviews y x reviews positivas. Podemos calcular las diferentes distribuciones dependiendo de p. Que seria la probabilidad de que ese vendedor genere una buena experiencia de compra (lo que no sabemos y queremos)
+	\item Si variamos el x, tendriamos la distribucion binomial de para la probabilidad dada. Es decir P(datos|success rate p). Pero en nuestro caso queremos P(success rate p|datos).
+	\item La binomial se puede usar para por ejemplo calcular la probabilidad de que una moneda salga cara una x cantidad de veces ya que ahi si tenemos conocida la probabilidad p.
+Lo que nosotros podemos hacer es variar no x ya que es un dato, asi que lo dejamos fijo y variamos p.
+El problema viene cuando tenemos x=10 y n =10, la distribucion esta es creciente llegando al maximo en p=1, cosa que no representa lo que queremos. Habria que tomar el centro de masa de esa distribucion.
+\end{itemize}
+
+En continuo, el area representa probabilidad y no la altura! El eje Y representa la densidad de probabilidad, y se calcula como Probabilidad/DeltaX. Es decir depende del ancho del eje X.
+Cuando graficamos una probabilidad, el area tiene que dar 1. Y a esa funcion es la que se conoce como función de densidad de probabilidad (PDF)
+
+
+Volviendo.
+
+Laplace, probabilidades inversas, dado (m,N,n) cual es la probabilidad de M.
+Bayes, dada la data (m,n) cual es la probabilidad de que M/N este en el intervalo $p< (M/N)<p+dp$. y se llama distribucion Beta,
+\begin{equation}
+	P(dp|m,n)= \frac{(n+1)!}{m!(n-m)!}p^m (1-p)^{(n-m)}dp
+\end{equation}
+
+
+(la distribucion beta es para cuando la variable esta entre 0  y 1)
+
+para n grande  esta distribucion se aproxima asintoticamente a la ecuacion A4 con f y p everywhere interchanged.
+(parece que bayes tambien propone una aproximacion gaussiana donde hay simetria de prob de f dado p y prob de p dado f).
+
+Laplace llega primero  al teorema de bayes,
+Sea E un evento observable y  ${C_1,....,C_N}$ el set de causas.
+Supongamos que encotnramos un modelo, la distribucion de sampleo o probabilidades de E para cada causa,  $P(E|C_i)$, i=1,2,....,N. Entonces Laplance dice que si inicialmente, consideramos a las causas $C_i$ equiprobables, luego de ver un evento E, las diferentes causas son indicadas con una probabilidad proporcional  a $P(E|C_i)$.
+\begin{equation}
+	P(C_i|E)=[\sum_i^N P(E|C_i)]^{-1} P(E|C_i)
+\end{equation}
+
+
+
+Esto es una generalizacion de los resultados de Bernoulli-Bayes. Si el evento E consiste en encotnrar m sucesos en n pruebas, y las causas $C_i$ corresponde a los posibles valores de M en el modelo de Bernoulli, entonces $P(E|C_i)$ es la distribucion binomial y el limite con N tendiendo a infinito va al resutaldo de bayes de distribucion beta.
+
+Laplaces nota que si las $C_i$ no son consideradas equiprobablies pero tienen una probabilidad prior $P(C_i| I )$, donde $I$ es la informacion a priori, entocnes
+
+\begin{equation}
+	P(C_i|E)=  P(E|C_i)P(C_i| I) / [\sum_j P(E|C_j)] P(C_j| I).
+\end{equation}
+
+Lo cual se conoce como teorema de bayes….
+
+EL uso que le da laplace es comparando data con teoria existente o calculos
+
+Por años le dieron con un caño, en 1939 Jeffreys remonta un poco y luego Cox (1946) le da notacion de ahora.
+
+Regla de la suma y del producto (las reglas basicas de teoria de probabilidad)
+
+$P(A|B) + P(¬A|B) = 1$
+$P(AB|C) = P(A|BC)P(B|C)$
+
+
+Unop de los cambios es el prior, ya que Laplace usaba equiprobable y ahora buscaban distribuciones invariantes que cotnemplen el desconocimiento. Teoria de invarianza de Jeffrys (xxx ampliar)
+
+---------------------------------------------------------------------------------------------------------------------------
+Segunda linea, los fisicos llegando a lo mismo sin casi conctacto con lo anterior
+---------------------------------------------------------------------------------------------------------------------------
+
+1850 maxwell teoria cinetica de los gases.
+Boltzmann, hasta ahora se considero el problema de expresar nuestra inicial ignorancia mediante la asignacion de una probabilidad.
+Ya que la completa ingorancia inicial es el inevitable y natural punto de partida donde medimos nuestro conocimiento positivo, tal como el cero es el inevitable y natural punto de partida cuando sumamos una columna de numeros.
+En el mundo real no tenemos una ignorancia inicial sobre las preguntas a contestar.
+En cambio, a menos que tengamos algun tipo de conocimiento previo definido sobre los parametros a medir o la hipotesis a testear, tendremos raramente o las medias o la motivacion para planificar un experimento para adquirir mas conocimiento.
+Pero expresar el conocimiento positivo inicial meidante la asignacion de probabilidad es el problema de Laplace.
+
+Boltzmann queria saber como las moleculas se iban a distribuir ellas mismas en un campo conservativo.
+Supone una energia como la Ec de la molecula mas el potencial y calcula la energia total de un recinto cerrado aislado de volumen V (N particulas fijas)
+como $E=\sum Ec(v_i) + pot(x_i) = cte$
+
+Debido a la restriccion de energia, todas las posiciones y velocidades no son equiprobables.
+Boltzmann penso en una distribucion discreta dividiendo el espacio de fases permitido de las moleculas, celdas discretas.
+La k-esima celda es una region $R_k$ tan chica que la energia $E_k$ de una molecula no varia apreciablemente dentro de esta, pero tambien es tan grande que pueden entrar un numero grande de moleculas, $N_k >> 1$.
+Las celdas ${R_k, 1 <= k <= s}$ llenan el espacio accesible de fase (donde por la restriccion de energia tiene volumen finito) sin solapamiento.
+
+Dado N, E y el potencial, cual es la mejor prediccion sobre el numero de moleculas $N_k$ en $R_k$. Principio de maxima entropia!
+Luego penso, cuantas son las formas que puedo ordenar un dado set de numero de ocupacion $N_k$.
+\begin{equation}
+	W(N_k)= \frac{N!}{(N_1!N_2!...N_s!)} (A11)
+\end{equation}
+
+Esta distribucion va a tener una energia total: $E=\sum^s N_k E_k$ (A12)
+
+y tendremos la restriccion $N = \sum^s N_k$. (A13)
+Cualquier set de ${N_k}$ genera una posible distribucion compatible.
+
+Cual es la mas probable? Boltzmann contesta que el mas probable es el cual puede realizarse en la mayor cantidad de formas. Es decir  la que maximiza A11 sujeto a las restricciones  A12  y A13, si las celdas son igual de grandes.
+Debido a que N es grande se puede aproximar el factorial con la aproximacion de Stirling:
+$log W = -N \sum^s (N_K/N) log(N_K/N)$.
+La solucion matematica mediante multiplicadores de lagrange es facil.
+mas probable $\hat{N}_k = \frac{N}{Z(\beta)} exp(-\beta E_k)$ (A15)
+
+Donde $Z(\beta) = \sum^s exp(-\beta E_k)$ (A16)
+beta se elige para que se satisfaga la restriccion energetica de  A12.
+
+
+A pesar de que no se tomo encuenta la dinamica de las particulas y sus interacciones se llegan a resultados correctos. Es decir que si hubieramos considerado estas cosas se hubieran cancelado. Solo considero la conservacion de energia y que definio las celdas en terminos de volumen de fase la cual se conserva en el movimiento dinamico (teorema de Liouville).
+Esto era lo necesario para responder lo preguntado. Boltzmann preguntaba cosas sobre propiedades de equilibrio experimentalmente reproducibles.
+
+Gibbs,
+Lo de Boltzomann no se aplica cuando las interacciones moleculares son apreciables, no pudiendo escribir la energia total de forma aditiva como A12.
+Se fue a algo mas abstracto.
+Tomamos al sistema macroscopico de interes como puede ser una “molecula” e imaginarnos una gran coleccion de copias de la misma.
+Esta idea e incluso el termino “fase” para denominar la coleccion de todas las coordenadas y momentos, las denomino ensambles, (esto aparece incluso con Maxwell y anterior).
+Los ensambles representan a diferentes estados de conocimiento sobre una unica situacion fisica.
+Un sistema individual no esta en una distribucion, esta en un estado.
+
+Gibbs dijo: “nuestros ensambles son elegidos para ilustrar las probabilidades de eventos en el mundo real”.
+explicacion sobre que lo erogidico no importa? xxx
+
+Shannon, (teoria de la informacion)
+en un proceso de comunicacion, el mensaje $M_i$ se le asigna probabilidad $p_i$ y la entropia$ = -\sum p_i log(p_i)$ es una medida de informacion.
+Shannon usa H para determinal la capacidad de canal C requerida para transmitir el mensaje a un dado ritmo (rate).
+que un canal pueda o no transmitir mensaje M en un tiempo T depende obviamente solo de las propuiedades del mensaje y del canal y no de la ignorancia a priori del que recibe!
+Se puede pensar como que los diferentes mensajes considerados tienen que ser el set de todos los que van o pueden ser evniados sobre el canal durante su vida util y de esa manera H mide el grado de ignorancia del igeniero en comunicacion cuando diseño el equipo tecnico en el canal. (XXX, )
+
+(en todo critica el pensamiento frecuentista)
+
+El princpuo de razon insuficiente es generalizaodo ahora por el principuo de maxima entropia. y si se acepta se llega a todo sin gastar tiempo en teoria de ergodicidad.
+El precio a pagar es que ya no podemos interpretar la distribucion canonica como una dada frecuencia en que un sistema va a los varios estados.
+La distribucion canonica solo representa solo los estados de conocimiento cuando tenemos una cierta informacion parcial  derviada de las mediciones macroscopicas.
+
+“ dieferentes personas tienen diferente cantidad de ignorancia. La entropia de un sistema termico es una medicion del grado de ignorancia de una persona cuyo unico conocimiento sobre el microestado consiste de los valores de las cantidades macroscopicas $X_i$ que definen el estado termodinamico.” Pagina 238 de E.tT.Jaynes maximum entropia where we are?
+
+Si una cierta condicion controlada macroscopicoa es encotnrada en un laboratorio, tiene que ser suficiente para determinar un resultado reprodubcilbe, entonces tiene que seguir que la informacion sobre esa condicion macroscopica nos diga sobre el estado microscopico que es relevante para una prediccion teorica sobre ese ersultado.
+Suena raro que aseginar misma probabildiad a prori a todos los detalles como se hace con maxima entropia, pero el hecho es que estamos asignando prbabilidades uniformes solo a los detalles irrelevantes para la pregunta sobre el fenomeno reproducilb.e
+
+
+
+
+\end{document}
