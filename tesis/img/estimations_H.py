@@ -47,7 +47,12 @@ wins_porcentaje_sin_H = round(100*predicciones_sin.sum()/partidas_sin_H, 2)
 
 print("Partidas con H1 y se estima que deberia Gano negro", wins_porcentaje_sin_H, "% de", partidas_sin_H, ' Partidas')
 print(" ")
+predicciones_9 = df_TTT_h.black_win[df_TTT_h.handicap == 9]
+partidas_9 = predicciones_9.shape[0]
+porcentaje_9 = round(100*predicciones_9.sum()/partidas_9, 2)
 
+print("Partidas con H9 y se estima que deberia Gano negro", porcentaje_9, "% de", partidas_9, ' Partidas')
+print(" ")
 
 ############################################################################
 ################################### partidas sin H pero que deberian   ######

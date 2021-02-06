@@ -15,7 +15,9 @@ name = os.path.basename(__file__).split(".py")[0]
 
 
 df_TTT_h = pd.read_csv('./Datos/TTT_H_analizada.csv')
-print('partidas con posible cambio de color', df_TTT_h[df_TTT_h.handicap_prediction < 1 ].shape[0])
+print('Partidas totales ', df_TTT_h.shape[0])
+
+print('Partidas con posible cambio de color', df_TTT_h[df_TTT_h.handicap_prediction < 1 ].shape[0])
 # Fit a normal distribution to the data:
 """
 tot = df_TTT_h.shape[0]
@@ -31,7 +33,10 @@ frec_black = np.array(df_TTT_h.groupby('proba_real_bins')['black_win'].sum().tol
 frec = np.array(df_TTT_h.groupby('proba_real_bins').size().tolist())
 y = 100*frec_black / frec
 x = df_TTT_h.groupby('proba_real_bins')['proba_real_bins'].transform(tuple).unique().tolist()
+ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
+print("Partidas en intervalo 0-25 y 75-100 ", sum(frec[0:25])+sum(frec[70:]))
+print("Partidas en intervalo 25-75 ", sum(frec[25:70]))
 
 fig = plt.figure(0)
 ax1 = fig.add_subplot(111)
@@ -41,7 +46,6 @@ plt.axvline(x=50, linestyle='--', color='firebrick')
 #ax1.scatter(y_noH, x_noH, color='firebrick', alpha=0.5, label='No Handicap')
 ax1.set_xlabel('Estimated probability of black win')
 ax1.set_ylabel('Frec of black winning')
-ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 ax1.set_xticks(ticks)
 ax1.set_yticks(ticks)
 plt.legend()
@@ -72,6 +76,40 @@ ax.set_yticks([])
 plt.title(" ")
 plt.legend()
 plt.savefig(f'{name}_hist_prob_real.pdf', dpi=100)
+
+fig = plt.figure(11)
+ax = fig.add_subplot(111)
+df_TTT_h[df_TTT_h.black_win == 1].hist(column='proba_real', bins=bins, color='steelblue', ax=ax,
+              alpha=0.5, label='Actual results', edgecolor='black',density=True)
+
+df_TTT_h.hist(column='proba_real', bins=bins, color='firebrick', ax=ax,
+              alpha=0.5, label='Estimations with \n actual handicap', edgecolor='black',density=True)
+              #weights=np.ones_like(df_TTT_h[df_TTT_h.columns[0]]) * 100. / len(df_TTT_h)) # da una gaussiana en 40
+
+ax.set_xlabel('Probability of black winning')
+ax.set_ylabel('Frequency')
+ax.set_xticks(ticks)
+ax.set_yticks([])
+plt.title(" ")
+plt.legend()
+plt.savefig(f'{name}_hist_prob_real1.pdf', dpi=100)
+
+fig = plt.figure(12)
+ax = fig.add_subplot(111)
+df_TTT_h[df_TTT_h.handicap_prediction >= 1 ].hist(column='proba', bins=bins, color='forestgreen', ax=ax, alpha=0.5,
+              label='Estimations with \n proposed handicap', edgecolor='black',density=True)
+df_TTT_h[df_TTT_h.black_win == 1].hist(column='proba_real', bins=bins, color='steelblue', ax=ax,
+              alpha=0.5, label='Actual results', edgecolor='black',density=True)
+
+              #weights=np.ones_like(df_TTT_h[df_TTT_h.columns[0]]) * 100. / len(df_TTT_h)) # da una gaussiana en 40
+
+ax.set_xlabel('Probability of black winning')
+ax.set_ylabel('Frequency')
+ax.set_xticks(ticks)
+ax.set_yticks([])
+plt.title(" ")
+plt.legend()
+plt.savefig(f'{name}_hist_prob_real2.pdf', dpi=100)
 
 '''
 # no estaria dando...

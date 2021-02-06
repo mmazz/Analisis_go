@@ -109,10 +109,15 @@ CountBlackWin = df.groupby('black_win').black_win.count()
 # Hist cantidad de partidas por jugador
 #Cambiar la escala de x. mostrar cada 50 bins o algo asi
 dfplayer = pd.concat([df.white, df.black], ignore_index=True)
-dfplayer0 = pd.concat([df0.white, df0.black], ignore_index=True)
-figJ, ax = plt.subplots()
 dfplayer.value_counts().hist(ax=ax,bins=50)
+
+print(dfplayer.nunique())
+figJ, ax = plt.subplots()
+
+'''
+dfplayer0 = pd.concat([df0.white, df0.black], ignore_index=True)
 dfplayer0.value_counts().hist(ax=ax,bins=50)
+'''
 ax.set_yscale('log')
 #ax.tick_params(axis='x', pad=50)
 #plt.xticks(np.arange(0, 25000, 5000))
@@ -128,6 +133,7 @@ bins.append(y)
 for i in range(int(diff/step) + 1):
     y += step
     bins.append(int(y))
+'''
 max0 = dfplayer0.value_counts().max()
 min0 = dfplayer0.value_counts().min()
 diff0 = max0 - min0
@@ -137,7 +143,7 @@ bins0.append(y0)
 for i in range(int(diff0/step) + 1):
     y0 += step
     bins0.append(int(y0))
-
+'''
 x = dfplayer.value_counts().value_counts(bins=bins).index.mid.tolist()
 y = dfplayer.value_counts().value_counts(bins=bins).tolist()
 #x0 = dfplayer0.value_counts().value_counts(bins=bins).index.mid.tolist()
@@ -155,8 +161,8 @@ plt.bar(x, height=y, width=100, edgecolor='black',color='steelblue')
 x_ticks = np.arange(0, max, 2000)
 plt.xticks(x_ticks)
 plt.xlim(0,12000)
-#plt.xlabel(r"Mean$_0$")
-plt.ylabel("Number of games")
+plt.xlabel("Number of games")
+plt.ylabel("Number of players")
 plt.yscale('log')
 ax.set_xlabel('')
 #plt.show()
@@ -195,7 +201,7 @@ df['output'] = df['outcome'].apply(lambda x: 'Resign' if 'Resign'in x else ('Tim
 df0['output'] = df0['outcome'].apply(lambda x: 'Resign' if 'Resign'in x else ('Time' if 'Time' in x else 'Points'))
 
 figO, ax = plt.subplots()
-df.groupby('output').output.count().plot(kind='bar', edgecolor='black',color='steelblue', label='Complete data base')
+df.groupby('output').output.count().plot(kind='bar', edgecolor='black',color='steelblue', label='Complete database')
 #df0.groupby('output').output.count().plot(kind='bar', edgecolor='black',color='firebrick', label='Filtered only Komi=0.5')
 y = df.groupby('output').output.count().tolist()
 for index, value in enumerate(y):

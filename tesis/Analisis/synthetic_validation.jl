@@ -83,7 +83,7 @@ info = false
 
     @testset "same_strength_two_groups" begin
 
-        for j in 1:3
+        for j in 1:3 # son 3 casos con 3 cantidades diferentes de info
             predicciones_mle = Float64[]
             predicciones_aiaj = Float64[]
             predicciones_bibj = Float64[]
@@ -91,6 +91,7 @@ info = false
             predicciones_bici = Float64[]
             predicciones_ajbj = Float64[]
             predicciones_bjcj = Float64[]
+            # Tengo una base de partidas para inicializarlas.
             events = [ [["aj"],["bj"]], [["bj"],["cj"]], [["cj"],["aj"]],[["aj"],["bj"]], [["bj"],["cj"]], [["cj"],["aj"]],
                         [["ai"],["bi"]], [["bi"],["ci"]], [["ci"],["ai"]], [["ai"],["bi"]], [["bi"],["ci"]], [["ci"],["ai"]],
                         [["ai"],["aj"]] ]
@@ -99,24 +100,25 @@ info = false
             batches = [1,1,1,1,1,1,1,1,1,1,1,1,1]
             Nbeta = ttt.Gaussian(0.0,1.)
             casos = [100,100,100]
-            if j > 1
+            if j > 1 # duplica la base de datos
                 events = vcat(events,events)
                 results = vcat(results,results)
                 batches = vcat(batches,batches)
             end
-            if j > 2
+            if j > 2 # duplica el duplicado, cuadriplica
                 events = vcat(events,events)
                 results = vcat(results,results)
                 batches = vcat(batches,batches)
             end
-            for i in 1:casos[j]
+            # desde aca agrego mas info por iteracion cambiando la fraccion de victorias
+            for i in 1:casos[j] # por cada iteracion corro TTT.
                 #println(i)
-                if j > 1
+                if j > 1 # agrego esta partida
                     push!(events, [["ai"],["aj"]])
                     push!(results, [0,1])
                     push!(batches, 1)
                 end
-                if j > 2
+                if j > 2  # agrego dso veces esta partida (quedando en cuatro)
                     push!(events, [["ai"],["aj"]])
                     push!(results, [0,1])
                     push!(batches, 1)
@@ -124,6 +126,7 @@ info = false
                     push!(results, [0,1])
                     push!(batches, 1)
                 end
+                # aca agrego la unica partida por iteracion
                 push!(events, [["ai"],["aj"]])
                 push!(results, [0,1])
                 push!(batches, 1)
@@ -137,6 +140,7 @@ info = false
                 lc = ttt.learning_curves(h)
                 push!(predicciones_mle, i/(1.0+i))
                 push!(predicciones_aiaj, 1-ttt.cdf(lc["ai"][1][2]+Nbeta - lc["aj"][1][2]+Nbeta, 0.))
+                #ni uso lo de abajo
                 push!(predicciones_bibj, 1-ttt.cdf(lc["bi"][1][2]+Nbeta - lc["bj"][1][2]+Nbeta, 0.))
                 push!(predicciones_aibi, 1-ttt.cdf(lc["ai"][1][2]+Nbeta - lc["bi"][1][2]+Nbeta, 0.))
                 push!(predicciones_bici, 1-ttt.cdf(lc["bi"][1][2]+Nbeta - lc["ci"][1][2]+Nbeta, 0.))
@@ -156,7 +160,7 @@ info = false
     @testset "Best gamma" begin
         # no le habia agregado 25?
         function skill(exp::Int64, alpha::Float64=0.133)
-            return exp^alpha - 1 +25.
+            return exp^alpha - 1 + 25.
         end
         mean_agent = [skill(i) for i in 1:1000]
         beta = 1.

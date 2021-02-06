@@ -45,9 +45,9 @@ df_3["aiaj"] = df_3["aiaj"]/aiaj3
 
 plt.figure(0)
 plt.plot("mle", "mle", data=df,c='firebrick',linewidth=2,linestyle='--', label="Truth")
-plt.plot("mle", "aiaj", data=df_3,c='green',marker='*',linewidth=2, label="TTT information$x$4")
-plt.plot("mle", "aiaj", data=df_2,c='orange',marker='*',linewidth=2, label="TTT information$x$2")
-plt.plot("mle", "aiaj", data=df,c='steelblue',marker='*',linewidth=2, label="TTT information$x$1")
+plt.plot("mle", "aiaj", data=df_3,c='green',marker='*',linewidth=2, label=r"$TTT_4$")
+plt.plot("mle", "aiaj", data=df_2,c='orange',marker='*',linewidth=2, label=r"TTT$_2$")
+plt.plot("mle", "aiaj", data=df,c='steelblue',marker='*',linewidth=2, label=r"TTT$_1$")
 plt.xlabel("Fraction of wins")
 plt.ylabel("Probability of winning")
 #plt.xlim(0.0, 0.4)

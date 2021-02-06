@@ -20,7 +20,6 @@ colors = ['red', 'cyan', 'orange', 'green', 'purple', 'blue', 'firebrick', 'mage
 df_TTT_h_uno = pd.read_csv('./TTT_H_uno.csv')
 
 
-
 '''
 #Para no tener que correr el codigo, harcodeo los valores, esto se corre una vez
 df_TTT_h = pd.read_csv('./Datos/TTT_H_gamma0.csv')
@@ -194,9 +193,108 @@ ax2.set_xticks(x_ticks)
 
 fig.savefig(f'./{name}_uno.pdf', dpi=100)
 
+# sin el fit
+fig, ax = plt.subplots(1, 2, gridspec_kw={
+                       'width_ratios': [2,1],
+                       'height_ratios': [1]})
+
+ax1 = ax[0]
+ax2 = ax[1]
+skills0 = [0.006735695726989658, 0.2482871015778469, 0.43179793655387216, 0.7016388527207175, 0.8923889745412966, 1.0938399125565, 1.3438859669504186, 1.4485746478199568, 1.1]
+sigmas0 = [0.0018092015645693516, 0.003486471213244129, 0.004474729025970274, 0.007727358533359064, 0.013645586746330195, 0.014522334780780462, 0.07187699708060441, 0.1158022242566962, 0.04]
+print('sigma handicap promedio', sum(sigmas)/len(sigmas))
+for i in range(len(handicaps)):
+    ax1.plot([handicaps[i], handicaps[i]], [skills[i]+2*sigmas[i],
+             skills[i]-2*sigmas[i]], linewidth=0.5, color='black',zorder=0)
+    ax1.plot([handicaps[i], handicaps[i]], [skills[i]+sigmas[i],
+             skills[i]-sigmas[i]], linewidth=2, color='black',zorder=5)
+    ax1.scatter(handicaps[i], skills[i], color=colors[i], zorder=10)
+    ax1.plot([handicaps[i], handicaps[i]], [skills0[i]+2*sigmas0[i],
+             skills0[i]-2*sigmas0[i]], linewidth=0.5, color='black',zorder=0)
+    ax1.plot([handicaps[i], handicaps[i]], [skills0[i]+sigmas0[i],
+             skills0[i]-sigmas0[i]], linewidth=2, color='black',zorder=5)
+    ax1.scatter(handicaps[i], skills0[i], color='black', zorder=10)
+# calculo el error cuadradito pero de la media
+media = [sum(h_dist)/len(h_dist)]*len(h_dist)
+# en realidad no quiero la media... pero como es para calcular el R cuadrado
+# al estar dividiendo se cancela el promedio y da lo que quiero.
+mse_media = mean_squared_error(h_dist, media)
+mse = mean_squared_error(h_dist, poly1d_fn(x_dist))
+
+mse_media = mean_squared_error(h_dist, media)
+mse = mean_squared_error(h_dist, poly1d_fn(x_dist))
+# es el error cuadratico medio.
+# obviamente el polyfit encontro la recta de menor error cuadratico medio
+#Rsquare
+Rsquare = round((mse_media-mse)/mse_media,2)
+y = poly1d_fn(handicaps)
+# si uso df = len -2 es 3.182, y aca hace t*sqrt(error a)
+# por la pagina difce len -1 entonces es 2.776, aca
+# aca hace t*std_dev/sqrt(len), parece dar muy chico
+ci = 3.182 * np.sqrt(V[0][0])
+ci = 2.365 * np.sqrt(V[0][0])#/len(y)
+
+df = len(y) - 2
+
+#plt.xticks(fontsize=12) # rotation=90
+#plt.yticks(fontsize=12) # rotation=90
+ax1.set_xlabel("Handicap", fontsize=16)
+ax1.set_ylabel("Skill", fontsize=16)
+x_ticks = [0,1,2,3,4,5,6,7,8,9]
+
+ax1.set_xticks(x_ticks)
+
+#ax1.set_ylim(0,55)
+NumeroPartidas[i]
+print(NumeroPartidas[-1])
+x = df_TTT_h_uno.groupby('handicap').handicap.count().index.tolist()
+y = df_TTT_h_uno.groupby('handicap').handicap.count().tolist()
+#ax2.bar(x[:-1], height=y[:-1], log=True, edgecolor='black')
+ax2.bar(x, height=y, log=True, edgecolor='black')
+
+ax2.set_xticks(x_ticks)
+
+fig.savefig(f'./{name}_uno_sinFit.pdf', dpi=100)
 ############################################################################
-############################### FIT UNO sigma ############################
+############################### Sin FIT ############################
 ############################################################################
+# gamma nulo
+handicaps = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+colors = ['red', 'cyan', 'orange', 'green', 'purple', 'blue', 'firebrick', 'magenta', 'firebrick']
+
+skills = [0.006735695726989658, 0.2482871015778469, 0.43179793655387216, 0.7016388527207175, 0.8923889745412966, 1.0938399125565, 1.3438859669504186, 1.4485746478199568, 1.1]
+sigmas = [0.0018092015645693516, 0.003486471213244129, 0.004474729025970274, 0.007727358533359064, 0.013645586746330195, 0.014522334780780462, 0.07187699708060441, 0.1158022242566962, 0.04]
+NumeroPartidas = [1077117, 294396, 185496, 62673, 20335, 17690, 739, 306,1499]
+
+h_dist = []
+x_dist = []
+leng = 1000
+fig, ax = plt.subplots(1, 2, gridspec_kw={
+                       'width_ratios': [2,1],
+                       'height_ratios': [1]})
+
+ax1 = ax[0]
+ax2 = ax[1]
+for i in range(len(handicaps)):
+    ax1.plot([handicaps[i], handicaps[i]], [skills[i]+2*sigmas[i],
+             skills[i]-2*sigmas[i]], linewidth=0.5, color='black',zorder=0)
+    ax1.plot([handicaps[i], handicaps[i]], [skills[i]+sigmas[i],
+             skills[i]-sigmas[i]], linewidth=2, color='black',zorder=5)
+    ax1.scatter(handicaps[i], skills[i], color='black', zorder=10)
+    #label=f'H{handicaps[i]}- #Partidas={NumeroPartidas[i]}',
+NumeroPartidas[i]
+x = df_TTT_h_uno.groupby('handicap').handicap.count().index.tolist()
+y = df_TTT_h_uno.groupby('handicap').handicap.count().tolist()
+#ax2.bar(x[:-1], height=y[:-1], log=True, edgecolor='black')
+ax2.bar(x, height=y, log=True, edgecolor='black')
+
+ax2.set_xticks(x_ticks)
+plt.xticks(handicaps, handicaps, fontsize=12) # rotation=90
+plt.yticks(fontsize=12) # rotation=90
+plt.xlabel("Handicap", fontsize=16)
+plt.ylabel("Skill", fontsize=16)
+#plt.show()
+plt.savefig(f'./{name}_sinFit.pdf')
 # no aporta nada este grafico
 '''
 plt.figure(3)
