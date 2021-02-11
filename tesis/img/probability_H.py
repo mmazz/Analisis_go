@@ -85,7 +85,7 @@ df_TTT_h[df_TTT_h.black_win == 1].hist(column='proba_real', bins=bins, color='st
 df_TTT_h.hist(column='proba_real', bins=bins, color='firebrick', ax=ax,
               alpha=0.5, label='Estimations with \n actual handicap', edgecolor='black',density=True)
               #weights=np.ones_like(df_TTT_h[df_TTT_h.columns[0]]) * 100. / len(df_TTT_h)) # da una gaussiana en 40
-
+plt.axvline(x=50, linestyle='--', color='black')
 ax.set_xlabel('Probability of black winning')
 ax.set_ylabel('Frequency')
 ax.set_xticks(ticks)
