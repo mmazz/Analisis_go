@@ -1,7 +1,7 @@
 # Tesis de Licenciatura de Matias Mazzanti
 
 
-[PDF - Tesis de Licenciatura (PENDIENTE)](https://wallpapercave.com/wp/sQR7xTw.jpg)
+[PDF - Tesis de Licenciatura ](https://github.com/mmazz/Analisis_go/blob/master/tesis/main.pdf)
 
 ## Requisitos
 - Julia 1.5.1 en adelante
